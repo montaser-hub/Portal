@@ -3,8 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
+    branches:
+      - main
 
 permissions:
   actions: read
@@ -14,7 +16,8 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           filter: tree:0
           fetch-depth: 0
@@ -26,18 +29,36 @@ jobs:
       # - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
 
       # Cache node_modules
-      - uses: actions/setup-node@v4
+      # Setup Node.js with pnpm caching
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - run: npm ci
-      - run: npx playwright install --with-deps
+      # Install pnpm itself (required before use)
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0  # You can use latest
+
+      # - run: npm ci
+      # Install all dependencies using pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Install Playwright deps
+        run: npx playwright install --with-deps
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: npx nx-cloud record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
-      - run: npx nx run-many -t lint test build e2e
+      # Run lint, test, build, and e2e using Nx
+      - name: Run lint, test, build, and e2e
+        run: pnpm nx run-many -t lint test build e2e --projects=Admin-Portal, api, user-dashboard
       # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-      - run: npx nx fix-ci
+      # - run: npx nx fix-ci
+      # Fix CI issues using Nx Cloud
+      - name: Fix CI (Nx Cloud)
         if: always()
+        run: pnpm nx fix-ci
