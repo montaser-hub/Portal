@@ -1,5 +1,7 @@
 import express from 'express';
-import userRouter from './routes/userRoutes'
+import userRouter from './routes/userRoutes.js'
+import shiftRouter from './routes/shiftRoutes.js'
+import scheduleRouter from './routes/scheduleRoutes.js'
 
 
 const app = express();
@@ -14,7 +16,9 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-app.use( '/api/v1/users', userRouter);
+app.use('/api/v1/users', userRouter);
+app.use( '/api/v1/shifts', shiftRouter);
+app.use( '/api/v1/schedules', scheduleRouter);
 
 
 app.all('*', (req, res, next) => {
