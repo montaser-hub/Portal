@@ -17,7 +17,7 @@ export const updateUser = async ( id, data ) => {
 
   await isExists( email, nikename )
 
-  const updatedUser = await userRepo.update( id, { email, nikename, ...body } )
+  const updatedUser = await userRepo.update(id, { email, nikename, ...body })
 
   if(!updatedUser) throw new Error("User Not Found")
   return updatedUser
