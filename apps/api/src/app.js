@@ -1,5 +1,6 @@
 import express from 'express';
 import userRouter from './routes/userRoutes'
+import locationRouter from './routes/locationRoutes'
 
 
 const app = express();
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 app.use( '/api/v1/users', userRouter);
+app.use( '/api/v1/locations', locationRouter);
 
 
 app.all('*', (req, res, next) => {
