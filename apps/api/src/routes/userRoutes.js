@@ -1,26 +1,23 @@
 import express from 'express';
-
+import * as userController from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.post('/login', authController.login);
-router.get('/logout', authController.logout);
+// router.post('/login', authController.login);
+// router.get('/logout', authController.logout);
 
-router.post('/forgotPassword', authController.forgotPassword);
-//protect all routes after this middleware
-router.use(authController.protect);
+// router.post('/forgotPassword', authController.forgotPassword);
+// //protect all routes after this middleware
 
-router.patch('/updateMyPassword', authController.updatePassword);
-router.get('/me', userController.getMe, userController.getUser);
+// router.patch('/updateMyPassword', authController.updateMyPassword);
+router.get('/me', userController.myProfile);
 router.patch(
   '/updateMe',
-  userController.uploadUserPhoto,
-  userController.resizeUserPhoto,
-  userController.updateMe
+  // userController.uploadUserPhoto,
+  // userController.resizeUserPhoto,
+  userController.updateMyProfile
 );
-router.delete('/deleteMe', userController.deleteMy);
-// Used to protected routes and accessed only by admin role
-router.use(authController.restrictTo('admin'));
+// Used to protected routes and accessed only by admin, manager role
 
 router
   .route('/')
@@ -30,7 +27,7 @@ router
 router
   .route('/:id')
   .get(userController.getUser)
-  .patch(userController.editUser)
+  .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
-module.exports = router;
+export default router;
