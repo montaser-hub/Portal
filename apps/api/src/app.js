@@ -1,6 +1,7 @@
 import express from 'express';
 import userRouter from './routes/userRoutes'
-
+import departmentRouter from './routes/departmentRoutes'
+import subDepartmentRouter from './routes/subDepartmentRoutes'
 
 const app = express();
 
@@ -15,9 +16,11 @@ app.use((req, res, next) => {
 
 // ROUTES
 app.use( '/api/v1/users', userRouter);
+app.use( '/api/v1/departments', departmentRouter);
+app.use( '/api/v1/subDepartments', subDepartmentRouter);
 
 
-app.all('*', (req, res, next) => {
+app.all('*', (req, res) => {
   const err = new Error(`Can not find ${req.originalUrl} on this srver`);
   err.statusCode = 404;
   err.status = 'fail';
