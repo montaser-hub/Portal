@@ -30,7 +30,7 @@ jobs:
       # Run this command as early as possible, before dependencies are installed
       # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
       # Uncomment this line to enable task distribution
-      
+
 
       # Install pnpm itself (required before use)
       - name: Install pnpm
@@ -55,9 +55,10 @@ jobs:
       - name: Install Playwright deps
         run: pnpm exec playwright install --with-deps
 
-      - name: Start Nx Cloud distributed CI
-        run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
-
+      # - name: Start Nx Cloud distributed CI
+      #   run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+      - name: Configure Nx Cloud (remote caching only)
+        run: npx nx-cloud configure --access-token=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: npx nx-cloud record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
