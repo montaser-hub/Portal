@@ -1,11 +1,8 @@
 import * as locationRepo from '../dataAccess/locationRepo.js'
 
 // Check same location
-export const isExists = async (name, address) => {
+export const isExists = async (name) => {
   const existed = await locationRepo.findOne({ name })
-  const exists = await locationRepo.findOne({ address })
-  if (exists)
-    throw new Error("Another department exists in this location.")
   if (existed)
     throw new Error("Location already existed.")
 }
@@ -13,7 +10,6 @@ export const isExists = async (name, address) => {
 //  Add Location
 export const addLocation = async (data) => {
   const { name, ...body } = data
-  await isExists(name, body.address)
   return await locationRepo.create({ name, ...body })
 }
 
@@ -31,9 +27,8 @@ export const getAllLocations = async () => {
 
 // Update Location
 export const updateLocation = async (id, data) => {
-  const { name, address, ...body } = data
-  await isExists(name, address)
-  const updatedLocation = await locationRepo.update(id, { name, address, ...body })
+  const { name, ...body } = data
+  const updatedLocation = await locationRepo.update(id, { name, ...body })
   if (!updatedLocation) throw new Error("Location not found.")
   return updatedLocation
 }
