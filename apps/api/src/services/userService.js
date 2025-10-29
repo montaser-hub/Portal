@@ -22,13 +22,11 @@ export const updateUser = async ( id, data ) => {
   if(!updatedUser) throw new Error("User Not Found")
   return updatedUser
 }
-
 export const getUser = async ( id ) => {
   const user = await userRepo.findById( id )
   if(!user) throw new Error("User Not Found")
   return user
 }
-
 export const getAllUsers = async () => {
   return await userRepo.findAll()
 }
