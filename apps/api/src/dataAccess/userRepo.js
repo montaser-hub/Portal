@@ -1,8 +1,12 @@
 import User from '../models/userModel.js'
 
-export const findOne = async (email, nikename) => {
-  return await User.findOne({ email, nikename })
+export const findOne = async ( email, nikename ) => {
+
+  return await User.findOne({
+    $or: [{ email }, { nikename }]
+  })
 }
+
 export const create = async (data) => {
   return await User.create(data)
 }
