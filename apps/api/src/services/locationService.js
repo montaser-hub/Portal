@@ -1,6 +1,6 @@
 import * as locationRepo from '../dataAccess/locationRepo.js'
 
-// Check same function
+// Check same location
 export const isExists = async (name, address) => {
   const existed = await locationRepo.findOne({ name })
   const exists = await locationRepo.findOne({ address })
