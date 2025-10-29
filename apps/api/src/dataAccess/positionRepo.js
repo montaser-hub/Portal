@@ -15,7 +15,7 @@ export const update = async (id, data) => {
   const results = await Position.findByIdAndUpdate(id, data, { new: true });
   return results;
 };
-export const Delete = async (id) => {
+export const remove = async (id) => {
   const results = await Position.findByIdAndDelete(id);
   return results;
 }
