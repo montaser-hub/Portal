@@ -16,9 +16,9 @@ jobs:
   main:
     runs-on: ubuntu-latest
 
-    env:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-      DB_URI: ${{ secrets.DB_URI }}
+    # env:
+    #   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+    #   DB_URI: ${{ secrets.DB_URI }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,8 +57,8 @@ jobs:
 
       # - name: Start Nx Cloud distributed CI
       #   run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
-      - name: Configure Nx Cloud (remote caching only)
-        run: npx nx-cloud configure --access-token=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+      # - name: Configure Nx Cloud (remote caching only)
+      #   run: npx nx-cloud configure --access-token=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: npx nx-cloud record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
