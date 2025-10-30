@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import userRouter from './routes/userRoutes'
 import locationRouter from './routes/locationRoutes'
@@ -12,6 +13,8 @@ import subDepartmentRouter from './routes/subDepartmentRoutes'
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
+
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use((req, res, next) => {
   console.log('Hello from the MIDDLEWARE ✳️:');
