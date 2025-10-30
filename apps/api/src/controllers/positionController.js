@@ -15,10 +15,9 @@ export const getpositions = catchAsync(async (req, res) => {
     .json({ message: 'Positions retrieved successfully', data: result });
 });
 export const getpositionById = catchAsync(async (req, res) => {
-   console.log("result");
   const id = req.params.id;
   const result = await positionService.getPositionById(id);
- 
+
   return res
     .status(200)
     .json({ message: 'Position retrieved successfully', data: result });

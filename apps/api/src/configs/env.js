@@ -13,5 +13,11 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   dbUri: process.env.DB_URI,
   jwtSecret: process.env.JWT_SECRET,
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+  cookieExpiresIn: Number(process.env.JWT_COOKIE_EXPIRES_IN) *
+    24 *
+    60 *
+    60 *
+    1000,
   apiKeyThirdParty: process.env.API_KEY_THIRD_PARTY
 };
