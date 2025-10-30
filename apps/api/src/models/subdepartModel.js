@@ -4,5 +4,5 @@ const subDepartmentSchema = new mongoose.Schema({
     departmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
     subManagerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
-
-export default mongoose.model('SubDepartment', subDepartmentSchema);
+const SubDepartment = mongoose.model('SubDepartment', subDepartmentSchema);
+export default SubDepartment;
