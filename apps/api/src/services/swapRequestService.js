@@ -2,11 +2,7 @@ import * as SwapRequestRepo from '../dataAccess/swapRequestRepo.js'
 
 //  Add SwapRequest
 export const addSwapRequest = async (data) => {
-  const { fromUserId, fromScheduleId, ...body } = data
-  const existedSwapRequest = await SwapRequestRepo.findOne({ fromUserId, fromScheduleId })
- if (existedSwapRequest)  throw new Error("you create SwapRequest for this shift already .")
-  const newSwapRequest = await SwapRequestRepo.create({ fromUserId, fromScheduleId, ...body })
-  return newSwapRequest ;
+  return await SwapRequestRepo.create(data)
 }
 
 // Get SwapRequest By Id
@@ -23,8 +19,7 @@ export const getAllSwapRequests = async () => {
 
 // Update SwapRequest
 export const updateSwapRequest = async (id, data) => {
-  const { fromUserId, fromScheduleId, ...body } = data
-  const updatedSwapRequest = await SwapRequestRepo.update(id, {fromUserId, fromScheduleId, ...body })
+  const updatedSwapRequest = await SwapRequestRepo.update(id, data)
   if (!updatedSwapRequest) throw new Error("SwapRequest already existed.")
   return updatedSwapRequest
 }
