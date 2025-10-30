@@ -8,7 +8,7 @@ import positionRouter from './routes/positionRoutes.js';
 import levelRouter from "./routes/levelRouter.js";
 import departmentRouter from './routes/departmentRoutes'
 import subDepartmentRouter from './routes/subDepartmentRoutes'
-
+import swapRequestRouter from './routes/swapRequestRoutes'
 
 const app = express();
 app.use(express.json());
@@ -30,6 +30,7 @@ app.use( '/api/v1/shifts', shiftRouter);
 app.use( '/api/v1/schedules', scheduleRouter);
 app.use('/api/v1/positions', positionRouter);
 app.use('/api/v1/levels', levelRouter);
+app.use( '/api/v1/swapRequests', swapRequestRouter);
 
 
 
