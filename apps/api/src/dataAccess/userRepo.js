@@ -1,10 +1,15 @@
 import User from '../models/userModel.js'
 
-export const findOne = async ( email, nikename ) => {
+export const findOne = async ( email, nickname ) => {
+  const orConditions = [];
 
+    if (email) orConditions.push({ email: new RegExp(`^${email}$`, 'i') });
+    if (nickname) orConditions.push({ nickname: new RegExp(`^${nickname}$`, 'i') });
+
+    if (orConditions.length === 0) return null;
   return await User.findOne({
-    $or: [{ email }, { nikename }]
-  })
+    $or: orConditions
+  }).select('+password')
 }
 
 export const create = async (data) => {

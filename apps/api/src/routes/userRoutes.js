@@ -1,20 +1,23 @@
 import express from 'express';
 import * as userController from '../controllers/userController.js';
+import * as authController from '../controllers/authController.js';
 
 const router = express.Router();
 
-// router.post('/login', authController.login);
-// router.get('/logout', authController.logout);
+router.post('/login', authController.login);
+router.get('/logout', authController.logout);
 
 // router.post('/forgotPassword', authController.forgotPassword);
-// //protect all routes after this middleware
+//protect all routes after this middleware
+router.use(authController.isAuth);
 
 // router.patch('/updateMyPassword', authController.updateMyPassword);
 router.get('/me', userController.myProfile);
 router.patch(
   '/updateMe',
-  // userController.uploadUserPhoto,
-  // userController.resizeUserPhoto,
+  authController.isAuth,
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
   userController.updateMyProfile
 );
 // Used to protected routes and accessed only by admin, manager role
@@ -27,7 +30,11 @@ router
 router
   .route('/:id')
   .get(userController.getUser)
-  .patch(userController.updateUser)
+  .patch(
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.updateUser
+  )
   .delete(userController.deleteUser);
 
 export default router;
