@@ -122,3 +122,110 @@ This guide summarizes the purpose and best practices for each folder in the Nx-b
 • Keep utils pure — no state or API calls.
 • Centralize permissions and roles in CASL for consistency across apps.
 
+.....................................
+
+📘 ANGULAR_DEV_REFERENCE.txt
+─────────────────────────────
+
+✅ Indicates packages already installed in the workspace.
+
+─────────────────────────────
+1️⃣ ANGULAR CORE PACKAGES
+─────────────────────────────
+✅ @angular/core              – Core framework features (components, DI, lifecycle)
+✅ @angular/common            – Common directives and pipes (ngIf, ngFor, date, etc.)
+✅ @angular/forms             – Template-driven and reactive forms
+✅ @angular/router            – Navigation and routing system
+✅ @angular/platform-browser  – Browser rendering and DOM abstraction
+✅ @angular/platform-browser-dynamic – JIT compilation and bootstrapping
+✅ @angular/animations        – Angular animation support
+✅ rxjs                       – Reactive programming library (observables)
+✅ zone.js                    – Angular’s change detection mechanism
+
+─────────────────────────────
+2️⃣ ANGULAR UI & UX LIBRARIES
+─────────────────────────────
+✅ @angular/material          – Official Material Design UI components
+✅ @angular/cdk               – Component Dev Kit for Material utilities
+✅ ngx-toastr                 – Toast notifications with animation and theming
+⚙️ @ngneat/motion             – Motion library for micro-animations (to be installed)
+
+Installation command:
+npm install @angular/material @angular/cdk @angular/animations ngx-toastr @ngneat/motion
+
+─────────────────────────────
+3️⃣ CALENDAR & SCHEDULING LIBRARIES
+─────────────────────────────
+✅ @fullcalendar/angular      – Angular wrapper for FullCalendar
+✅ @fullcalendar/daygrid      – Month/week/day grid layout
+✅ @fullcalendar/timegrid     – Time-based daily/weekly layout
+✅ @fullcalendar/interaction  – Adds drag, drop, and click interactions
+
+Installation command:
+npm install @fullcalendar/angular @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
+
+─────────────────────────────
+4️⃣ RECOMMENDED FOLDER STRUCTURE
+─────────────────────────────
+apps/
+  Admin-portal/
+    src/
+      app/
+        core/
+          services/
+            api.service.ts
+            auth.service.ts
+            notification.service.ts
+          models/
+        shared/
+          components/
+            confirm-dialog/
+            user-avatar/
+          pipes/
+          ui/
+        features/
+          home/
+            home.module.ts
+            components/
+              calendar/
+              dashboard/
+          departments/
+          subdepartments/
+          shifts/
+          schedules/
+          users/
+        app-routing.module.ts
+        app.module.ts
+
+─────────────────────────────
+5️⃣ NX ANGULAR GENERATE COMMANDS
+─────────────────────────────
+# ✅ Component
+npx nx g @nx/angular:component apps/Admin-Portal/src/app/shared/components/user-avatar --standalone
+
+# ✅ Module
+npx nx g @nx/angular:module apps/Admin-Portal/src/app/features/home/home
+
+# ✅ Service
+npx nx g @nx/angular:service apps/Admin-Portal/src/app/core/services/auth
+
+# ✅ Pipe
+npx nx g @nx/angular:pipe apps/Admin-Portal/src/app/shared/pipes/capitalize --standalone
+
+# ✅ Directive
+npx nx g @nx/angular:directive apps/Admin-Portal/src/app/shared/directives/auto-focus --standalone
+
+─────────────────────────────
+6️⃣ TEAM USAGE NOTES
+─────────────────────────────
+• Use standalone components (`--standalone`) to simplify imports.
+• Place shared UI and pure utilities under `shared/`.
+• Keep business logic (API calls, authentication) under `core/services/`.
+• Each feature should have its own module for lazy loading.
+• Use ngx-toastr for notifications, FullCalendar for scheduling, Material for UI consistency.
+• Always run Nx commands from the workspace root (Portal/).
+• For animations, consider installing @ngneat/motion if not yet added.
+
+─────────────────────────────
+✅ END OF DOCUMENT
+─────────────────────────────
