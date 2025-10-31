@@ -37,6 +37,9 @@ export const updateMyProfile = catchAsync( async ( req, res, next ) => {
 
 
 export const updateMyPassword = catchAsync( async ( req, res, next ) => {
+  const email = req.user.email
+  const data = { ...req.body }
+  await userService.updatePassword(email, data)
   res.status(200).json({ message: "User password updated successfully" });
 })
 

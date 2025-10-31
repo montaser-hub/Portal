@@ -88,7 +88,10 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   //False means Not changed(day or the time at which token is issued is less than the change timestamp)
   return false;
 };
-
+/**
+ * Generates and sets a password reset token and expiry time on the user.
+ * @returns {string} The unhashed reset token (to send to user email)
+ */
 userSchema.methods.changedPasswordRestToken = function () {
   //generate a random token
   const resetToken = crypto.randomBytes(32).toString('hex');
