@@ -1,5 +1,6 @@
 import * as userService from '../services/userService.js'
 import * as authService from '../services/authService.js'
+import Email from '../integrations/emailService.js'
 import catchAsync from '../utils/catchAsync.js';
 import { config } from '../configs/env.js';
 
@@ -54,4 +55,35 @@ export const isAuth = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
+});
+
+export const forgotPassword = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const { user, resetToken } = await authService.forgotPassword(email);
+    // 3) Send it to user's email address
+  const baseUrl =
+    config.nodeEnv === "production"
+      ? config.frontendUrl
+      : `http://${config.host}:${config.port}`;
+   const resetUrl = `${baseUrl}/api/v1/users/resetPassword/${resetToken}`;
+  try {
+    await new Email( user, resetUrl ).sendPasswordReset();
+
+    res.status( 200 ).json( {
+      status: 'success',
+      message: 'reset info sent to email'
+    } );
+  } catch ( err ) {
+    console.log( err );
+    // cleanup if email sending failed
+    await authService.cleanupResetToken(user);
+    throw new Error( 'Error sending email. Try again later' );
+  }
+});
+
+export const resetPassword = catchAsync( async ( req, res, next ) => {
+  const { token } = req.params;
+  const data = {...req.body};
+  const resetPassword = await authService.resetPassword(token, data);
+  res.status(200).json({ message: "Password reset successfully", data: resetPassword });
 });

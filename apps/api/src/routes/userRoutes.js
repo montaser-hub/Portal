@@ -7,11 +7,12 @@ const router = express.Router();
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
-// router.post('/forgotPassword', authController.forgotPassword);
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
 //protect all routes after this middleware
 router.use(authController.isAuth);
 
-// router.patch('/updateMyPassword', authController.updateMyPassword);
+router.patch('/updateMyPassword', userController.updateMyPassword);
 router.get('/me', userController.myProfile);
 router.patch(
   '/updateMe',
