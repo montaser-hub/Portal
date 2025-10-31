@@ -42,9 +42,21 @@ export const getUser = async ( id ) => {
 export const getAllUsers = async () => {
   return await userRepo.findAll()
 }
-
-
-
+export const updatePassword = async ( email, data ) => {
+  if (data.newPassword !== data.confirmNewPassword) {
+    throw new Error('Passwords do not match');
+  }
+    // 1) Get user from token
+  const user = await userRepo.findOne(email);
+  // 2) Check if POSTed current password is correct
+  if (!(await user.correctPassword(data.currentPassword, user.password))) {
+    throw new Error('Incorrect current password');
+  }
+  // 3) Update password
+  user.password = data.newPassword;
+  await user.save();
+  return authService.createTokenPayload(user);
+}
 
 
 

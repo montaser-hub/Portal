@@ -8,6 +8,7 @@ dotenv.config({
 });
 
 export const config = {
+  frontendUrl: process.env.FRONTEND_URL,
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -19,5 +20,17 @@ export const config = {
     60 *
     60 *
     1000,
-  apiKeyThirdParty: process.env.API_KEY_THIRD_PARTY
+  apiKeyThirdParty: process.env.API_KEY_THIRD_PARTY,
+  email: {
+    from: process.env.EMAIL_FROM,
+    username: process.env.EMAIL_USERNAME,
+    password: process.env.EMAIL_PASS,
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    sendgridUser: process.env.SENDGRID_USERNAME,
+    sendgridPass: process.env.SENDGRID_PASSWORD,
+    useSendGrid:
+      process.env.USE_SENDGRID === 'true' ||
+      process.env.NODE_ENV === 'production',
+  },
 };

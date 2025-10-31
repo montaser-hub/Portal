@@ -34,3 +34,10 @@ export const findById = async (id) => {
 export const findAll = async () => {
   return await User.find()
 }
+
+export const findByToken = async (hashedToken) => {
+  return await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }
+  })
+}
