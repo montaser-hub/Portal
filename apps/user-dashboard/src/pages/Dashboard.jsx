@@ -17,7 +17,7 @@ function Dashboard({ onNavigate }) {
     const timeUntil = upcomingShift ? getTimeUntilShift(upcomingShift) : null;
     const featuredUpcomingShift = upcomingShift || shifts.find(s => s.id === 1);
     return (
-      <div className={`"p-6 md:p-8 space-y-6 bg-[${COLORS.bgLight}] min-h-screen"`}>
+      <div className={`"p-6 md:p-8 space-y-6 bg-[#F3F4F6] min-h-screen"`}>
             {/* Header and User Info */}
             <div className="space-y-1">
             <Text as="h1"  MyClass={`text-2xl font-normal text-[${COLORS.primary}]`}
