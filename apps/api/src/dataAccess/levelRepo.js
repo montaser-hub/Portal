@@ -4,11 +4,18 @@ export const create = async (data) => {
   return results;
 }
 export const getAll = async () => {
-  const results = await Level.find();
+  const results = await Level.find().populate({
+    path: 'Position',
+    select: '-_id name'
+  });
   return results;
 }
 export const getOne = async (id) => {
-  const results = await Level.findById(id);
+  const results = await Level.findById(id).populate({
+    path: 'Position',
+    select: '-_id name'
+  });
+  
   return results;
 }
 export const update = async (id, data) => {
