@@ -1,20 +1,45 @@
- import joi from 'joi';
- export const createDepartmentSchema= joi.object({
-    name: joi.string().min(3).max(30).required(),
-  managerId: joi.string().hex().length(24).optional(),
-  locationId: joi.string().hex().length(24).optional(),
+import Joi from '../utils/joiExtension.js';
 
+export const createDepartmentSchema = Joi.object({
+  name: Joi.string()
+    .min(3)
+    .max(30)
+    .required()
+    .messages({
+      'any.required': 'Department name is required.',
+      'string.empty': 'Department name cannot be empty.',
+      'string.min': 'Department name must be at least 3 characters.',
+      'string.max': 'Department name cannot exceed 30 characters.'
+    }),
+  managerId: Joi.objectId()
+    .optional()
+    .messages({
+      'objectId.base': 'Manager ID must be a valid ObjectId.'
+    }),
+  locationId: Joi.objectId()
+    .required()
+    .messages({
+      'objectId.base': 'Location ID must be a valid ObjectId.'
+    })
 });
-export const updateDepartmentSchema= joi.object({
-    name: joi.string().min(3).max(30).optional(),
-    managerId: joi.string().hex().length(24).optional(),
-    locationId: joi.string().hex().length(24).optional(),
 
-});
- export const getDepartmentSchema= joi.object({
-    id: joi.string().hex().length(24).required(),
-});
-
-export const deleteDepartmentSchema= joi.object({
-    id: joi.string().hex().length(24).required(),
+export const updateDepartmentSchema = Joi.object({
+  name: Joi.string()
+    .min(3)
+    .max(30)
+    .optional()
+    .messages({
+      'string.min': 'Department name must be at least 3 characters.',
+      'string.max': 'Department name cannot exceed 30 characters.'
+    }),
+  managerId: Joi.objectId()
+    .optional()
+    .messages({
+      'objectId.base': 'Manager ID must be a valid ObjectId.'
+    }),
+  locationId: Joi.objectId()
+    .optional()
+    .messages({
+      'objectId.base': 'Location ID must be a valid ObjectId.'
+    })
 });
