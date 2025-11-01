@@ -9,6 +9,8 @@ import levelRouter from "./routes/levelRouter.js";
 import departmentRouter from './routes/departmentRoutes'
 import subDepartmentRouter from './routes/subDepartmentRoutes'
 import swapRequestRouter from './routes/swapRequestRoutes'
+import AppError from './utils/AppError.js';
+import globalErrorHandler from './controllers/errorController.js';
 
 const app = express();
 app.use(express.json());
@@ -35,12 +37,9 @@ app.use( '/api/v1/swapRequests', swapRequestRouter);
 
 
 app.all('*', (req, res) => {
-  const err = new Error(`Can not find ${req.originalUrl} on this srver`);
-  err.statusCode = 404;
-  err.status = 'fail';
-  // next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
+  next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
 });
 
-// app.use(globalErrorHandler);
+app.use(globalErrorHandler);
 
 export default app;

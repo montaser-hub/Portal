@@ -4,6 +4,7 @@ import { config } from "../configs/env.js";
 import * as userService from './userService.js'
 import * as userRepo from '../dataAccess/userRepo.js'
 import { promisify } from "util";
+import AppError from "../utils/AppError.js";
 
 export const signToken = id => {
   return jwt.sign({ id }, config.jwtSecret, {
@@ -26,12 +27,12 @@ export const verifyToken = async( token ) => {
   //3) check if user still exists
   const currentUser = await userService.getUser(decoded.id);
   if (!currentUser) {
-    throw new Error('User no longer exists');
+    throw new AppError('User no longer exists', 401);
   }
 
   //4) check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
-    throw new Error('User recently changed password! Please login again')
+    throw new AppError('User recently changed password! Please login again', 401);
   }
   return currentUser
 };
@@ -40,7 +41,7 @@ export const forgotPassword = async ( email ) => {
   // 1) Get user based on POSTed email address
   const user = await userRepo.findOne(email);
   if ( !user ) {
-    throw new Error('No user found with that email');
+    throw new AppError('No user found with that email', 404);
   }
   // 2) Generate random token
   const resetToken = user.changedPasswordRestToken();
@@ -56,7 +57,7 @@ export const cleanupResetToken = async (user) => {
 
 export const resetPassword = async ( token, data ) => {console.log(data)
   if(data.password !== data.confirmPassword) {
-    throw new Error('Passwords do not match');
+    throw new AppError('Passwords do not match', 400);
   }
   // 1) Get user based on token
   const hashedToken = crypto
@@ -67,7 +68,7 @@ export const resetPassword = async ( token, data ) => {console.log(data)
   const user = await userRepo.findByToken(hashedToken);
   // 2) if token has not expired, and there is user, set the new password
   if (!user) {
-    throw new Error('Token is invalid or expired');
+    throw new AppError('Token is invalid or expired', 400);
   }
   user.password = data.password;
   user.passwordResetToken = undefined;

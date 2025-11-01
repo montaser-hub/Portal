@@ -1,6 +1,8 @@
 import express from 'express';
 import * as userController from '../controllers/userController.js';
 import * as authController from '../controllers/authController.js';
+import validation from '../middlewares/validation.js';
+import * as userSchema from '../validators/userSchema.js'; //userSchema
 
 const router = express.Router();
 
@@ -12,11 +14,11 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 //protect all routes after this middleware
 router.use(authController.isAuth);
 
-router.patch('/updateMyPassword', userController.updateMyPassword);
+router.patch('/updateMyPassword', validation(userSchema.updatePasswordSchema), userController.updateMyPassword);
 router.get('/me', userController.myProfile);
 router.patch(
   '/updateMe',
-  authController.isAuth,
+  validation(userSchema.updateMyProfileSchema),
   userController.uploadUserPhoto,
   userController.resizeUserPhoto,
   userController.updateMyProfile
@@ -26,12 +28,16 @@ router.patch(
 router
   .route('/')
   .get(userController.getUsers)
-  .post(userController.addUser);
+  .post(
+    validation(userSchema.createUserSchema),
+    userController.addUser
+  );
 
 router
   .route('/:id')
   .get(userController.getUser)
   .patch(
+    validation(userSchema.updateUserSchema),
     userController.uploadUserPhoto,
     userController.resizeUserPhoto,
     userController.updateUser
