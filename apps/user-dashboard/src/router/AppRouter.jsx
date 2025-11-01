@@ -10,11 +10,7 @@ export default function AppRouter() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/swapRequests" element={<SwapRequestPage />} />
         <Route path="/profile" element={<Profile />}  />
-
       </Routes>
     </>
   );
