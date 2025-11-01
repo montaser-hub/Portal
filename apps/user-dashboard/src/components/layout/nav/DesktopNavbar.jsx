@@ -37,9 +37,9 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
               currentPage === 'notifications' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700'
             }`}
         >
-          <Bell className="h-5 w-5" />
+          <Bell className={`h-5 w-5 text-[${COLORS.primary}]"`} />
           {unreadCount > 0 && (
-            <div className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-xs text-white" style={{ backgroundColor: COLORS.alert }}>
+            <div className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-xs text-white" style={{ backgroundColor: COLORS.primary }}>
               {unreadCount}
             </div>
           )}

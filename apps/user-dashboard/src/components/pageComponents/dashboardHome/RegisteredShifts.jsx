@@ -8,7 +8,7 @@ import Text from '../../common/Text';
 import { COLORS } from '../../common/colors';
 import { currentUser, shifts } from '../../common/mockData';
 
-export function RegisteredShift({ onNavigate }) {
+export function RegisteredShift() {
     const primaryLightBg = `bg-[${COLORS.primaryLight}]`;
     const primaryText = `text-[${COLORS.primary}]`;
     const grayBorder = `border-[${COLORS.grayBorder}]`;
@@ -20,8 +20,7 @@ export function RegisteredShift({ onNavigate }) {
     );
     return (
         <Card
-            className={`p-6 space-y-4 shadow-sm ${grayBorder} hover:shadow-md transition-all cursor-pointer`}
-            onClick={() => onNavigate('calendar')}
+            className={`p-6 space-y-4 shadow-sm ${grayBorder} hover:shadow-md transition-all`}
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -29,7 +28,7 @@ export function RegisteredShift({ onNavigate }) {
                     <div className={`p-2 rounded-lg ${primaryLightBg}`}>
                         <CheckCircle className={`h-5 w-5 ${primaryText}`} />
                     </div>
-                    <Text as="h3" MyClass="font-medium text-gray-800" content="Register Shift" />
+                    <Text as="h3" MyClass="font-normal text-gray-800" content="Register Shift" />
                 </div>
                 {/* بادج عدد المناوبات */}
                 <Badge className={`${successLightBg} ${successText} border ${successBorder}`}>
@@ -50,14 +49,14 @@ export function RegisteredShift({ onNavigate }) {
                             >
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <Text as="p" MyClass="text-sm font-medium text-gray-800"
+                                        <Text as="p" MyClass="text-sm font-normal text-gray-800"
                                               content={format(new Date(shift.date), 'MMM dd')} />
                                         <Text as="p" MyClass="text-xs text-gray-500"
                                               content={`${shift.startTime} - ${shift.endTime}`} />
                                     </div>
                                     <Badge
                                         variant="outline"
-                                        // فئات مخصصة لـ primary/10 و text-primary
+
                                         className={`${primaryLightBg} ${primaryText} border-[${COLORS.primaryLight}]`}
                                     >
                                         Assigned
@@ -71,7 +70,7 @@ export function RegisteredShift({ onNavigate }) {
             </div>
 
             <Button
-                // استخدام لون primary من COLORS
+
                 className={`w-full bg-[${COLORS.primary}] hover:bg-opacity-90 text-white`}
                 onClick={(e) => {
                     e.stopPropagation();
@@ -81,7 +80,6 @@ export function RegisteredShift({ onNavigate }) {
                 Register New Shift
             </Button>
             <Button
-                // استخدام لون primary من COLORS
                 className={`w-full bg-[${COLORS.primary}] hover:bg-opacity-90 text-white`}
                 onClick={(e) => {
                     e.stopPropagation();
