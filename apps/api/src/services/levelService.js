@@ -1,29 +1,25 @@
 import * as levelRepo from '../dataAccess/levelRepo.js';
-
+import AppError from '../utils/AppError.js';
 export const createLevel = async (data) => {
-    if (!data.name || data.name.trim() === '') {
-        throw new Error('Level name is required');
-    }
-  const result = await levelRepo.create(data);
-  return result;
+  return await levelRepo.create(data);
 }
 export const getAllLevels = async () => {
   const result = await levelRepo.getAll();
- if(!result) throw new Error("Levels not found");
+ if(!result || result.length === 0) throw new AppError("Levels not found", 404);
   return result;
 }
 export const getLevelById = async (id) => {
-    const result = await levelRepo.getOne(id);  
-    if(!result) throw new Error("Level not found");
+    const result = await levelRepo.getOne(id);
+    if(!result) throw new AppError("Level not found", 404);
   return result;
 }
 export const updateLevelById = async (id, data) => {
     const updatedLevel = await levelRepo.update(id, data);
-    if (!updatedLevel) throw new Error("Level Not Found");
+    if (!updatedLevel) throw new AppError("Level Not Found", 404);
     return updatedLevel;
 }
 export const deleteLevelById = async (id) => {
     const deletedLevel = await levelRepo.remove(id);
-    if (!deletedLevel) throw new Error("Level Not Found");
+    if (!deletedLevel) throw new AppError("Level Not Found", 404);
     return deletedLevel;
 }

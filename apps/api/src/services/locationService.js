@@ -1,10 +1,11 @@
 import * as locationRepo from '../dataAccess/locationRepo.js'
+import AppError from '../utils/AppError.js'
 
 // Check same location
 export const isExists = async (name) => {
   const existed = await locationRepo.findOne({ name })
   if (existed)
-    throw new Error("Location already existed.")
+    throw new AppError("Location already existed.", 400);
 }
 
 //  Add Location
@@ -16,7 +17,7 @@ export const addLocation = async (data) => {
 // Get Location By Id
 export const getLocation = async (id) => {
   const location = await locationRepo.findById(id)
-  if (!location) throw new Error("Location not found.")
+  if (!location) throw new AppError("Location not found.", 404)
   return location
 }
 
@@ -29,14 +30,14 @@ export const getAllLocations = async () => {
 export const updateLocation = async (id, data) => {
   const { name, ...body } = data
   const updatedLocation = await locationRepo.update(id, { name, ...body })
-  if (!updatedLocation) throw new Error("Location not found.")
+  if (!updatedLocation) throw new AppError("Location not found.", 404)
   return updatedLocation
 }
 
 // Delete Location
 export const deleteLocation = async (id) => {
   const location = await locationRepo.findById(id)
-  if (!location) throw new Error("Location not found.")
+  if (!location) throw new AppError("Location not found.", 404)
   return await locationRepo.removeById(id)
 }
 
