@@ -1,4 +1,3 @@
-
 import { format, addDays } from 'date-fns';
 
 export const currentUser = {
@@ -40,4 +39,9 @@ export const shifts = [
     { id: 3, assignedUserId: 2, status: "Assigned", date: "2025-11-02", startTime: "08:00", endTime: "16:00" },
     { id: 4, assignedUserId: 1, status: "Assigned", date: "2025-11-10", startTime: "16:00", endTime: "00:00" },
     { id: 5, assignedUserId: 1, status: "Assigned", date: "2025-11-15", startTime: "08:00", endTime: "16:00" },
+];
+
+export const mockNotifications = [
+  { id: 1, title: 'New Shift Approved', read: false },
+  { id: 2, title: 'Swap Request Received', read: false },
 ];

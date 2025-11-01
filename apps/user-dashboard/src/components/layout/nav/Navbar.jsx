@@ -1,19 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Menu, House, RefreshCw } from 'lucide-react';
-import Text from '../../common/Text';
 import DesktopNavbar from './DesktopNavbar';
 import MobileNavbar from './MobileNavbar';
 
-const currentUser = {
-  name: 'Ahmed Al Saud',
-  role: 'Manager',
-  email: 'ahmed.al.saud@healthco.com'
-};
-
-const mockNotifications = [
-  { id: 1, title: 'New Shift Approved', read: false },
-  { id: 2, title: 'Swap Request Received', read: false },
-];
+import Text from '../../common/Text';
+import { currentUser, mockNotifications} from '../../common/mockData';
 
 const navigation = [
   { id: 'dashboard', label: 'Dashboard', icon: House, path: '/' },
@@ -33,34 +24,33 @@ function Navbar() {
   const unreadCount = mockNotifications.filter(n => !n.read).length;
   const dropdownRef = useRef(null);
 
-  // Close user dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setUserMenuOpen(false);
+      if (userMenuOpen && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [userMenuOpen]);
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-[#0F7B8A] flex items-center justify-center shadow-md">
               <Calendar className="h-6 w-6 text-white" />
             </div>
             <div>
-              <Text as="h2" content="SmartShift" MyClass="text-xl font-bold text-[#0F7B8A]" />
+              <Text content="SmartShift" MyClass="text-xl font-bold text-[#0F7B8A]" />
               <Text as="p" content="Healthcare Scheduling" MyClass="text-xs text-gray-500" />
             </div>
           </div>
 
-          {/* Desktop + Mobile Navbar */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 justify-end" ref={dropdownRef}>
+
             <DesktopNavbar
               navigation={navigation}
               currentPage={currentPage}
