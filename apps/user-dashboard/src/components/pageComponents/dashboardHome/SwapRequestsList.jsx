@@ -3,6 +3,7 @@ import { RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { Card } from '../../common/Card';
 import { Badge } from '../../common/Badge';
 import { Button } from '../../common/Button';
+import { COLORS } from '../../common/colors';
 import Text from '../../common/Text';
 
 export function SwapRequestsList({ requests, currentUserId, }) {
@@ -26,16 +27,16 @@ export function SwapRequestsList({ requests, currentUserId, }) {
     return (
       <Card className={`p-6 space-y-4 `}>
         <div className="flex items-center gap-2 text-gray-800">
-          <RefreshCw className="h-5 w-5" />
-          <Text as="h3" MyClass="font-medium" content="Swap Requests" />
-          <Badge variant="secondary" className="mr-auto"> {userRequests.length} requests </Badge>
+          <RefreshCw className={`h-5 w-5 text-[${COLORS.primary}]`} />
+          <Text as="h3" MyClass="font-normal" content="Swap Requests" />
+          <Badge variant="outline" className="mr-auto"> {userRequests.length} requests </Badge>
         </div>
         {featuredRequest ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg border border-gray-200">
               <div>
                 <Text as="p" MyClass="text-gray-500 text-sm" content="Shift to Drop" />
-                <Text as="p" MyClass="font-medium text-gray-800" content={featuredRequest.shiftDate} />
+                <Text as="p" MyClass="font-normal text-gray-800" content={featuredRequest.shiftDate} />
                 <Text as="p" MyClass="text-sm text-gray-600 mt-0.5" content={featuredRequest.shiftTime} />
               </div>
               <div className="text-right">
