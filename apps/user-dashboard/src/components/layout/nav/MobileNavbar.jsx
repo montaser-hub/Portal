@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, User, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { COLORS } from '../../common/colors';
 
 function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOpen, unreadCount, currentUser, getUserInitials }) {
   return (
@@ -13,10 +14,9 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
         transition={{ type: 'tween', duration: 0.3 }}
         className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
       >
-        {/* Header: Logo + User Info */}
         <div className="flex flex-col items-start gap-2 p-4 border-b relative">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#0F7B8A] text-white font-semibold">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full text-white font-semibold" style={{ backgroundColor: COLORS.primary }}>
               {getUserInitials(currentUser.name)}
             </div>
             <div className="flex flex-col">
@@ -29,7 +29,6 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
           </button>
         </div>
 
-        {/* Navigation Links */}
         <div className="flex-1 flex flex-col gap-1 p-4 mt-2">
           {navigation.map(item => {
             const Icon = item.icon;
