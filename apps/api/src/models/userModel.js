@@ -63,6 +63,8 @@ const userSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
 userSchema.pre('save', async function (next) {
@@ -122,6 +124,27 @@ userSchema.methods.changedPasswordRestToken = function () {
 
   return resetToken;
 };
+
+userSchema.virtual('position', {
+  ref: 'Position',
+  foreignField: '_id',
+  localField: 'positionId',
+  justOne: true
+});
+
+userSchema.virtual('level', {
+  ref: 'Level',
+  foreignField: '_id',
+  localField: 'levelId',
+  justOne: true
+})
+
+userSchema.virtual('department', {
+  ref: 'Department',
+  foreignField: '_id',
+  localField: 'departmentId',
+  justOne: true
+})
 
 const User = mongoose.model('User', userSchema);
 
