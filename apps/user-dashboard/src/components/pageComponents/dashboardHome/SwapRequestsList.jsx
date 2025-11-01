@@ -5,7 +5,7 @@ import { Badge } from '../../common/Badge';
 import { Button } from '../../common/Button';
 import Text from '../../common/Text';
 
-export function SwapRequestsList({ requests, currentUserId, className = "" }) {
+export function SwapRequestsList({ requests, currentUserId, }) {
     const userRequests = requests.filter(r => r.requesterId === currentUserId);
     const featuredRequest = userRequests.find(r => r.shiftDate === '2025-10-31') || userRequests[0];
 
@@ -24,11 +24,11 @@ export function SwapRequestsList({ requests, currentUserId, className = "" }) {
     };
 
     return (
-      <Card className={`p-6 space-y-4 ${className}`}>
+      <Card className={`p-6 space-y-4 `}>
         <div className="flex items-center gap-2 text-gray-800">
           <RefreshCw className="h-5 w-5" />
           <Text as="h3" MyClass="font-medium" content="Swap Requests" />
-          <Badge variant="secondary" className="mr-auto"> {userRequests.length} Shifts </Badge>
+          <Badge variant="secondary" className="mr-auto"> {userRequests.length} requests </Badge>
         </div>
         {featuredRequest ? (
           <div className="space-y-4">

@@ -1,8 +1,6 @@
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
-
-// استيراد المكونات المشتركة والبيانات من المسار المفترض
 import { Card } from '../../common/Card';
 import { Badge } from '../../common/Badge';
 import { Button } from '../../common/Button';
@@ -11,23 +9,17 @@ import { COLORS } from '../../common/colors';
 import { currentUser, shifts } from '../../common/mockData';
 
 export function RegisteredShift({ onNavigate }) {
-    // تحديد فئات الألوان باستخدام COLORS.jsx لتكون متوافقة مع Tailwind JIT
     const primaryLightBg = `bg-[${COLORS.primaryLight}]`;
     const primaryText = `text-[${COLORS.primary}]`;
     const grayBorder = `border-[${COLORS.grayBorder}]`;
-
-    // استخدام لون النجاح (success) من COLORS لإنشاء خلفية خضراء فاتحة
     const successText = `text-[${COLORS.success}]`;
-    const successLightBg = `bg-green-50`; // فئة مساعدة لتمثيل bg-success/10
-    const successBorder = `border-green-200`; // فئة مساعدة لتمثيل border-success/20
-
+    const successLightBg = `bg-green-50`;
+    const successBorder = `border-green-200`;
     const userAssignedShifts = shifts.filter(
         (s) => s.assignedUserId === currentUser.id && s.status === 'Assigned'
     );
-
     return (
         <Card
-            // فئات Card الأساسية
             className={`p-6 space-y-4 shadow-sm ${grayBorder} hover:shadow-md transition-all cursor-pointer`}
             onClick={() => onNavigate('calendar')}
         >

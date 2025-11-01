@@ -23,7 +23,9 @@ export const currentUser = {
 export const swapRequests = [
     { id: 1, requesterId: 1, shiftDate: "2025-11-03", shiftTime: "08:00 - 16:00", status: "Pending Manager" },
     { id: 2, requesterId: 1, shiftDate: "2025-10-31", shiftTime: "07:00 - 19:00", status: "Approved" },
-    { id: 3, requesterId: 2, shiftDate: "2025-11-02", shiftTime: "08:00 - 16:00", status: "Rejected" },
+    { id: 7, requesterId: 10, shiftDate: "2025-11-02", shiftTime: "08:00 - 16:00", status: "Rejected" },
+    { id: 6, requesterId: 9, shiftDate: "2025-11-02", shiftTime: "08:00 - 16:00", status: "Rejected" },
+    { id: 5, requesterId: 8, shiftDate: "2025-11-02", shiftTime: "08:00 - 16:00", status: "Rejected" },
 ];
 
 export const notes = [
@@ -39,6 +41,7 @@ export const shifts = [
     { id: 3, assignedUserId: 2, status: "Assigned", date: "2025-11-02", startTime: "08:00", endTime: "16:00" },
     { id: 4, assignedUserId: 1, status: "Assigned", date: "2025-11-10", startTime: "16:00", endTime: "00:00" },
     { id: 5, assignedUserId: 1, status: "Assigned", date: "2025-11-15", startTime: "08:00", endTime: "16:00" },
+    { id: 5, assignedUserId: 1, status: "Assigned", date: "2025-11-14", startTime: "08:00", endTime: "16:00" },
 ];
 
 export const mockNotifications = [
