@@ -3,6 +3,7 @@ import * as authService from '../services/authService.js'
 import Email from '../integrations/emailService.js'
 import catchAsync from '../utils/catchAsync.js';
 import { config } from '../configs/env.js';
+import AppError from '../utils/AppError.js';
 
 export const login = catchAsync( async ( req, res, next ) => {
   const { email, nickname, password } = req.body;
@@ -46,7 +47,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    throw new Error('You are not logged in');
+    throw new AppError('You are not logged in', 401);
   }
 
   //2) Verification token
@@ -77,7 +78,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     console.log( err );
     // cleanup if email sending failed
     await authService.cleanupResetToken(user);
-    throw new Error( 'Error sending email. Try again later' );
+    throw new AppError( 'Error sending email. Try again later', 500 );
   }
 });
 
