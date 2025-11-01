@@ -6,5 +6,4 @@ export const COLORS = {
     grayBorder: "#E5E7EB",
     success: "#2ECC71",
     warning: "#F39C12",
-    bg: "#F3F4F6",
 };
