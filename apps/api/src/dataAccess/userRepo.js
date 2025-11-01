@@ -27,12 +27,30 @@ export const getUser = async (id) => {
 
 
 export const findById = async (id) => {
-  return await User.findById(id)
+  return await User.findById(id).populate({
+    path: 'position',
+    select: 'name'
+  }).populate({
+    path: 'level',
+    select: 'name'
+  }).populate({
+    path: 'department',
+    select: 'name'
+  })
 }
 
 
 export const findAll = async () => {
-  return await User.find()
+  return await User.find().populate({
+    path: 'position',
+    select: 'name'
+  }).populate({
+    path: 'level',
+    select: 'name'
+  }).populate({
+    path: 'department',
+    select: 'name'
+  })
 }
 
 export const findByToken = async (hashedToken) => {
