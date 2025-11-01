@@ -27,6 +27,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'default.jpg',
   },
+  positionId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Position',
+    required: true
+  },
+  levelId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Level',
+    required: true
+  },
+  departmentId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
+    required: true
+  },
   role: {
     type: String,
     enum: ['user', 'admin', 'manager'],
@@ -46,6 +61,8 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+}, {
+  timestamps: true,
 });
 
 userSchema.pre('save', async function (next) {
