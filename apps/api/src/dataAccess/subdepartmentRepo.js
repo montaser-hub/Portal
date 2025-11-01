@@ -8,12 +8,17 @@ export const create = async (data) => {
 
 
 export const getAll = async () => {
-  const results = await SubDepartment.find();
+  const results = await SubDepartment.find().populate({
+    path: 'department',
+    select: 'name',
+  });
   return results;
 };
-
 export const getOne = async (id) => {
-  const results = await SubDepartment.findById(id);
+  const results = await SubDepartment.findById(id).populate({
+    path: 'department',
+    select: 'name ',
+  });
   return results;
 };
 
