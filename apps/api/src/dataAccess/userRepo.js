@@ -40,17 +40,11 @@ export const findById = async (id) => {
 }
 
 
-export const findAll = async () => {
-  return await User.find().populate({
-    path: 'position',
-    select: 'name'
-  }).populate({
-    path: 'level',
-    select: 'name'
-  }).populate({
-    path: 'department',
-    select: 'name'
-  })
+export const findAll = () => {
+  return User.find()
+          .populate('position', 'name')
+          .populate('level', 'name')
+          .populate('department', 'name');
 }
 
 export const findByToken = async (hashedToken) => {
@@ -59,3 +53,9 @@ export const findByToken = async (hashedToken) => {
     passwordResetExpires: { $gt: Date.now() }
   })
 }
+
+// Get count of all records (useful for pagination)
+export const countAll = () => User.countDocuments();
+
+// Optionally, get count based on filters (for filtered total)
+export const countFiltered = (filter) => User.countDocuments(filter);

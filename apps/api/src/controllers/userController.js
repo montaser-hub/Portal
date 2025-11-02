@@ -77,6 +77,16 @@ export const getUser = catchAsync( async ( req, res, next ) => {
 
 
 export const getUsers = catchAsync(async (req, res, next) => {
-  res.status(200).json({ message: "Users fetched successfully" });
+  const query = { ...req.query }
+
+  const { data, total, totalFiltered } = await userService.getUsers(query)
+  res.status(200).json( {
+    message: "Users fetched successfully",
+    totalFiltered,
+    total,
+    limit: query.limit,
+    page: query.page,
+    data
+  } );
 });
 
