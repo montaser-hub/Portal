@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { COLORS } from "../components/common/colors";
 import { currentUser } from "../components/common/mockData";
 import * as Tabs from "@radix-ui/react-tabs";
 import ProfileOverviewCard from "../components/pageComponents/ProfilePage/ProfileOverviewCard";
@@ -20,7 +19,7 @@ export default function Profile() {
     <div className={`bg-[#F8F9FA] min-h-screen py-12`}>
       {/* Header */}
       <div className="max-w-5xl mx-40 mb-8">
-        <h1 className={`text-3xl font-semibold text-[${COLORS.primary}] mb-2`}>Your Profile</h1>
+        <h1 className={`text-3xl font-semibold text-[#0F7B8A] mb-2`}>Your Profile</h1>
         <p className="text-gray-600">Manage your Profile Info.</p>
       </div>
 
@@ -41,7 +40,7 @@ export default function Profile() {
                     value={tab}
                     className={`pb-2 text-sm font-medium ${
                       activeTab === tab
-                        ? `border-b-2 border-[${COLORS.primary}] text-[${COLORS.primary}]`
+                        ? `border-b-2 border-[#0F7B8A] text-[#0F7B8A]`
                         : "text-gray-500 hover:text-[#0F7B8A]"
                     }`}
                   >
