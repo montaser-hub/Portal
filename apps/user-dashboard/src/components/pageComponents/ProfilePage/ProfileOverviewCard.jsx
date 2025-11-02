@@ -1,16 +1,13 @@
 import React from "react";
-import { User, Mail, Phone, Calendar } from "lucide-react";
 import Text from "../../common/Text";
 import { Card } from "../../common/Card";
 import { Button } from "../../common/Button";
-import { Badge } from "../../common/Badge";
-import { COLORS } from "../../common/colors";
 import { currentUser } from "../../common/mockData";
 import  Input from "../../common/Input";
 
 export default function ProfileOverviewCard({ user }) {
   return (
-         <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-white border-gray-200">
                   <Text as="h3" content="Contact Information" MyClass="text-lg font-medium" />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input label="Full Name" value={currentUser.name} />
@@ -28,7 +25,7 @@ export default function ProfileOverviewCard({ user }) {
                   </div>
 
                   <div className="flex justify-end mt-4 gap-2">
-      <Button className="w-full mt-4" variant="secondary">Edit Profile</Button>
+          <Button className="w-full mt-4" variant="secondary">Edit Profile</Button>
 
                   </div>
                 </Card>

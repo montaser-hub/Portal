@@ -38,7 +38,7 @@ export default function NotFoundPage({ isAuthenticated }) {
 
             <Link
               to="/dashboard"
-              className="flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-md shadow"
+              className="flex items-center justify-center text-teal-600 hover:text-teal-400"
             >
             <Home className="mr-2 h-4 w-4" />
               Return to Dashboard
@@ -46,7 +46,7 @@ export default function NotFoundPage({ isAuthenticated }) {
 
             <Link
               to="/login"
-              className="flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-md shadow"
+              className="flex items-center justify-center text-teal-600 hover:text-teal-400"
             >
               <LogIn className="mr-2 h-4 w-4" />
               Go to Login

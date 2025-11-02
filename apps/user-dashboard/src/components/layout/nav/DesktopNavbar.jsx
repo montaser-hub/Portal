@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import   Text from '../../common/Text';
+import Badge from '../../common/Badge';
 function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, userMenuOpen, setUserMenuOpen, currentUser, getUserInitials }) {
   return (
     <div className="hidden md:flex items-center flex-1">
@@ -24,7 +25,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
               }`}
             >
               <Icon className="h-4 w-4" />
-              <span>{item.label}</span>
+              <Text as="span" content={item.label}/>
             </Link>
           );
         })}
@@ -49,13 +50,13 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
 
         <div className="relative">
           <div
-            className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[#E0F4F6] transition`}
+            className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[#E0F4F6] transition ${userMenuOpen ? 'bg-[#E0F4F6]' : 'hover:bg-[#E0F4F6]'}`}
             onClick={() => setUserMenuOpen(!userMenuOpen)}
           >
             <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-[#0F7B8A]" >
               {getUserInitials(currentUser.name)}
             </div>
-            <span className="text-sm font-medium">{currentUser.name.split(' ')[0]}</span>
+            <Text as="span" content={currentUser.name.split(' ')[0]} MyClass="text-sm font-medium text-gray-600"/>
           </div>
 
           <AnimatePresence>
@@ -67,13 +68,14 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                 transition={{ duration: 0.2 }}
                 className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg py-2 z-30"
               >
-                <div className="flex items-center gap-2 px-4 py-2 border-b">
+                <div className="flex items-center gap-2 px-4 py-2 border-b mb-3">
                   <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#0F7B8A] text-white font-semibold" >
                     {getUserInitials(currentUser.name)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-medium text-sm">{currentUser.name}</span>
-                    <span className="text-xs text-gray-500">{currentUser.email}</span>
+                    <Text as="span" content={currentUser.name} MyClass="font-medium text-sm text-gray-500 flex justify-center" />
+                    <Badge variant="outline">{currentUser.role}</Badge>
+                    <Text as='span' content={currentUser.email} MyClass="text-xs text-gray-500" />
                   </div>
                 </div>
 
