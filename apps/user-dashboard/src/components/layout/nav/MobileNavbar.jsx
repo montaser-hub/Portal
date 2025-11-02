@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, User, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Text from '../../common/Text';
+import Badge from '../../common/Badge';
 
 function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOpen, unreadCount, currentUser, getUserInitials }) {
   React.useEffect(() => {
@@ -27,10 +29,11 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
             <div className="flex items-center justify-center h-10 w-10 rounded-full text-white font-semibold bg-[#0F7B8A]">
               {getUserInitials(currentUser.name)}
             </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">{currentUser.name}</span>
-              <span className="text-xs text-gray-500">{currentUser.email}</span>
-            </div>
+                  <div className="flex flex-col">
+                    <Text as="span" content={currentUser.name} MyClass="font-medium text-sm text-gray-500 flex justify-center" />
+                    <Badge variant="outline">{currentUser.role}</Badge>
+                    <Text as='span' content={currentUser.email} MyClass="text-xs text-gray-500" />
+                  </div>
           </div>
           <button className="absolute top-4 right-4" onClick={() => setMobileMenuOpen(false)}>
             <X className="h-5 w-5 text-gray-700" />
@@ -54,7 +57,7 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
                 }`}
               >
                 <Icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <Text as="span" content={item.label} />
               </Link>
             );
           })}
@@ -69,7 +72,7 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
             }`}
           >
             <Bell className="h-5 w-5" />
-            <span>Notifications {unreadCount > 0 && `(${unreadCount})`}</span>
+            <Text as="span"content={`Notifications ${unreadCount > 0 ? `(${unreadCount})` : ''}`}/>
           </Link>
           <Link
             to="/profile"
