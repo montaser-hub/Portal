@@ -12,7 +12,7 @@ export default class Email {
   }
 
   newTransport() {
-    if (config.email.sendgridUser) {
+    if (config.email.useSendGrid) {
       //Sendgrid
       return nodemailer.createTransport({
         service: 'SendGrid',
