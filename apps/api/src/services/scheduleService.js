@@ -1,4 +1,5 @@
 import * as scheduleRepo from '../dataAccess/scheduleRepo.js'
+import AppError from '../utils/AppError.js'
 
 
 export const createSchedule = async (data) => {
@@ -7,7 +8,7 @@ export const createSchedule = async (data) => {
 
 export const updateSchedule = async (id, data) => {
   const updatedschedule = await scheduleRepo.update( id, data )
-  if ( !updatedschedule ) throw new Error( "Shift Not Found" )
+  if ( !updatedschedule ) throw new AppError( "Shift Not Found", 404 )
   return updatedschedule
 }
 
@@ -17,13 +18,13 @@ export const getAllSchedules = async () => {
 
 export const getSchedule = async ( id ) => {
   const schedule = await scheduleRepo.findById( id )
-  if ( !schedule ) throw new Error( "Shift Not Found" )
+  if ( !schedule ) throw new AppError( "Shift Not Found", 404 )
   return schedule
 }
 
 export const deleteSchedule = async ( id ) => {
   data = { isActive: false }
   const schedule = await scheduleRepo.update( id, data )
-  if ( !schedule ) throw new Error( "Shift Not Found" )
+  if ( !schedule ) throw new AppError( "Shift Not Found", 404 )
   return schedule
 }
