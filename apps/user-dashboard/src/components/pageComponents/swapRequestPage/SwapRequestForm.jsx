@@ -1,6 +1,6 @@
 import React from "react";
 import Text from "../../common/Text";
-import { Input } from "../../common/Input";
+import  Input  from "../../common/Input";
 import Button from "../../common/Button";
 
 export default function SwapRequestForm({ formData, onChange, onSubmit }) {
