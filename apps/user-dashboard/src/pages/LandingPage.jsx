@@ -1,19 +1,17 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Calendar, CheckCircle, Users, Clock } from "lucide-react";
 import Text from "../components/common/Text";
-import { Link } from "react-router-dom";
-import { Card } from "../components/common/Card";
-import { COLORS } from "../components/common/colors";
+import  Card  from "../components/common/Card";
 
 export default function LandingPage({ onNavigate }) {
   return (
-  <div className="min-h-screen" style={{ backgroundColor: COLORS.bgLight }}>
+  <div className="min-h-screen bg-[#F8F9FA]">
     <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
       <div className="text-center space-y-6">
           <div className="flex justify-center">
             <div
-              className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{ backgroundColor: COLORS.primary }}
+              className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg bg-[#0F7B8A]"
             >
               <Calendar className="h-12 w-12 text-white" />
             </div>
@@ -48,10 +46,10 @@ export default function LandingPage({ onNavigate }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: COLORS.primaryLight }}
+              className="w-12 h-12 rounded-lg flex items-center justify-center bg-[#E0F4F6]"
+
             >
-              <CheckCircle className="h-6 w-6" style={{ color: COLORS.primary }} />
+              <CheckCircle className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
               <Text
@@ -68,10 +66,9 @@ export default function LandingPage({ onNavigate }) {
           </Card>
           <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: COLORS.primaryLight }}
+              className="w-12 h-12 rounded-lg flex items-center justify-center bg-[#E0F4F6]"
             >
-              <Users className="h-6 w-6" style={{ color: COLORS.primary }} />
+              <Users className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
               <Text
@@ -88,10 +85,9 @@ export default function LandingPage({ onNavigate }) {
           </Card>
           <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: COLORS.primaryLight }}
+              className="w-12 h-12 rounded-lg flex items-center justify-center bg-[#E0F4F6]"
             >
-              <Clock className="h-6 w-6" style={{ color: COLORS.primary }} />
+              <Clock className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
               <Text

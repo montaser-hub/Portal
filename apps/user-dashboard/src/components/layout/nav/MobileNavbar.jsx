@@ -13,16 +13,15 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, [setMobileMenuOpen]);
-
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ type: 'tween', duration: 0.3 }}
-        className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
-      >
+    <AnimatePresence >
+        <motion.div
+          initial={{ x: '100%', opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: '100%', opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 25, duration: 0.35 }}
+          className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
+        >
         <div className="flex flex-col items-start gap-2 p-4 border-b relative">
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center h-10 w-10 rounded-full text-white font-semibold bg-[#0F7B8A]">
@@ -48,6 +47,7 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
                 to={item.path}
                 onClick={() => {
                   setCurrentPage(item.id);
+                  setMobileMenuOpen(false);
                 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
                   isActive ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
@@ -58,36 +58,35 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
               </Link>
             );
           })}
-
           <Link
             to="/notifications"
             onClick={() => {
               setCurrentPage('notifications');
+              setMobileMenuOpen(false);
             }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
               currentPage === 'notifications' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
             }`}
           >
             <Bell className="h-5 w-5" />
             <span>Notifications {unreadCount > 0 && `(${unreadCount})`}</span>
           </Link>
-
           <Link
             to="/profile"
             onClick={() => {
               setCurrentPage('profile');
+              setMobileMenuOpen(false);
             }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
               currentPage === 'profile' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
             }`}
           >
             <User className="h-5 w-5" /> Profile
           </Link>
-
           <Link
             to="/"
-
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-[#E0F4F6]"
+            onClick={() => {setMobileMenuOpen(false);}}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
           >
             <LogOut className="h-5 w-5" /> Sign Out
           </Link>

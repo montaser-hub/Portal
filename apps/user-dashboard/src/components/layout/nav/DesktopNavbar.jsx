@@ -35,7 +35,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
         <Link
             to="/notifications"
             onClick={() => setCurrentPage('notifications')}
-            className={`relative cursor-pointer p-2 rounded-lg transition ${
+            className={`relative cursor-pointer p-2 rounded-lg transition duration-300 ${
               currentPage === 'notifications' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
             }`}
         >
@@ -83,7 +83,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                     setCurrentPage('profile');
                     setUserMenuOpen(false);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm ${
+                  className={`flex items-center gap-2 px-4 py-2 text-sm transition duration-300 ${
                     currentPage === 'profile' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
                   }`}
                 >
@@ -92,7 +92,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                 <Link
                   to="/"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#E0F4F6]"
+                  className="flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out
                 </Link>

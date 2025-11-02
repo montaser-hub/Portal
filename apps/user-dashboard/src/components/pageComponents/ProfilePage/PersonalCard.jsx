@@ -1,19 +1,17 @@
 import React from "react";
 import { User, Mail, Phone, Calendar } from "lucide-react";
-import Text from "../../common/Text";
-import { Card } from "../../common/Card";
-import { Button } from "../../common/Button";
-import { Badge } from "../../common/Badge";
-import { COLORS } from "../../common/colors";
+import   Text from "../../common/Text";
+import   Card  from "../../common/Card";
+import   Badge   from "../../common/Badge";
 
 export default function ProfileCard({ user }) {
   return (
     <Card className="p-6 space-y-4 bg-white border-gray-200">
       <div className="flex flex-col items-center text-center space-y-3">
-        <div className={`w-24 h-24 rounded-full bg-[${COLORS.primary}]/10 flex items-center justify-center`}>
-          <User className={`h-12 w-12 text-[${COLORS.primary}]`} />
+        <div className={`w-24 h-24 rounded-full bg-[#0F7B8A]/10 flex items-center justify-center`}>
+          <User className={`h-12 w-12 text-[#0F7B8A]`} />
         </div>
-        <Text as="h3" content={user.name} MyClass="text-lg font-medium" />
+        <Text as="h3" content={user.name} MyClass="text-lg font-medium text-teal-700" />
         <Text as="p" content={user.role} MyClass="text-gray-500" />
         <div className="flex gap-2">
           <Badge variant="outline">{user.level}</Badge>
@@ -33,7 +31,6 @@ export default function ProfileCard({ user }) {
         </div>
       </div>
 
-      <Button className="w-full mt-4" variant="secondary">Edit Profile</Button>
     </Card>
   );
 }

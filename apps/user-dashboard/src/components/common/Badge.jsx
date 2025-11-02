@@ -15,7 +15,7 @@ export function Badge({ children, variant = "default", className = "" }) {
     } else if (variant === "warning") {
         variantClasses = `bg-yellow-500 text-white`;
     } else if (variant === "secondary") {
-        variantClasses = "bg-gray-200 text-gray-800";
+        variantClasses = "bg-gray-200 text-gray-700";
     }
     return (
         <span className={`${base} ${variantClasses} ${className}`} style={style}>
