@@ -43,7 +43,8 @@ export default function LoginPage({ onLogin }) {
         </div>
 
         {/* Login Card */}
-        <Card className="p-8 shadow-sm border border-gray-200 space-y-6">
+        <Card className="p-8 shadow-sm border bg-white border-gray-200
+ space-y-6">
           <div className="space-y-2 text-center">
             <Text as="h2" content="Sign In" MyClass="text-xl font-normal text-gray-500" />
             <Text

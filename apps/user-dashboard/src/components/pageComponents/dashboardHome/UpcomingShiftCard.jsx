@@ -1,27 +1,25 @@
 import React from 'react';
 import { Clock, AlertCircle } from 'lucide-react';
-import { Card } from '../../common/Card';
-import { Badge } from '../../common/Badge';
-import { COLORS } from '../../common/colors';
+import  Card  from '../../common/Card';
+import  Badge  from '../../common/Badge';
 import Text from '../../common/Text';
 
 export function UpcomingShiftCard({ shift, timeUntil }) {
     const isStartingSoon = timeUntil === 'Starting Soon';
     return (
-        <Card className="p-6 space-y-4 lg:col-span-2">
+        <Card className="p-6 space-y-4 lg:col-span-2 bg-white border-gray-200">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-gray-800">
-                    {/* استخدام Deep Teal الثابت */}
-                    <Clock className={`h-5 w-5 text-[${COLORS.primary}]`} />
-                    <Text as="h3" MyClass="font-normal  " content= "Upcoming Shift" />
+                    <Clock className={`h-5 w-5 text-[#0F7B8A]`} />
+                    <Text as="h3" MyClass="font-normal text-gray-500" content= "Upcoming Shift" />
                 </div>
                 {isStartingSoon && (
-                    <Badge variant="destructive" className="ml-auto">Starting Soon</Badge>
+                    <Badge variant="destructive" className="ml-auto bg-[#E74C3C] text-[#ffffff]">Starting Soon</Badge>
                 )}
             </div>
             {shift ? (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 rounded-lg border border-gray-200">
+                    <div className="grid grid-cols-2 gap-4 p-4 bg-[#E8EEF1]/20 rounded-lg border border-[#E5E7EB]">
                         <div>
                             <Text as="p" MyClass="text-gray-500 text-sm font-normal" content= "Date" />
                             <Text as="p" MyClass="font-normal text-gray-800"
@@ -37,11 +35,11 @@ export function UpcomingShiftCard({ shift, timeUntil }) {
                         </div>
                     </div>
                     <div className={`flex items-center gap-4 p-4 rounded-lg border
-                        ${isStartingSoon ? 'bg-red-50 border-red-200' : 'bg-[#E0F4F6] border-gray-200'}`}>
-                        <AlertCircle className={`h-5 w-5 ${isStartingSoon ? 'text-red-600' : `text-[${COLORS.primary}]`}`}/>
+                        bg-[#0F7B8A]/5 border-[#0F7B8A]/20`}>
+                        <AlertCircle className={`h-5 w-5 ${isStartingSoon ? 'text-red-600' : `text-[#0F7B8A]`}`}/>
                         <div>
                           <Text as="p" MyClass="text-gray-600 text-sm" content="Time until shift" />
-                          <Text as="p" MyClass={`font-medium ${isStartingSoon ? 'text-red-600' : `text-[${COLORS.primary}]`}`}
+                          <Text as="p" MyClass={`font-medium ${isStartingSoon ? 'text-red-600' : `text-[#0F7B8A]`}`}
                           content={timeUntil || 'N/A'} />
                         </div>
                     </div>

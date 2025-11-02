@@ -8,7 +8,7 @@ import { COLORS } from "../../common/colors";
 
 export default function ProfileCard({ user }) {
   return (
-    <Card className="p-6 space-y-4">
+    <Card className="p-6 space-y-4 bg-white border-gray-200">
       <div className="flex flex-col items-center text-center space-y-3">
         <div className={`w-24 h-24 rounded-full bg-[${COLORS.primary}]/10 flex items-center justify-center`}>
           <User className={`h-12 w-12 text-[${COLORS.primary}]`} />

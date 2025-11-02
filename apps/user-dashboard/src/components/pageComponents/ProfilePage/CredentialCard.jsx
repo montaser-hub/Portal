@@ -4,7 +4,6 @@ import { Card } from "../../common/Card";
 import { Button } from "../../common/Button";
 import { Badge } from "../../common/Badge";
 import { AlertTriangle, Award } from "lucide-react";
-import { COLORS } from "../../common/colors";
 
 const getCredentialStatus = (credential) => {
   const expiryDate = new Date(credential.expiryDate);
@@ -20,9 +19,9 @@ const getCredentialStatus = (credential) => {
 
 export default function CredentialCard({ credentials }) {
   return (
-    <Card className="p-6 space-y-4">
+    <Card className="p-6 space-y-4 bg-white border-gray-200">
       <div className="flex justify-between items-center">
-        <Text as="h3" content="Licenses & Certifications" MyClass="text-lg font-medium" />
+        <Text as="h3" content="Licenses & Certifications" MyClass="text-lg font-medium text-gray-600" />
         <Button size="sm">Add Credential</Button>
       </div>
       <div className="space-y-3">
@@ -30,7 +29,7 @@ export default function CredentialCard({ credentials }) {
           const status = getCredentialStatus(cred);
           const StatusIcon = status.icon;
           return (
-            <div key={cred.id} className={`p-4 rounded-lg border ${status.text !== "Valid" ? `bg-[${COLORS.alert}]/10 border-[${COLORS.alert}]/20` : "bg-white border-gray-200"}`}>
+            <div key={cred.id} className={`p-4 rounded-lg border ${status.text !== "Valid" ? `bg-[#E74C3C]/10 border-[#E74C3C]/20` : "bg-white border-gray-200"}`}>
               <div className="flex justify-between items-start">
                 <div className="flex gap-3 items-start">
                   <div className="p-2 rounded-lg">

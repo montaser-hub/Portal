@@ -46,7 +46,7 @@ export default function LandingPage({ onNavigate }) {
       </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: COLORS.primaryLight }}
@@ -66,7 +66,7 @@ export default function LandingPage({ onNavigate }) {
               />
             </div>
           </Card>
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: COLORS.primaryLight }}
@@ -86,8 +86,7 @@ export default function LandingPage({ onNavigate }) {
               />
             </div>
           </Card>
-
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 bg-white border-gray-200">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: COLORS.primaryLight }}
