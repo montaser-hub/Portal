@@ -55,7 +55,7 @@ export const cleanupResetToken = async (user) => {
   await user.save({ validateBeforeSave: false });
 };
 
-export const resetPassword = async ( token, data ) => {console.log(data)
+export const resetPassword = async ( token, data ) => {
   if(data.password !== data.confirmPassword) {
     throw new AppError('Passwords do not match', 400);
   }
