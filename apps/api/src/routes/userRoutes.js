@@ -1,20 +1,26 @@
 import express from 'express';
 import * as userController from '../controllers/userController.js';
+import * as authController from '../controllers/authController.js';
+import validation from '../middlewares/validation.js';
+import * as userSchema from '../validators/userSchema.js'; //userSchema
 
 const router = express.Router();
 
-// router.post('/login', authController.login);
-// router.get('/logout', authController.logout);
+router.post('/login', authController.login);
+router.get('/logout', authController.logout);
 
-// router.post('/forgotPassword', authController.forgotPassword);
-// //protect all routes after this middleware
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
+//protect all routes after this middleware
+router.use(authController.isAuth);
 
-// router.patch('/updateMyPassword', authController.updateMyPassword);
+router.patch('/updateMyPassword', validation(userSchema.updatePasswordSchema), userController.updateMyPassword);
 router.get('/me', userController.myProfile);
 router.patch(
   '/updateMe',
-  // userController.uploadUserPhoto,
-  // userController.resizeUserPhoto,
+  validation(userSchema.updateMyProfileSchema),
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
   userController.updateMyProfile
 );
 // Used to protected routes and accessed only by admin, manager role
@@ -22,12 +28,20 @@ router.patch(
 router
   .route('/')
   .get(userController.getUsers)
-  .post(userController.addUser);
+  .post(
+    validation(userSchema.createUserSchema),
+    userController.addUser
+  );
 
 router
   .route('/:id')
   .get(userController.getUser)
-  .patch(userController.updateUser)
+  .patch(
+    validation(userSchema.updateUserSchema),
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.updateUser
+  )
   .delete(userController.deleteUser);
 
 export default router;
