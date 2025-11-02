@@ -6,7 +6,7 @@ import { Button } from "../../common/Button";
 import { Badge } from "../../common/Badge";
 import { COLORS } from "../../common/colors";
 import { currentUser } from "../../common/mockData";
-import { Input } from "../../common/Input";
+import  Input from "../../common/Input";
 
 export default function ProfileOverviewCard({ user }) {
   return (

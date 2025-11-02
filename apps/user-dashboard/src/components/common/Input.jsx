@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
-export function Input({
-  label,          
+export default function Input({
+  label,
   type = "text",
   placeholder = "",
   value,
