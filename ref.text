@@ -1,1 +1,231 @@
 https://blog.logrocket.com/node-js-project-architecture-best-practices/
+
+
+📁 **User Dashboard Folder Structure Reference**
+
+This guide summarizes the purpose and best practices for each folder in the Nx-based React app.
+
+───────────────────────────────
+1️⃣ app/
+───────────────────────────────
+- Root setup for the entire app.
+- Contains:
+  • app.jsx → root React component
+  • store.jsx → Redux store setup
+  • app.spec.jsx → tests
+- Future: Add AppProviders.jsx for all context providers.
+
+───────────────────────────────
+2️⃣ components/
+───────────────────────────────
+- Contains reusable UI elements.
+  • common/ → Buttons, Inputs, Text, etc. (pure UI)
+  • layout/ → Header, Sidebar, Footer, etc.
+- Keep logic minimal; receive data via props.
+
+───────────────────────────────
+3️⃣ features/
+───────────────────────────────
+- Domain-specific logic (Redux slices, APIs, selectors).
+- Each feature = isolated module (e.g., auth, schedule).
+- Each feature contains:
+  • featureSlice.js
+  • featureAPI.js
+  • index.js → optional export aggregator for clean imports.
+- Example import: `import { login } from '@/features/auth';`
+
+───────────────────────────────
+4️⃣ hooks/
+───────────────────────────────
+- Custom reusable React hooks.
+- Examples: useFetch, useDebounce, useAuth, usePermission (CASL).
+
+───────────────────────────────
+5️⃣ modals/
+───────────────────────────────
+- Reusable popup components.
+- Examples: ConfirmModal, EditProfileModal.
+
+───────────────────────────────
+6️⃣ pages/
+───────────────────────────────
+- Page-level components matching routes.
+- Examples: Dashboard, Profile, Login.
+
+───────────────────────────────
+7️⃣ router/
+───────────────────────────────
+- Defines app routing and guards.
+- Example: AppRouter.jsx with CASL-based route protection.
+
+───────────────────────────────
+8️⃣ services/
+───────────────────────────────
+- Handles API requests and backend communication.
+- Example: api.js, userService.js, scheduleService.js.
+
+───────────────────────────────
+9️⃣ utils/
+───────────────────────────────
+- Generic helpers (validation, date formatting, constants).
+- Example: validation.js, formatDate.js.
+
+───────────────────────────────
+🔟 assets/
+───────────────────────────────
+- Static files (images, icons, fonts).
+
+───────────────────────────────
+11️⃣ styles.css
+───────────────────────────────
+- Global styling, Tailwind base imports, CSS resets.
+
+───────────────────────────────
+💡 CASL Integration Reference
+───────────────────────────────
+- Define ability in app/ability.js
+- Example:
+    import { Ability, AbilityBuilder } from '@casl/ability';
+    export const defineAbilityFor = (user) => {
+      const { can, cannot, build } = new AbilityBuilder(Ability);
+      if (user.role === 'admin') can('manage', 'all');
+      else if (user.role === 'manager') can('read', 'all');
+      else can('read', 'self');
+      return build();
+    };
+- Wrap app in <AbilityContext.Provider value={ability}>.
+- Use inside components with useAbility().
+
+───────────────────────────────
+✅ Summary Table
+
+| Folder | Purpose | Example | Notes |
+|--------|----------|---------|-------|
+| app | Root setup | store.jsx | Providers, store |
+| components | Shared UI | Button, Header | Dumb components |
+| features | Domain logic | auth, schedule | Redux slices |
+| hooks | Custom hooks | useAuth | Shared logic |
+| modals | Popups | EditProfileModal | Reusable modals |
+| pages | Routes | Dashboard | Page-level |
+| router | Routing | AppRouter | CASL guards |
+| services | APIs | userService | Decoupled logic |
+| utils | Helpers | validation.js | Pure functions |
+| assets | Static | images | Non-code assets |
+| styles.css | Global styles | Tailwind | CSS reset |
+
+───────────────────────────────
+📘 Usage Notes
+───────────────────────────────
+• Keep UI (components) separate from business logic (features).
+• All async or backend logic goes into services/.
+• Use features/ for domain boundaries — scalable, testable.
+• Keep utils pure — no state or API calls.
+• Centralize permissions and roles in CASL for consistency across apps.
+
+.....................................
+
+📘 ANGULAR_DEV_REFERENCE.txt
+─────────────────────────────
+
+✅ Indicates packages already installed in the workspace.
+
+─────────────────────────────
+1️⃣ ANGULAR CORE PACKAGES
+─────────────────────────────
+✅ @angular/core              – Core framework features (components, DI, lifecycle)
+✅ @angular/common            – Common directives and pipes (ngIf, ngFor, date, etc.)
+✅ @angular/forms             – Template-driven and reactive forms
+✅ @angular/router            – Navigation and routing system
+✅ @angular/platform-browser  – Browser rendering and DOM abstraction
+✅ @angular/platform-browser-dynamic – JIT compilation and bootstrapping
+✅ @angular/animations        – Angular animation support
+✅ rxjs                       – Reactive programming library (observables)
+✅ zone.js                    – Angular’s change detection mechanism
+
+─────────────────────────────
+2️⃣ ANGULAR UI & UX LIBRARIES
+─────────────────────────────
+✅ @angular/material          – Official Material Design UI components
+✅ @angular/cdk               – Component Dev Kit for Material utilities
+✅ ngx-toastr                 – Toast notifications with animation and theming
+⚙️ @ngneat/motion             – Motion library for micro-animations (to be installed)
+
+Installation command:
+npm install @angular/material @angular/cdk @angular/animations ngx-toastr @ngneat/motion
+
+─────────────────────────────
+3️⃣ CALENDAR & SCHEDULING LIBRARIES
+─────────────────────────────
+✅ @fullcalendar/angular      – Angular wrapper for FullCalendar
+✅ @fullcalendar/daygrid      – Month/week/day grid layout
+✅ @fullcalendar/timegrid     – Time-based daily/weekly layout
+✅ @fullcalendar/interaction  – Adds drag, drop, and click interactions
+
+Installation command:
+npm install @fullcalendar/angular @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
+
+─────────────────────────────
+4️⃣ RECOMMENDED FOLDER STRUCTURE
+─────────────────────────────
+apps/
+  Admin-portal/
+    src/
+      app/
+        core/
+          services/
+            api.service.ts
+            auth.service.ts
+            notification.service.ts
+          models/
+        shared/
+          components/
+            confirm-dialog/
+            user-avatar/
+          pipes/
+          ui/
+        features/
+          home/
+            home.module.ts
+            components/
+              calendar/
+              dashboard/
+          departments/
+          subdepartments/
+          shifts/
+          schedules/
+          users/
+        app-routing.module.ts
+        app.module.ts
+
+─────────────────────────────
+5️⃣ NX ANGULAR GENERATE COMMANDS
+─────────────────────────────
+# ✅ Component
+npx nx g @nx/angular:component apps/Admin-Portal/src/app/shared/components/user-avatar --standalone
+
+# ✅ Module
+npx nx g @nx/angular:module apps/Admin-Portal/src/app/features/home/home
+
+# ✅ Service
+npx nx g @nx/angular:service apps/Admin-Portal/src/app/core/services/auth
+
+# ✅ Pipe
+npx nx g @nx/angular:pipe apps/Admin-Portal/src/app/shared/pipes/capitalize --standalone
+
+# ✅ Directive
+npx nx g @nx/angular:directive apps/Admin-Portal/src/app/shared/directives/auto-focus --standalone
+
+─────────────────────────────
+6️⃣ TEAM USAGE NOTES
+─────────────────────────────
+• Use standalone components (`--standalone`) to simplify imports.
+• Place shared UI and pure utilities under `shared/`.
+• Keep business logic (API calls, authentication) under `core/services/`.
+• Each feature should have its own module for lazy loading.
+• Use ngx-toastr for notifications, FullCalendar for scheduling, Material for UI consistency.
+• Always run Nx commands from the workspace root (Portal/).
+• For animations, consider installing @ngneat/motion if not yet added.
+
+─────────────────────────────
+✅ END OF DOCUMENT
+─────────────────────────────

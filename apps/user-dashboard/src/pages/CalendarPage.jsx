@@ -34,7 +34,7 @@ export default function CalendarPage() {
 
       {/* Calendar Grid and Details */}
       <div className="max-w-7xl mx-auto">
-         <Card className={`p-6 shadow-sm border ${COLORS.grayBorder} bg-white`}>
+          <Card className={`p-6 shadow-sm border ${COLORS.grayBorder} bg-white`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* Calendar Grid */}
