@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Card from "../components/common/Card";
-import CalendarHeader from "../components/pageComponents/candelarPage/CalendarHeader";
 import MonthView from "../components/pageComponents/candelarPage/MonthView";
 import ShiftDetails from "../components/pageComponents/candelarPage/ShiftDetails";
 import { getShiftsForDate } from "../components/pageComponents/candelarPage/Calendar";
@@ -9,7 +8,6 @@ import { COLORS  } from "../components/common/colors";
 // ---------------- Calendar Page ----------------
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState('month');
   const [filter, setFilter] = useState('personal');
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -24,13 +22,7 @@ export default function CalendarPage() {
       </div>
 
     </div>
-      {/* Header */}
-      <CalendarHeader
-        filter={filter}
-        setFilter={setFilter}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-      />
+
 
       {/* Calendar Grid and Details */}
       <div className="max-w-7xl mx-auto">
