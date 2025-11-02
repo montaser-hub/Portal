@@ -1,16 +1,15 @@
 import React from 'react';
-import { COLORS } from './colors.jsx';
 export function Badge({ children, variant = "default", className = "" }) {
     const base = "inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium";
     let variantClasses = "bg-gray-100 text-gray-700";
     const style = {};
 
     if (variant === "primary") {
-        variantClasses = `bg-[${COLORS.primary}] text-white`;
+        variantClasses = `bg-[#0F7B8A] text-white`;
     } else if (variant === "outline") {
-        variantClasses = `bg-[${COLORS.primaryLight}] text-[${COLORS.primary}] border border-2 border-[${COLORS.primary}]`;
+        variantClasses = `bg-[#E0F4F6] text-[#0F7B8A] border border-2]`;
     } else if (variant === "destructive") {
-        variantClasses = `bg-[${COLORS.alert}] text-white`;
+        variantClasses = `bg-[#E74C3C] text-white`;
     } else if (variant === "success") {
         variantClasses = `bg-green-500 text-white`;
     } else if (variant === "warning") {

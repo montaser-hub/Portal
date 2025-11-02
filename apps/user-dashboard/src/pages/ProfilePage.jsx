@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import * as Tabs from "@radix-ui/react-tabs";
 import { COLORS } from "../components/common/colors";
 import { currentUser } from "../components/common/mockData";
+import * as Tabs from "@radix-ui/react-tabs";
 import ProfileOverviewCard from "../components/pageComponents/ProfilePage/ProfileOverviewCard";
 import PersonalInfoCard from "../components/pageComponents/ProfilePage/PersonalCard";
 import AvailabilityCard from "../components/pageComponents/ProfilePage/AvailabilityCard";
@@ -17,7 +17,7 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState("Person Info");
 
   return (
-    <div className={`bg-[#F3F4F6] min-h-screen py-12`}>
+    <div className={`bg-[#F8F9FA] min-h-screen py-12`}>
       {/* Header */}
       <div className="max-w-5xl mx-40 mb-8">
         <h1 className={`text-3xl font-semibold text-[${COLORS.primary}] mb-2`}>Your Profile</h1>

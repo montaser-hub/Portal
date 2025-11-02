@@ -18,8 +18,7 @@ import {
   isBefore,
   startOfDay,
 } from "date-fns";
-import { Card } from "../../common/Card";
-import { COLORS } from "../../common/colors";
+import  Card  from "../../common/Card";
 import Text from "../../common/Text";
 import Button from "../../common/Button";
 
@@ -64,11 +63,11 @@ export function CalendarComponent({ shiftDates }) {
 
         let backgroundStyle = {};
         if (isShiftDay && isPastDay) {
-          backgroundStyle = { backgroundColor: `${COLORS.primary}80` };
+          backgroundStyle = { backgroundColor: "#0F7B8ACC"};
         } else if (isShiftDay && isToday) {
           backgroundStyle = { backgroundColor: "#FFA500" };
         } else if (isShiftDay) {
-          backgroundStyle = { backgroundColor: COLORS.primary };
+          backgroundStyle = { backgroundColor: "#0F7B8A" };
         } else if (isToday) {
           backgroundStyle = { backgroundColor: "#FFD580" };
         }
@@ -102,10 +101,10 @@ export function CalendarComponent({ shiftDates }) {
   };
 
   return (
-    <Card className="space-y-2">
+    <Card className="space-y-2 bg-white border-gray-200">
       <div className="px-4 pt-4 flex items-center gap-2 text-gray-800">
         <CalendarIcon className="h-5 w-5 text-[#0F7B8A]" />
-        <Text as="span" MyClass="font-normal" content="Your Schedule" />
+        <Text as="span" MyClass="font-normal text-gray-500" content="Your Schedule" />
       </div>
 
       <div className="p-4 space-y-4">

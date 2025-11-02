@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { COLORS } from '../../common/colors';
 
 function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, userMenuOpen, setUserMenuOpen, currentUser, getUserInitials }) {
   return (
@@ -16,9 +15,12 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
             <Link
               key={item.id}
               to={item.path}
-              onClick={() => setCurrentPage(item.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${
-                isActive ? 'bg-[#0F7B8A] text-white shadow-md' : 'text-gray-700 hover:bg-gray-100'
+              onClick={() => {
+                setCurrentPage(item.id);
+                setUserMenuOpen(false);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                isActive ? 'bg-[#0F7B8A] text-white shadow-md' : 'text-gray-700 hover:bg-[#E0F4F6] hover:text-black '
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -33,13 +35,13 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
         <Link
             to="/notifications"
             onClick={() => setCurrentPage('notifications')}
-            className={`relative cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition ${
-              currentPage === 'notifications' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700'
+            className={`relative cursor-pointer p-2 rounded-lg transition ${
+              currentPage === 'notifications' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
             }`}
         >
-          <Bell className={`h-5 w-5 text-[${COLORS.primary}]"`} />
+          <Bell className={`h-5 w-5 `} />
           {unreadCount > 0 && (
-            <div className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-xs text-white" style={{ backgroundColor: COLORS.primary }}>
+            <div className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full bg-[#0F7B8A] text-xs text-white" >
               {unreadCount}
             </div>
           )}
@@ -47,10 +49,10 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
 
         <div className="relative">
           <div
-            className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-gray-100 transition`}
+            className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[#E0F4F6] transition`}
             onClick={() => setUserMenuOpen(!userMenuOpen)}
           >
-            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold" style={{ backgroundColor: COLORS.primary }}>
+            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-[#0F7B8A]" >
               {getUserInitials(currentUser.name)}
             </div>
             <span className="text-sm font-medium">{currentUser.name.split(' ')[0]}</span>
@@ -66,7 +68,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                 className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg py-2 z-30"
               >
                 <div className="flex items-center gap-2 px-4 py-2 border-b">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full text-white font-semibold" style={{ backgroundColor: COLORS.primary }}>
+                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#0F7B8A] text-white font-semibold" >
                     {getUserInitials(currentUser.name)}
                   </div>
                   <div className="flex flex-col">
@@ -82,7 +84,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                     setUserMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 text-sm ${
-                    currentPage === 'profile' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-gray-100'
+                    currentPage === 'profile' ? 'bg-[#0F7B8A] text-white' : 'text-gray-700 hover:bg-[#E0F4F6]'
                   }`}
                 >
                   <User className="h-4 w-4" /> Profile
@@ -90,7 +92,7 @@ function DesktopNavbar({ navigation, currentPage, setCurrentPage, unreadCount, u
                 <Link
                   to="/"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#E0F4F6]"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out
                 </Link>
