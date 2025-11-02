@@ -4,72 +4,50 @@ import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 export default function Input({
   label,
   type = "text",
-  placeholder = "",
-  value,
   name,
+  value,
   onChange,
+  placeholder = "",
+  disabled = false,
   showToggle = false,
   myClass = "",
   children,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const inputType = type === "password" && showPassword ? "text" : type;
 
-  // حالة select
+  const baseClasses = `w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0F7B8A] disabled:bg-gray-100 disabled:text-gray-500 ${myClass}`;
+
   if (type === "select") {
     return (
       <div className="w-full">
-        {label && (
-          <label
-            htmlFor={name}
-            className="block mb-1 text-sm font-medium text-gray-700"
-          >
-            {label}
-          </label>
-        )}
-        <select
-          id={name}
-          name={name}
-          value={value ?? ""}
-          onChange={onChange}
-          className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0F7B8A] ${myClass}`}
-        >
+        {label && <label className="block mb-1 text-sm font-medium">{label}</label>}
+        <select name={name} value={value} onChange={onChange} disabled={disabled} className={baseClasses}>
           {children}
         </select>
       </div>
     );
   }
 
-  // حالة text / password
   return (
     <div className="w-full">
-      {label && (
-        <label
-          htmlFor={name}
-          className="block mb-1 text-sm font-medium text-gray-700"
-        >
-          {label}
-        </label>
-      )}
+      {label && <label className="block mb-1 text-sm font-medium">{label}</label>}
       <div className="relative">
         <input
-          id={name}
+          type={inputType}
           name={name}
-          type={type === "password" && showPassword ? "text" : type}
-          placeholder={placeholder}
           value={value ?? ""}
           onChange={onChange}
-          className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0F7B8A] ${myClass}`}
+          placeholder={placeholder}
+          disabled={disabled}
+          className={baseClasses}
         />
         {type === "password" && showToggle && (
           <span
-            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer z-10 select-none"
             onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
           >
-            {showPassword ? (
-              <BiSolidShow className="text-gray-500" />
-            ) : (
-              <BiSolidHide className="text-gray-500" />
-            )}
+            {showPassword ? <BiSolidShow /> : <BiSolidHide />}
           </span>
         )}
       </div>

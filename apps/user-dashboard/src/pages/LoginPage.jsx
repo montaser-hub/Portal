@@ -80,12 +80,12 @@ export default function LoginPage({ onLogin }) {
 
             {/* Forgot Password */}
             <div className="text-right">
-              <button
-                type="button"
-                className="text-sm text-[#0F7B8A] hover:underline"
-              >
-                Forgot Password?
-              </button>
+            <Link
+              to="/ForgotPassword"
+              className="text-sm text-[#0F7B8A] hover:hover:text-[#0D6C78] cursor-pointer"
+            >
+              Forgot Password?
+            </Link>
             </div>
 
             {/* Submit Link */}
@@ -106,11 +106,12 @@ export default function LoginPage({ onLogin }) {
             content="Need help accessing your account? "
             MyClass="text-sm text-gray-500 inline"
           />
-          <Text
-            as="span"
-            content="Contact IT Support"
-            MyClass=" text-[#0F7B8A] hover:underline cursor-pointer"
-          />
+          <Link
+            to="/"
+            className="text-[#0F7B8A] hover:text-[#0D6C78] cursor-pointer"
+          >
+            Contact IT Support
+          </Link>
         </div>
       </div>
     </div>
