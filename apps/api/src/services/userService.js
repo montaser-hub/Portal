@@ -1,7 +1,7 @@
 import * as userRepo from "../dataAccess/userRepo.js"
 import * as authService from "./authService.js"
 import AppError from "../utils/AppError.js"
-
+import {getAllDocuments} from "./queryService.js"
 export const login = async ( email, nickname, password) => {
   // 1) check if the user && password is correct
   const user = await userRepo.findOne(email, nickname);
@@ -40,9 +40,12 @@ export const getUser = async ( id ) => {
   if(!user) throw new AppError("User Not Found", 404)
   return user
 }
-export const getAllUsers = async () => {
-  return await userRepo.findAll()
+
+export const getUsers = async ( queryParams ) => {
+  const searchableFields = ['firstName', 'lastName', 'role', 'email', 'nickname'];
+  return await getAllDocuments( userRepo, queryParams, searchableFields);
 }
+
 export const updatePassword = async ( email, data ) => {
   if (data.newPassword !== data.confirmNewPassword) {
     throw new AppError('Passwords do not match', 400);
