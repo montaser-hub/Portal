@@ -32,5 +32,31 @@ const scheduleSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+scheduleSchema.set('toObject', { virtuals: true });
+scheduleSchema.set('toJSON', { virtuals: true });
+  scheduleSchema.virtual('department', {
+    ref: 'Department',
+    localField: 'departmentId',
+    foreignField: '_id',
+    justOne: true 
+  });
+  scheduleSchema.virtual('subDepartment', {
+    ref: 'SubDepartment',
+    localField: 'subDepartmentId',
+    foreignField: '_id',
+    justOne: true 
+  });
+  scheduleSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true
+  });
+  scheduleSchema.virtual('shift', {
+    ref: 'Shift',
+    localField: 'shiftId',
+    foreignField: '_id',
+    justOne: true
+  });
 
 export default mongoose.model('Schedule', scheduleSchema);

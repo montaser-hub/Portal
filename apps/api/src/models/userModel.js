@@ -27,6 +27,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'default.jpg',
   },
+  positionId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Position',
+    required: true
+  },
+  levelId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Level',
+    required: true
+  },
+  departmentId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
+    required: true
+  },
   role: {
     type: String,
     enum: ['user', 'admin', 'manager'],
@@ -46,6 +61,10 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
 userSchema.pre('save', async function (next) {
@@ -88,7 +107,10 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   //False means Not changed(day or the time at which token is issued is less than the change timestamp)
   return false;
 };
-
+/**
+ * Generates and sets a password reset token and expiry time on the user.
+ * @returns {string} The unhashed reset token (to send to user email)
+ */
 userSchema.methods.changedPasswordRestToken = function () {
   //generate a random token
   const resetToken = crypto.randomBytes(32).toString('hex');
@@ -102,6 +124,27 @@ userSchema.methods.changedPasswordRestToken = function () {
 
   return resetToken;
 };
+
+userSchema.virtual('position', {
+  ref: 'Position',
+  foreignField: '_id',
+  localField: 'positionId',
+  justOne: true
+});
+
+userSchema.virtual('level', {
+  ref: 'Level',
+  foreignField: '_id',
+  localField: 'levelId',
+  justOne: true
+})
+
+userSchema.virtual('department', {
+  ref: 'Department',
+  foreignField: '_id',
+  localField: 'departmentId',
+  justOne: true
+})
 
 const User = mongoose.model('User', userSchema);
 
