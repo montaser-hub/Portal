@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, LogIn } from "lucide-react";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import Text from "../components/common/Text";
 import Card from "../components/common/Card";
 import Input from "../components/common/Input";
@@ -45,7 +45,7 @@ export default function LoginPage({ onLogin }) {
         {/* Login Card */}
         <Card className="p-8 shadow-sm border border-gray-200 space-y-6">
           <div className="space-y-2 text-center">
-            <Text as="h2" content="Sign In" MyClass="text-xl font-semibold" />
+            <Text as="h2" content="Sign In" MyClass="text-xl font-normal text-gray-500" />
             <Text
               as="p"
               content="Access your SmartShift account"
