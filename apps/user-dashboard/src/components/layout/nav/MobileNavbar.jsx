@@ -62,7 +62,7 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
             );
           })}
           <Link
-            to="/notifications"
+            to="/Notifications"
             onClick={() => {
               setCurrentPage('notifications');
               setMobileMenuOpen(false);
@@ -75,7 +75,7 @@ function MobileNavbar({ navigation, currentPage, setCurrentPage, setMobileMenuOp
             <Text as="span"content={`Notifications ${unreadCount > 0 ? `(${unreadCount})` : ''}`}/>
           </Link>
           <Link
-            to="/profile"
+            to="/Profile"
             onClick={() => {
               setCurrentPage('profile');
               setMobileMenuOpen(false);
