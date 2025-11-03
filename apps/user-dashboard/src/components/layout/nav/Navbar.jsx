@@ -8,8 +8,8 @@ import { currentUser, mockNotifications} from '../../common/mockData';
 
 const navigation = [
   { id: 'dashboard', label: 'Dashboard', icon: House, path: '/Dashboard' },
-  { id: 'calendar', label: 'My Calendar', icon: Calendar, path: '/calendar' },
-  { id: 'swap', label: 'Swap Requests', icon: RefreshCw, path: '/swapRequests' },
+  { id: 'calendar', label: 'My Calendar', icon: Calendar, path: '/Calendar' },
+  { id: 'swap', label: 'Swap Requests', icon: RefreshCw, path: '/SwapRequests' },
 ];
 
 function getUserInitials(name) {

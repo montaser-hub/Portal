@@ -47,4 +47,6 @@ export const shifts = [
 export const mockNotifications = [
   { id: 1, title: 'New Shift Approved', read: false },
   { id: 2, title: 'Swap Request Received', read: false },
+  { id: 2, title: 'Swap Request Received', read: false },
+  { id: 2, title: 'Swap Request Received', read: false },
 ];

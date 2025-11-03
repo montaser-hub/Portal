@@ -7,6 +7,7 @@ import CalendarPage from "../pages/CalendarPage";
 import SwapRequestPage from "../pages/swapRequestPage";
 import Profile from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
+import NotificationsPage from "../pages/NotificationPage";
 
 
 
@@ -25,16 +26,17 @@ function AppLayout() {
 export default function AppRouter() {
   return (
     <Routes>
-      
+
       <Route path="/" element={<LandingPage />} />
       <Route path="/Login" element={<LoginPage />} />
 
 
       <Route element={<AppLayout />}>
         <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/swapRequests" element={<SwapRequestPage />} />
-        <Route path="/profile" element={<Profile />}  />
+        <Route path="/Calendar" element={<CalendarPage />} />
+        <Route path="/SwapRequests" element={<SwapRequestPage />} />
+        <Route path="/Notifications" element={<NotificationsPage />} />
+        <Route path="/Profile" element={<Profile />}  />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
