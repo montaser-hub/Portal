@@ -5,11 +5,12 @@ import MobileNavbar from './MobileNavbar';
 
 import Text from '../../common/Text';
 import { currentUser, mockNotifications} from '../../common/mockData';
+import { AnimatePresence } from 'framer-motion';
 
 const navigation = [
   { id: 'dashboard', label: 'Dashboard', icon: House, path: '/Dashboard' },
-  { id: 'calendar', label: 'My Calendar', icon: Calendar, path: '/calendar' },
-  { id: 'swap', label: 'Swap Requests', icon: RefreshCw, path: '/swapRequests' },
+  { id: 'calendar', label: 'My Calendar', icon: Calendar, path: '/Calendar' },
+  { id: 'swap', label: 'Swap Requests', icon: RefreshCw, path: '/SwapRequests' },
 ];
 
 function getUserInitials(name) {
@@ -69,17 +70,19 @@ function Navbar() {
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <MobileNavbar
-          navigation={navigation}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          setMobileMenuOpen={setMobileMenuOpen}
-          unreadCount={unreadCount}
-          currentUser={currentUser}
-          getUserInitials={getUserInitials}
-        />
-      )}
+            <AnimatePresence mode="wait">
+            <MobileNavbar
+              key="mobile-navbar"
+              navigation={navigation}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              MobileMenuOpen={mobileMenuOpen}
+              setMobileMenuOpen={setMobileMenuOpen}
+              unreadCount={unreadCount}
+              currentUser={currentUser}
+              getUserInitials={getUserInitials}
+            />
+            </AnimatePresence>
     </header>
   );
 }
