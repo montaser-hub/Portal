@@ -36,7 +36,7 @@ function MobileNavbar({
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
         >
-               <div className="flex flex-col items-start gap-2 p-4 border-b relative">
+            <div className="flex flex-col items-start gap-2 p-4 border-b relative">
             <div className="flex items-center gap-2">
               <div className="flex items-center justify-center h-10 w-10 rounded-full text-white font-semibold bg-[#0F7B8A]">
                 {getUserInitials(currentUser.name)}
