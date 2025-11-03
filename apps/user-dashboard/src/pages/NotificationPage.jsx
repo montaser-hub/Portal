@@ -8,7 +8,7 @@ import {
   CheckCircle,
   Circle,
 } from "lucide-react";
-import  {mockNotifications}  from "../components/common/mockData";
+import { mockNotifications } from "../components/common/mockData";
 
 export default function NotificationsPage() {
   const unreadCount = mockNotifications.filter((n) => !n.read).length;
@@ -16,17 +16,17 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type) => {
     switch (type) {
       case "Schedule Change":
-        return <Calendar className="h-5 w-5 text-[#0F7B8A]" />;
+        return <Calendar className="h-6 w-6 text-[#0F7B8A]" />;
       case "Swap Approved":
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-6 w-6 text-green-600" />;
       case "Swap Rejected":
-        return <RefreshCw className="h-5 w-5 text-red-500" />;
+        return <RefreshCw className="h-6 w-6 text-red-500" />;
       case "Announcement":
-        return <Megaphone className="h-5 w-5 text-[#0F7B8A]" />;
+        return <Megaphone className="h-6 w-6 text-[#0F7B8A]" />;
       case "Credential Expiring":
-        return <AlertTriangle className="h-5 w-5 text-red-500" />;
+        return <AlertTriangle className="h-6 w-6 text-red-500" />;
       default:
-        return <Bell className="h-5 w-5 text-[#0F7B8A]" />;
+        return <Bell className="h-6 w-6 text-[#0F7B8A]" />;
     }
   };
 
@@ -62,7 +62,7 @@ export default function NotificationsPage() {
       {/* -------- Header -------- */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">mockNotifications</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Notifications</h1>
           <p className="text-gray-500 mt-1">
             {unreadCount > 0
               ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
@@ -72,19 +72,19 @@ export default function NotificationsPage() {
 
         <button
           type="button"
-          className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+          className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-shadow shadow-sm hover:shadow-md"
         >
           <CheckCircle className="mr-2 h-4 w-4" />
           Mark All as Read
         </button>
       </div>
 
-      {/* -------- mockNotifications List -------- */}
-      <div className="space-y-3">
+      {/* -------- Notifications List -------- */}
+      <div className="space-y-4">
         {mockNotifications.map((notification) => (
           <div
             key={notification.id}
-            className={`p-5 border rounded-xl shadow-sm transition-all hover:shadow-md ${
+            className={`p-5 border rounded-2xl shadow-sm transition-all hover:shadow-md ${
               !notification.read
                 ? "bg-[#0F7B8A]/5 border-[#0F7B8A]/30"
                 : "bg-white border-gray-200"
@@ -92,7 +92,7 @@ export default function NotificationsPage() {
           >
             <div className="flex items-start gap-4">
               <div
-                className={`p-2 rounded-lg ${
+                className={`p-3 rounded-lg flex items-center justify-center ${
                   notification.priority === "High"
                     ? "bg-red-100"
                     : "bg-[#0F7B8A]/10"
@@ -104,7 +104,7 @@ export default function NotificationsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-gray-900">
+                    <h4 className="font-medium text-gray-900 truncate">
                       {notification.title}
                     </h4>
                     {!notification.read && (
@@ -126,7 +126,7 @@ export default function NotificationsPage() {
                   </div>
                 </div>
 
-                <p className="text-gray-600">{notification.message}</p>
+                <p className="text-gray-600 text-sm">{notification.message}</p>
 
                 <div className="flex items-center gap-2 mt-3">
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200">
@@ -141,9 +141,9 @@ export default function NotificationsPage() {
 
       {/* -------- Empty State -------- */}
       {mockNotifications.length === 0 && (
-        <div className="p-12 text-center border border-gray-200 rounded-xl shadow-sm">
+        <div className="p-12 text-center border border-gray-200 rounded-2xl shadow-sm">
           <Bell className="h-12 w-12 mx-auto mb-3 text-gray-400 opacity-50" />
-          <p className="text-gray-500">No mockNotifications yet</p>
+          <p className="text-gray-500 text-sm">No notifications yet</p>
         </div>
       )}
     </div>
