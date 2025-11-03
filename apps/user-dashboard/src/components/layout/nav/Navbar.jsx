@@ -5,6 +5,7 @@ import MobileNavbar from './MobileNavbar';
 
 import Text from '../../common/Text';
 import { currentUser, mockNotifications} from '../../common/mockData';
+import { AnimatePresence } from 'framer-motion';
 
 const navigation = [
   { id: 'dashboard', label: 'Dashboard', icon: House, path: '/Dashboard' },
@@ -69,17 +70,19 @@ function Navbar() {
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <MobileNavbar
-          navigation={navigation}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          setMobileMenuOpen={setMobileMenuOpen}
-          unreadCount={unreadCount}
-          currentUser={currentUser}
-          getUserInitials={getUserInitials}
-        />
-      )}
+      <AnimatePresence mode="wait">
+  <MobileNavbar
+    key="mobile-navbar"
+    navigation={navigation}
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    MobileMenuOpen={mobileMenuOpen}       // تأكد من الاسم متطابق مع MobileNavbar
+    setMobileMenuOpen={setMobileMenuOpen}
+    unreadCount={unreadCount}
+    currentUser={currentUser}
+    getUserInitials={getUserInitials}
+  />
+</AnimatePresence>
     </header>
   );
 }
