@@ -1,6 +1,6 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
-import LoginPage from "../pages/LoginPage";
+import LoginPage from "../pages/Auth/LoginPage";
 import Navbar from "../components/layout/nav/Navbar";
 import Dashboard from "../pages/Dashboard";
 import CalendarPage from "../pages/CalendarPage";
@@ -8,6 +8,8 @@ import SwapRequestPage from "../pages/swapRequestPage";
 import Profile from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import NotificationsPage from "../pages/NotificationPage";
+import ForgotPasswordPage from "../pages/Auth/ForgetPasswordPage";
+import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
 
 
 
@@ -29,6 +31,9 @@ export default function AppRouter() {
 
       <Route path="/" element={<LandingPage />} />
       <Route path="/Login" element={<LoginPage />} />
+      <Route path="/ForgetPassword" element={<ForgotPasswordPage />} />
+      <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+
 
 
       <Route element={<AppLayout />}>
