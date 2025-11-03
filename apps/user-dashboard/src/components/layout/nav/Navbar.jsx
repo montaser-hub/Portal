@@ -70,19 +70,19 @@ function Navbar() {
         </div>
       </div>
 
-      <AnimatePresence mode="wait">
-  <MobileNavbar
-    key="mobile-navbar"
-    navigation={navigation}
-    currentPage={currentPage}
-    setCurrentPage={setCurrentPage}
-    MobileMenuOpen={mobileMenuOpen}       // تأكد من الاسم متطابق مع MobileNavbar
-    setMobileMenuOpen={setMobileMenuOpen}
-    unreadCount={unreadCount}
-    currentUser={currentUser}
-    getUserInitials={getUserInitials}
-  />
-</AnimatePresence>
+            <AnimatePresence mode="wait">
+            <MobileNavbar
+              key="mobile-navbar"
+              navigation={navigation}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              MobileMenuOpen={mobileMenuOpen}
+              setMobileMenuOpen={setMobileMenuOpen}
+              unreadCount={unreadCount}
+              currentUser={currentUser}
+              getUserInitials={getUserInitials}
+            />
+            </AnimatePresence>
     </header>
   );
 }
