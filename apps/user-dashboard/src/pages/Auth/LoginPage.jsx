@@ -12,38 +12,43 @@ export default function LoginPage() {
   const [touched, setTouched] = useState({ email: false, password: false });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    setTouched((prev) => ({ ...prev, email: true }));
-    setErrors((prev) => ({
-      ...prev,
-      email:
-        value.length === 0
-          ? "Email is required"
-          : !emailRegex.test(value)
-          ? "Email is not valid"
-          : "",
-    }));
-  };
+  const value = e.target.value;
+  if (/[ء-ي]/.test(value)) return;
+  setEmail(value);
+  setTouched((prev) => ({ ...prev, email: true }));
+  setErrors((prev) => ({
+    ...prev,
+    email:
+      value.length === 0
+        ? "Email is required"
+        : !emailRegex.test(value)
+        ? "Email is not valid"
+        : "",
+  }));
+};
 
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    setTouched((prev) => ({ ...prev, password: true }));
-    setErrors((prev) => ({
-      ...prev,
-      password:
-        value.length === 0
-          ? "Password is required"
-          : !passwordRegex.test(value)
-          ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
-          : "",
-    }));
-  };
+const handlePasswordChange = (e) => {
+  const value = e.target.value;
+  if (/[ء-ي]/.test(value)) return;
+  setPassword(value);
+  setTouched((prev) => ({ ...prev, password: true }));
+  setErrors((prev) => ({
+    ...prev,
+    password:
+      value.length === 0
+        ? "Password is required"
+        : !passwordRegex.test(value)
+        ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
+        : "",
+  }));
+};
+
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -107,7 +112,9 @@ export default function LoginPage() {
               placeholder="Enter your Email"
               value={email}
               onChange={handleEmailChange}
-              myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor("email")}`}
+              myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
+                "email"
+              )}`}
             />
             {errors.email && (
               <p className="text-sm text-red-500">{errors.email}</p>
@@ -119,20 +126,23 @@ export default function LoginPage() {
                 label="Password"
                 name="password"
                 placeholder="Enter your password"
+                type={showPassword ? "text" : "password"} // ✅ هنا التعديل المهم
                 value={password}
                 onChange={handlePasswordChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor("password")}`}
+                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
+                  "password"
+                )}`}
               />
               {password && (
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-2 top-9"
+                  className="absolute right-2 top-9 focus:outline-none" // ✅ أزلنا فوكَس الإطار
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
                     <Eye className="h-5 w-5 text-[#0F7B8A]" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
                   )}
                 </button>
               )}
@@ -154,13 +164,9 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!!errors.email || !!errors.password}
+              disabled={!email || !password || !!errors.email || !!errors.password}
               className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                !!errors.email || !!errors.password
-                  ? "opacity-60 cursor-not-allowed"
-                  : ""
-              }`}
-            >
+                !email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
               <LogIn className="mr-2 h-4 w-4" />
               Sign In
             </button>
