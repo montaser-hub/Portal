@@ -16,7 +16,7 @@ export default function Input({
   const [showPassword, setShowPassword] = useState(false);
   const inputType = type === "password" && showPassword ? "text" : type;
 
-  const baseClasses = `w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0F7B8A] disabled:bg-gray-100 disabled:text-gray-500 ${myClass}`;
+  const baseClasses = `w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none   disabled:bg-gray-100 disabled:text-gray-500 ${myClass}`;
 
   if (type === "select") {
     return (

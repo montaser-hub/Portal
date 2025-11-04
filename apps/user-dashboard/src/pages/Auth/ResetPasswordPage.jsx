@@ -16,28 +16,42 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || "";
+
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    setTouched((p) => ({ ...p, password: true }));
-    setErrors((p) => ({
-      ...p,
-      password:
-        value.length === 0
-          ? "Password is required"
-          : !passwordRegex.test(value)
-          ? "Must include uppercase, lowercase, number, special char, and 8+ chars"
-          : "",
-    }));
-  };
+const handlePasswordChange = (e) => {
+  const value = e.target.value;
+
+  // منع الأحرف العربية
+  if (/[ء-ي]/.test(value)) return;
+
+  setPassword(value);
+  setTouched((p) => ({ ...p, password: true }));
+
+  setErrors((p) => ({
+    ...p,
+    password:
+      value.length === 0
+        ? "Password is required"
+        : !passwordRegex.test(value)
+        ? "Must include uppercase, lowercase, number, special char, and 8+ chars"
+        : "",
+    // تحقق فوري إذا لم تتطابق كلمة المرور مع التأكيد
+    confirm:
+      confirm && value !== confirm
+        ? "Passwords do not match"
+        : "",
+  }));
+};
+
 
   const handleConfirmChange = (e) => {
     const value = e.target.value;
+    if (/[ء-ي]/.test(value)) return;
     setConfirm(value);
     setTouched((p) => ({ ...p, confirm: true }));
+
     setErrors((p) => ({
       ...p,
       confirm:
@@ -105,12 +119,12 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute  right-2 top-12 transform -translate-y-1/2"
+                  className="absolute right-2 top-12 transform -translate-y-1/2 focus:outline-none"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
                     <Eye className="h-5 w-5 text-[#0F7B8A]" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
                   )}
                 </button>
               )}
@@ -135,16 +149,17 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute  right-2 top-12 transform -translate-y-1/2"
+                  className="absolute right-2 top-12 transform -translate-y-1/2 focus:outline-none"
                 >
                   {showConfirm ? (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
                     <Eye className="h-5 w-5 text-[#0F7B8A]" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
                   )}
                 </button>
               )}
             </div>
+            {/* ✅ عرض الخطأ عند عدم التطابق */}
             {errors.confirm && (
               <p className="text-sm text-red-500">{errors.confirm}</p>
             )}
