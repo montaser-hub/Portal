@@ -31,7 +31,39 @@ const swapRequestSchema = new mongoose.Schema({
     enum: ['pending','approved','rejected','cancelled'],
     default: 'pending'
   }
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+ });
+
+ swapRequestSchema.virtual('fromSchedule', {
+   ref: 'Schedule',
+   localField: 'fromScheduleId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('fromUser', {
+   ref: 'User',
+   localField: 'fromUserId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('toUser', {
+   ref: 'User',
+   localField: 'toUserId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('toSchedule', {
+   ref: 'Schedule',
+   localField: 'toScheduleId',
+   foreignField: '_id',
+   justOne: true
+ })
 
 const SwapRequest =  mongoose.model('SwapRequest', swapRequestSchema);
 

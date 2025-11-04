@@ -9,13 +9,21 @@ export const addShift = catchAsync( async ( req, res, next ) => {
 })
 
 export const getAllShifts = catchAsync( async ( req, res, next ) => {
-  const shifts = await shiftService.getAllShifts()
-  res.status(200).json({ message: "Shifts fetched successfully", data: shifts });
+  const query = {...req.query}
+  const {data, total, totalFiltered} = await shiftService.getAllShifts(query)
+  res.status( 200 ).json( {
+    message: "Shifts fetched successfully",
+    totalFiltered,
+    total,
+    limit: query.limit,
+    page: query.page,
+    data
+  });
 })
 
 export const getShift = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
-  
+
   const shift = await shiftService.getShift(id)
 
   res.status(200).json({ message: "Shift fetched successfully", data: shift });
@@ -24,14 +32,14 @@ export const getShift = catchAsync( async ( req, res, next ) => {
 export const updateShift = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
   const data = { ...req.body }
-  
+
   const updatedShift = await shiftService.updateShift(id, data)
   res.status(200).json({ message: "Shift updated successfully", data: updatedShift });
 })
 
 export const deleteShift = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
-  
+
   await shiftService.deleteShift(id)
   res.status(200).json({ message: "Shift deleted successfully" });
 })
