@@ -1,14 +1,14 @@
 import * as departmentRepo from '../dataAccess/departmentRepo.js';
 import AppError from '../utils/AppError.js';
-import { getAllDepartments } from './queryService.js';
+import { getAllDocuments } from './queryService.js';
 
 export const createDepartment = async (data) => {
   return await departmentRepo.create(data);
 };
 
-export const getAllDepartments = async ( query ) => {
+export const getAllDepartments = async (query) => {
   const searchableFields = ['name'];
-    return await getAllDocuments( departmentRepo, queryParams, searchableFields);
+  return await getAllDocuments(departmentRepo, query, searchableFields);
 };
 
 export const getDepartment = async (id) => {
