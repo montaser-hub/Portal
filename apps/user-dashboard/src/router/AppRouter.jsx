@@ -8,8 +8,10 @@ import SwapRequestPage from "../pages/swapRequestPage";
 import Profile from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import NotificationsPage from "../pages/NotificationPage";
-import ForgotPasswordPage from "../pages/Auth/ForgetPasswordPage";
+import ForgotPasswordPage from "../pages/Auth/forgotPasswordPage";
 import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
+import ProtectedRoute from "./ProtectedRoute";
+import SpinnerPage from "../pages/SpinnerPage.jsx";
 
 
 
@@ -31,21 +33,22 @@ export default function AppRouter() {
 
       <Route path="/" element={<LandingPage />} />
       <Route path="/Login" element={<LoginPage />} />
-      <Route path="/ForgetPassword" element={<ForgotPasswordPage />} />
+      <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+      <Route path="/Spinner" element={<SpinnerPage />} />
 
 
-
+      <Route element={<ProtectedRoute />}>
       <Route element={<AppLayout />}>
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Calendar" element={<CalendarPage />} />
         <Route path="/SwapRequests" element={<SwapRequestPage />} />
         <Route path="/Notifications" element={<NotificationsPage />} />
         <Route path="/Profile" element={<Profile />}  />
-        <Route path="*" element={<NotFoundPage />} />
+      </Route>
       </Route>
 
-
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
 
   );

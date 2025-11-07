@@ -3,25 +3,39 @@ import { User, Mail, Phone, Calendar, Camera, Trash2 } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Badge from "../../common/Badge";
+import { updateUserPhoto } from "../../../services/API-Services/UserService";
+import { toast } from "react-hot-toast";
 
 export default function ProfileCard({ user, profileImage, onProfileImageChange }) {
-
   const fileInputRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
+
   const handleEditImageClick = () => fileInputRef.current.click();
-  const handleFileChange = (event) => {
+
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onProfileImageChange(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    try {
+      const updatedUser = await updateUserPhoto(file);
+      onProfileImageChange(updatedUser.photo || null);
+      toast.success("Profile image updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to upload image");
     }
   };
-  const handleDeleteImage = () => {
-    onProfileImageChange(null);
-    setIsHovered(false);
+
+  const handleDeleteImage = async () => {
+    try {
+      const updatedUser = await updateUserPhoto(null);
+      onProfileImageChange(updatedUser.photo || null);
+      toast.success("Profile image deleted successfully!");
+      setIsHovered(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete image");
+    }
   };
 
   return (
@@ -54,21 +68,14 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
                     className="p-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition mr-2"
                     title="Delete Image"
                   >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={handleEditImageClick}
-                    className="p-2 rounded-full bg-[#0F7B8A] text-white hover:bg-[#0F7B8A]/90 transition ml-2"
-                    title="Edit Image"
-                  >
-                    <Camera className="h-5 w-5" />
+                    <Trash2 className="h-6 w-6" />
                   </button>
                 </div>
               )}
             </>
           ) : (
-            <div className={`w-full h-full rounded-full bg-[#0F7B8A]/10 flex items-center justify-center`}>
-              <User className={`h-12 w-12 text-[#0F7B8A]`} />
+            <div className="w-full h-full rounded-full bg-[#0F7B8A]/10 flex items-center justify-center">
+              <User className="h-12 w-12 text-[#0F7B8A]" />
               <button
                 onClick={handleEditImageClick}
                 className="absolute bottom-0 right-0 p-2 rounded-full bg-[#0F7B8A] text-white hover:bg-[#0F7B8A]/90 transition"
@@ -80,26 +87,35 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
           )}
         </div>
 
-        <Text as="h3" content={user.name} MyClass="text-lg font-medium text-teal-700" />
-        <Text as="p" content={user.role} MyClass="text-gray-500" />
+        <Text as="h3" content={`${user.firstName} ${user.lastName}`} MyClass="text-lg font-medium text-teal-700" />
+        <Badge variant="outline">{user.role || "N/A"}</Badge>
+
         <div className="flex gap-2">
-          <Badge variant="outline">{user.level}</Badge>
-          <Badge variant="secondary">{user.departmentId}</Badge>
+          <Badge variant="outline">{user.level?.name || "N/A"}</Badge>
+          <Badge variant="secondary">{user.department?.name || "N/A"}</Badge>
+        </div>
+
+        <div className="space-y-3 mt-4">
+          <div className="flex items-center gap-3 text-sm">
+            <Mail className="h-4 w-4 text-gray-400" />
+            <Text as="span" content={user.email} MyClass="text-gray-700" />
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Phone className="h-4 w-4 text-gray-400" />
+            <Text as="span" content={user.phone || "N/A"} MyClass="text-gray-700" />
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Calendar className="h-4 w-4 text-gray-400" />
+            <Text
+              as="span"
+              content={`DOB: ${
+                user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : "N/A"
+              }`}
+              MyClass="text-gray-700"
+            />
+          </div>
         </div>
       </div>
-
-      <div className="space-y-3 mt-4">
-        <div className="flex items-center gap-3 text-sm"><Mail className="h-4 w-4 text-gray-400" />
-          <Text as="span" content={user.email} MyClass="text-gray-700" />
-        </div>
-        <div className="flex items-center gap-3 text-sm"><Phone className="h-4 w-4 text-gray-400" />
-          <Text as="span" content={user.phone} MyClass="text-gray-700" />
-        </div>
-        <div className="flex items-center gap-3 text-sm"><Calendar className="h-4 w-4 text-gray-400" />
-          <Text as="span" content={`DOB: ${new Date(user.dateOfBirth).toLocaleDateString()}`} MyClass="text-gray-700" />
-        </div>
-      </div>
-
     </Card>
   );
 }

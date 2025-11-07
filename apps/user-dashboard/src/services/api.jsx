@@ -1,34 +1,41 @@
 import axios from "axios";
+import  myStore from "../app/store";
+import { showLoader, hideLoader } from "../app/store";
 
+const baseURL =  import.meta.env.VITE_POTRAL_API_URL
+export const IMAGE_BASE_URL = `${import.meta.env.VITE_POTRAL_API_URL.replace("/api/v1", "")}/assets/images/users/`;
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/v1/",
+  baseURL,
   timeout: 10000,
 });
 
-
+//  Request Interceptor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    myStore.dispatch(showLoader());
+    const myToken = localStorage.getItem("token");
+    if (myToken) {
+      config.headers.Authorization = `Bearer ${myToken}`;
     }
     return config;
   },
   (error) => {
+    myStore.dispatch(hideLoader());
     return Promise.reject(error);
   }
 );
 
+//  Response Interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    myStore.dispatch(hideLoader());
+    return response;
+  },
   (error) => {
-    if (error.response) {
-      if (error.response.status === 401) {
-        console.log("Unauthorized - redirect to login");
-      }
-      if (error.response.status === 500) {
-        console.log("Server error");
-      }
+    myStore.dispatch(hideLoader());
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+
     }
     return Promise.reject(error);
   }

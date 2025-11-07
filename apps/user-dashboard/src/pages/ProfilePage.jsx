@@ -1,42 +1,57 @@
-import React, { useState } from "react";
-import { currentUser as initialUser } from "../components/common/mockData";
+import React, { useState, useEffect } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import ProfileOverviewCard from "../components/pageComponents/ProfilePage/ProfileOverviewCard";
-import PersonalInfoCard from "../components/pageComponents/ProfilePage/PersonalCard";
+import ProfileCard from "../components/pageComponents/ProfilePage/ProfileCard";
 import AvailabilityCard from "../components/pageComponents/ProfilePage/AvailabilityCard";
 import CredentialCard from "../components/pageComponents/ProfilePage/CredentialCard";
+import { getMe } from "../services/API-Services/UserService";
+import { toast } from "react-hot-toast";
 
-
-const getDaysOfWeek = () => ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
+const getDaysOfWeek = () => [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export default function Profile() {
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("Person Info");
-  const [profileImage, setProfileImage] = useState(user.profilePicture || null);
+  const [profileImage, setProfileImage] = useState(null);
+  useEffect(() => {
+  getMe()
+    .then((data) => {
+      setUser(data);
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error("Failed to load profile data");
+    });
+}, []);
 
-  const handleUserUpdate = (newUserData) => {
-    setUser(newUserData);
-  };
-
-  const handleProfileImageUpdate = (newImage) => {
-    setProfileImage(newImage);
-  };
+  const handleUserUpdate = (newUserData) => setUser(newUserData);
+  const handleProfileImageUpdate = (newImage) => setProfileImage(newImage);
 
   const getAvailabilityForDay = (dayOfWeek) =>
-    user.availabilityPreferences?.find((pref) => pref.dayOfWeek === dayOfWeek);
+    user?.availabilityPreferences?.find((pref) => pref.dayOfWeek === dayOfWeek);
+
+  if (!user) return <div className="text-center py-10">Loading profile...</div>;
 
   return (
-    <div className={`bg-[#F8F9FA] min-h-screen py-12`}>
+    <div className="bg-[#F8F9FA] min-h-screen py-12">
       <div className="max-w-5xl mx-40 mb-8">
-        <h1 className={`text-3xl font-semibold text-[#0F7B8A] mb-2`}>Your Profile</h1>
+        <h1 className="text-3xl font-semibold text-[#0F7B8A] mb-2">
+          Your Profile
+        </h1>
         <p className="text-gray-600">Manage your Profile Info.</p>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          <PersonalInfoCard
+          <ProfileCard
             user={user}
             profileImage={profileImage}
             onProfileImageChange={handleProfileImageUpdate}
@@ -69,7 +84,10 @@ export default function Profile() {
               </Tabs.Content>
 
               <Tabs.Content value="Availability">
-                <AvailabilityCard daysOfWeek={getDaysOfWeek()} getAvailabilityForDay={getAvailabilityForDay} />
+                <AvailabilityCard
+                  daysOfWeek={getDaysOfWeek()}
+                  getAvailabilityForDay={getAvailabilityForDay}
+                />
               </Tabs.Content>
 
               <Tabs.Content value="Credentials">

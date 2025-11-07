@@ -11,9 +11,18 @@ import subDepartmentRouter from './routes/subDepartmentRoutes'
 import swapRequestRouter from './routes/swapRequestRoutes'
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
+import cors from 'cors';
+
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true,
+}));
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -36,9 +45,14 @@ app.use( '/api/v1/swapRequests', swapRequestRouter);
 
 
 
-app.all('*', (req, res) => {
-  next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
+// app.all('*', (req, res) => {
+//   next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
+// });
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can not find ${req.originalUrl} on this server`, 404));
 });
+
 
 app.use(globalErrorHandler);
 
