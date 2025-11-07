@@ -1,10 +1,20 @@
 import React from 'react';
 import { AlertCircle, Home, LogIn } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import Card from '../components/common/Card';
 import Text from '../components/common/Text';
+import { useNavigate } from "react-router-dom";
 
 export default function NotFoundPage({ isAuthenticated }) {
+
+  const navigate = useNavigate();
+  const myToken = localStorage.getItem("token");
+  const handleGoBack = () => {
+    if (myToken) {
+      navigate("/Dashboard");
+    } else {
+      navigate("/Login");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
       <Card className="p-12 max-w-lg w-full text-center space-y-8 bg-white shadow-lg rounded-2xl border border-gray-200">
@@ -36,21 +46,20 @@ export default function NotFoundPage({ isAuthenticated }) {
 
         {/* Links */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Link
-              to="/dashboard"
-              className="flex items-center justify-center text-teal-600 hover:text-teal-500"
-            >
-            <Home className="mr-2 h-4 w-4" />
-              Return to Dashboard
-            </Link>
-
-            <Link
-              to="/login"
-              className="flex items-center justify-center text-teal-600 hover:text-teal-500"
-            >
-              <LogIn className="mr-2 h-4 w-4" />
-              Go to Login
-            </Link>
+          <button
+            onClick={handleGoBack}
+            className="flex items-center justify-center text-teal-600 hover:text-teal-500"
+          >
+            {myToken ? (
+              <>
+                <Home className="mr-2 h-4 w-4" /> To Dashboard
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 h-4 w-4" /> To Login
+              </>
+            )}
+          </button>
         </div>
       </Card>
     </div>

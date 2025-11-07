@@ -1,21 +1,26 @@
 import api from "../api";
 
-
-
-// Login
-export const login = async (data) => {
-  const res = await api.post("/users/login", data);
-  if (res.data.token) localStorage.setItem("token", res.data.token);
-  return res.data;
+export const login = (data) => {
+  return api.post("/users/login", data).then((res) => {
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+    }
+    return {
+      token: res.data.token,
+      data: res.data.data,
+    };
+  });
 };
 
-// Get current user
-export const getCurrentUser = async () => {
-  const res = await api.get("/users/forgotPassword");
-  return res.data.user;
-};
 
 // Logout
 export const logout = () => {
   localStorage.removeItem("token");
+  window.location.href = "/Login";
 };
+
+// Forgot Password
+
+
+// Reset Password
+

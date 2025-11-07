@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { LogIn, Eye, EyeOff, Calendar } from "lucide-react";
+import { login } from "../../services/API-Services/AuthService";
+import { showLoader, hideLoader } from "../../app/store";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
@@ -12,10 +16,9 @@ export default function LoginPage() {
   const [touched, setTouched] = useState({ email: false, password: false });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleEmailChange = (e) => {
   const value = e.target.value;
@@ -49,15 +52,50 @@ const handlePasswordChange = (e) => {
   }));
 };
 
+const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (!errors.email && !errors.password && email && password) {
+    dispatch(showLoader());
+    login({ email, password })
+      .then((response) => {
+        console.log("Login response:", response);
+        if (response.token) {
+          toast.success("Welcome! To dashboard", {
+            duration: 3000,
+            position: "top-right",
+          });
+          navigate("/Dashboard");
+        } else {
+          toast.error("Sorry! Something went wrong.", {
+            duration: 3000,
+            position: "top-right",
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Login Error:", err);
+        let msg = "Login failed. Please try again.";
+        if (err.response) {
+          if (err.response.status === 401 || err.response.status === 400) {
+            msg = "Incorrect email or password.";
+          } else if (err.response.data?.message) {
+            msg = err.response.data.message;
+          }
+        }
+        toast.error(msg, {
+          duration: 3000,
+          position: "top-right",
+        });
+      })
+      .finally(() => {
+        dispatch(hideLoader());
+      });
+  }
+};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!errors.email && !errors.password && email && password) {
-      navigate("/Dashboard");
-    }
-  };
+
 
   const getBorderColor = (field) => {
     if (errors[field]) return "border-red-500";
@@ -154,7 +192,7 @@ const handlePasswordChange = (e) => {
             {/* Forgot Password */}
             <div className="text-right">
               <Link
-                to="/ForgetPassword"
+                to="/forgotPassword"
                 className="text-sm text-[#0F7B8A] hover:text-[#0D6C78] cursor-pointer"
               >
                 Forgot Password?

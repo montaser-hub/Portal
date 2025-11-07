@@ -1,2 +1,26 @@
+import { configureStore, createSlice } from "@reduxjs/toolkit";
 
-//main store  for redux
+const loaderSlice = createSlice({
+  name: "loader",
+  initialState: {
+    isLoading: false,
+  },
+  reducers: {
+    showLoader: (state) => {
+      state.isLoading = true;
+    },
+    hideLoader: (state) => {
+      state.isLoading = false;
+    },
+  },
+});
+
+export const { showLoader, hideLoader } = loaderSlice.actions;
+
+const myStore = configureStore({
+  reducer: {
+    loader: loaderSlice.reducer,
+  },
+});
+
+export default myStore;
