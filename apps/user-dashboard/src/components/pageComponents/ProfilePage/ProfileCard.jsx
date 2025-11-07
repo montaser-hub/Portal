@@ -37,6 +37,15 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
       toast.error("Failed to delete image");
     }
   };
+    const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
   return (
     <Card className="p-6 space-y-4 bg-white border-gray-200">
@@ -108,9 +117,7 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
             <Calendar className="h-4 w-4 text-gray-400" />
             <Text
               as="span"
-              content={`DOB: ${
-                user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : "N/A"
-              }`}
+              content={`Start Date: ${user.createdAt ?  formatDate(user.createdAt) : "N/A"}`}
               MyClass="text-gray-700"
             />
           </div>

@@ -3,7 +3,7 @@ import  myStore from "../app/store";
 import { showLoader, hideLoader } from "../app/store";
 
 const baseURL =  import.meta.env.VITE_POTRAL_API_URL
-export const IMAGE_BASE_URL = `${import.meta.env.VITE_POTRAL_API_URL.replace("/api/v1", "")}/assets/images/users/`;
+export const IMAGE_BASE_URL = `${baseURL.replace("/api/v1", "")}/assets/images/users/`;
 const api = axios.create({
   baseURL,
   timeout: 10000,
