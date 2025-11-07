@@ -7,6 +7,7 @@ import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
 import { getMe } from "../../../services/API-Services/UserService";
 import Spinner from "../../common/Spinner2";
+import { useLocation } from "react-router-dom";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
   { id: "calendar", label: "My Calendar", icon: Calendar, path: "/Calendar" },
@@ -23,13 +24,22 @@ function getUserInitials(name = "") {
 }
 
 function Navbar() {
-  const [currentPage, setCurrentPage] = useState("dashboard");
+  const location = useLocation();
+  const [currentPage, setCurrentPage] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const unreadCount = mockNotifications.filter((n) => !n.read).length;
   const dropdownRef = useRef(null);
 
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    if (path.includes("/dashboard")) setCurrentPage("dashboard");
+    else if (path.includes("/calendar")) setCurrentPage("calendar");
+    else if (path.includes("/swaprequests")) setCurrentPage("swap");
+    else if (path.includes("/notifications")) setCurrentPage("notifications");
+    else if (path.includes("/profile")) setCurrentPage("profile");
+  }, [location.pathname]);
 
 useEffect(() => {
   getMe().then(userData => {setCurrentUser(userData);})
