@@ -6,12 +6,11 @@ export const getMe = async () => {
 };
 
 export const updateMe = async (data) => {
-  const allowedFields = (({ firstName, lastName, email, phone, dateOfBirth, photo }) => ({
+  const allowedFields = (({ firstName, lastName, email, phone }) => ({
     firstName,
     lastName,
     email,
     phone,
-    dateOfBirth,
   })
 )(data);
 
