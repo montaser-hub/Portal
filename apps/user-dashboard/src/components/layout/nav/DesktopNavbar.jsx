@@ -18,34 +18,10 @@ import { getMe } from "../../../services/API-Services/UserService";
 import { logout } from "../../../services/API-Services/AuthService";
 
 const mockNotifications = [
-  {
-    id: 1,
-    title: "New message from Support Team",
-    message: "Please check your inbox.",
-    type: "Announcement",
-    read: false,
-  },
-  {
-    id: 2,
-    title: "Password changed successfully",
-    message: "Your password was updated.",
-    type: "Credential Expiring",
-    read: true,
-  },
-  {
-    id: 3,
-    title: "Schedule updated",
-    message: "Your schedule has been changed.",
-    type: "Schedule Change",
-    read: false,
-  },
-  {
-    id: 4,
-    title: "Swap Approved",
-    message: "Your swap request was approved.",
-    type: "Swap Approved",
-    read: false,
-  },
+  {id: 1,title: "New message from Support Team",message: "Please check your inbox.",type: "Announcement",read: false,},
+  {id: 2,title: "Password changed successfully",message: "Your password was updated.",type: "Credential Expiring",read: true,},
+  {id: 3,title: "Schedule updated",message: "Your schedule has been changed.",type: "Schedule Change",read: false,},
+  {id: 4,title: "Swap Approved",message: "Your swap request was approved.",type: "Swap Approved",read: false,}
 ];
 
 function getNotificationIcon(type) {
@@ -76,11 +52,10 @@ export default function DesktopNavbar({
   getUserInitials,
 }) {
   const [notifMenuOpen, setNotifMenuOpen] = useState(false);
-  const [userData, setUserData] = useState(null); // ✅ حفظ بيانات المستخدم القادمة من getMe
+  const [userData, setUserData] = useState(null);
   const notifRef = useRef();
   const userRef = useRef();
 
-  // ✅ تحميل بيانات المستخدم عند بداية التشغيل
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -93,7 +68,6 @@ export default function DesktopNavbar({
     fetchUserData();
   }, []);
 
-  // ✅ إغلاق القوائم عند النقر خارجها
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target))
@@ -105,13 +79,12 @@ export default function DesktopNavbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ عند عدم تحميل بيانات المستخدم بعد
   if (!userData) {
     return null;
   }
 
   return (
-    <div className="hidden md:flex items-center   justify-between w-full px-4">
+    <div className="hidden md:flex items-center flex-1">
       {/* Navigation Links */}
       <nav className="flex items-center gap-4 ml-12">
         {navigation.map((item) => {
@@ -140,7 +113,7 @@ export default function DesktopNavbar({
       </nav>
 
       {/* Right Section */}
-      <div className="flex items-center gap-6 ">
+      <div className="flex items-center gap-6 ml-auto">
         {/* Notifications */}
         <div ref={notifRef} className="relative">
           <div
@@ -242,7 +215,6 @@ export default function DesktopNavbar({
               MyClass="text-sm font-medium text-gray-600"
             />
           </div>
-
           <AnimatePresence>
             {userMenuOpen && (
               <motion.div
@@ -270,7 +242,6 @@ export default function DesktopNavbar({
                     />
                   </div>
                 </div>
-
                 <Link
                   to="/Profile"
                   onClick={() => {
@@ -285,8 +256,6 @@ export default function DesktopNavbar({
                 >
                   <User className="h-4 w-4" /> Profile
                 </Link>
-
-                {/* ✅ زر تسجيل الخروج الحقيقي */}
                 <button
                   onClick={() => {
                     setUserMenuOpen(false);

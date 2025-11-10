@@ -85,7 +85,7 @@ useEffect(() => {
               setUserMenuOpen={setUserMenuOpen}
               currentUser={currentUser}
               getUserInitials={getUserInitials}
-              // profileImage = {currentUser.photo}
+              profileImage={currentUser?.photo}
 
             />
 
@@ -111,7 +111,7 @@ useEffect(() => {
           setMobileMenuOpen={setMobileMenuOpen}
           unreadCount={unreadCount}
           currentUser={currentUser}
-          // profileImage={currentUser.photo}
+          profileImage={currentUser?.photo}
         />
       </AnimatePresence>
     </header>
