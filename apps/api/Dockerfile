@@ -6,13 +6,16 @@
 #
 FROM docker.io/node:lts-alpine
 
+ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
 
 WORKDIR /app
 
-COPY dist .
+COPY package*.json ./
+
+COPY dist/apps/api *
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.

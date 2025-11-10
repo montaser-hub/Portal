@@ -3,6 +3,10 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
+  employeeId: {
+    type: String,
+    unique: true
+  },
   nickname: {
     type: String,
     minlength: 3,
@@ -46,6 +50,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin', 'manager'],
     default: 'user',
+  },
+  contactNumber: {
+    type: String
   },
   password: {
     type: String,
@@ -124,6 +131,11 @@ userSchema.methods.changedPasswordRestToken = function () {
 
   return resetToken;
 };
+
+userSchema.virtual('fullName')
+  .get(function () {
+    return `${this.firstName || ''} ${this.lastName || ''}`.trim();
+  })
 
 userSchema.virtual('position', {
   ref: 'Position',
