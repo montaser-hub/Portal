@@ -2,14 +2,11 @@ import React, { useState, useMemo } from "react";
 import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
-
-const DEPARTMENTS = ["HR", "IT", "Finance", "Operations"];
-const SUB_DEPARTMENTS = ["HR", "IT", "Finance", "Operations"];
-const STATUSES = ["scheduled", "completed", "cancelled"];
+import {  STATUSES, TABLE_COLUMNS, SHIFTS } from "../components/common/constants";
 
 export default function Schedules() {
   const [schedules, setSchedules] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedShift, setSelectedShift] = useState(""); // فلترة حسب الشيفت
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -19,19 +16,22 @@ export default function Schedules() {
 
   const initialData = {
     id: null,
-    department: DEPARTMENTS[0],
-    subdepartment: SUB_DEPARTMENTS[0],
+    department: "Heart",
+    subdepartment: "Central Health Care",
     shift: "",
     time: "",
     date: "",
     status: STATUSES[0]
   };
 
-  const filteredSchedules = useMemo(() =>
-    schedules.filter(s =>
-      (!selectedDepartment || s.department === selectedDepartment) &&
+
+  const filteredSchedules = useMemo(
+    () => schedules.filter(s =>
+      (!selectedShift || s.shift === selectedShift) &&
       (!selectedStatus || s.status === selectedStatus)
-    ), [schedules, selectedDepartment, selectedStatus]);
+    ),
+    [schedules, selectedShift, selectedStatus]
+  );
 
   const openModal = (schedule = null) => {
     if (schedule) {
@@ -63,17 +63,6 @@ export default function Schedules() {
     setShowDeleteConfirm(false);
   };
 
-  const tableColumns = [
-    { key: "department", header: "Department", render: s => <span className="bg-teal-100 text-teal-800 rounded-xl px-3 py-1">{s.department}</span> },
-    { key: "subdepartment", header: "Sub Department", render: s => <span className="bg-teal-100 text-teal-800 rounded-xl px-3 py-1">{s.subdepartment}</span> },
-    { key: "shift", header: "Shift" },
-    { key: "date", header: "Date" },
-    { key: "status", header: "Status", render: s => (
-      <span className={`px-3 py-1 rounded-full text-sm capitalize ${s.status === "completed" ? "bg-teal-100 text-teal-700" : s.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}`}>{s.status}</span>
-    )},
-    { key: "actions", header: "Actions", className: "text-center" }
-  ];
-
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
@@ -91,16 +80,25 @@ export default function Schedules() {
         <div className="flex items-center gap-2">
           <Filter className="text-teal-700" size={20} />
           <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-gray-700">Department</h4>
-            <select value={selectedDepartment} onChange={e => setSelectedDepartment(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-gray-700">
+            <h4 className="text-gray-700">Shift</h4>
+            <select
+              value={selectedShift}
+              onChange={e => setSelectedShift(e.target.value)}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-gray-700"
+            >
               <option value="">All</option>
-              {DEPARTMENTS.map(dept => <option key={dept} value={dept}>{dept}</option>)}
+              {SHIFTS.map(shift => <option key={shift} value={shift}>{shift}</option>)}
             </select>
           </div>
         </div>
+
         <div className="flex flex-col gap-1">
           <h4 className="text-gray-700">Status</h4>
-          <select value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-gray-700">
+          <select
+            value={selectedStatus}
+            onChange={e => setSelectedStatus(e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-gray-700"
+          >
             <option value="">All</option>
             {STATUSES.map(status => <option key={status} value={status}>{status}</option>)}
           </select>
@@ -112,15 +110,19 @@ export default function Schedules() {
         <table className="min-w-full border-collapse">
           <thead className="text-gray-700 text-sm capitalize border-b border-gray-200">
             <tr>
-              {tableColumns.map(col => <th key={col.key} className={`px-4 py-2 text-left ${col.className || ''}`}>{col.header}</th>)}
+              {TABLE_COLUMNS.map(col => <th key={col.key} className={`px-4 py-2 text-left ${col.className || ''}`}>{col.header}</th>)}
             </tr>
           </thead>
           <tbody>
             {filteredSchedules.length === 0 ? (
-              <tr><td colSpan={tableColumns.length} className="p-10 text-center text-gray-500">No schedules found. Click "Create Schedule" to add one.</td></tr>
+              <tr>
+                <td colSpan={TABLE_COLUMNS.length} className="p-10 text-center text-gray-500">
+                  No schedules found. Click "Create Schedule" to add one.
+                </td>
+              </tr>
             ) : filteredSchedules.map(s => (
               <tr key={s.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                {tableColumns.map(col => {
+                {TABLE_COLUMNS.map(col => {
                   if (col.key === "actions") {
                     return (
                       <td key={col.key} className="p-4 flex gap-2 justify-center">
@@ -146,9 +148,8 @@ export default function Schedules() {
         setData={setCurrentData}
         onClose={() => setIsModalOpen(false)}
         onSave={saveSchedule}
-        DEPARTMENTS={DEPARTMENTS}
-        SUB_DEPARTMENTS={SUB_DEPARTMENTS}
         STATUSES={STATUSES}
+        SHIFTS={SHIFTS}
       />
       <DeleteConfirm
         isOpen={showDeleteConfirm}
