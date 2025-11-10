@@ -9,8 +9,6 @@ swapRequestRouter
   .route('/')
   .get(swapRequestController.getSwapRequests)
   .post(swapRequestController.addSwapRequest)
-  .delete(swapRequestController.deleteAllSwapRequests);
-
 swapRequestRouter
   .route('/:id')
   .get(swapRequestController.getSwapRequest)
