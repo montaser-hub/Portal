@@ -1,5 +1,6 @@
 import * as SwapRequestRepo from '../dataAccess/swapRequestRepo.js'
 import AppError from '../utils/AppError.js'
+import { getAllDocuments } from './queryService.js'
 
 //  Add SwapRequest
 export const addSwapRequest = async (data) => {
@@ -15,7 +16,8 @@ export const getSwapRequest = async (id) => {
 
 // Get All SwapRequests
 export const getAllSwapRequests = async () => {
-  return await SwapRequestRepo.findAll()
+  const searchableFields = [ 'status' ];
+  return await getAllDocuments( SwapRequestRepo, queryParams, searchableFields);
 }
 
 // Update SwapRequest
@@ -30,10 +32,5 @@ export const deleteSwapRequest = async (id) => {
   const SwapRequest = await SwapRequestRepo.findById(id)
   if (!SwapRequest) throw new AppError("SwapRequest not found.", 404)
   return await SwapRequestRepo.removeById(id)
-}
-
-// Delete All SwapRequests
-export const deleteAllSwapRequests = async () => {
-  return await SwapRequestRepo.deleteAll()
 }
 

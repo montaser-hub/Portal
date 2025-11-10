@@ -16,9 +16,17 @@ export const getLocation = catchAsync( async ( req, res, next ) => {
 });
 
 // Get All Locations
-export const getLocations = catchAsync(async (req, res, next) => {
-  const locations = await locationService.getAllLocations();
-  res.status(200).json({ message: "Locations fetched successfully", data: locations });
+export const getLocations = catchAsync( async ( req, res, next ) => {
+  const query = {...req.query}
+  const {data, total, totalFiltered} = await locationService.getAllLocations(query);
+  res.status( 200 ).json({
+    message: "Locations fetched successfully",
+    total,
+    totalFiltered,
+    limit: query.limit,
+    page: query.page,
+    data
+  });
 });
 
 // Update Location
