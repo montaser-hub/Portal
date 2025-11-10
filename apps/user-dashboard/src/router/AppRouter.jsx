@@ -4,6 +4,7 @@ import LoginPage from "../pages/Auth/LoginPage";
 import Navbar from "../components/layout/nav/Navbar";
 import Dashboard from "../pages/Dashboard";
 import CalendarPage from "../pages/CalendarPage";
+import MySchedules from "../pages/mySchedules.jsx";
 import SwapRequestPage from "../pages/swapRequestPage";
 import Profile from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -43,6 +44,7 @@ export default function AppRouter() {
         <Route element={<AppLayout />}>
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Calendar" element={<CalendarPage />} />
+          <Route path="/myschedules" element={<MySchedules />} />
           <Route path="/SwapRequests" element={<SwapRequestPage />} />
           <Route path="/Notifications" element={<NotificationsPage />} />
           <Route path="/Profile" element={<Profile />}  />

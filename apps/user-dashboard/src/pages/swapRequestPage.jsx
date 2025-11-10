@@ -4,7 +4,6 @@ import  SwapRequestForm  from "../components/pageComponents/swapRequestPage/Swap
 import  SwapRequestStatus  from "../components/pageComponents/swapRequestPage/SwapRequestStatus";
 import  SwapRequestHistory  from "../components/pageComponents/swapRequestPage/SwapRequestHistory";
 import Text from "../components/common/Text";
-import { COLORS } from "../components/common/colors";
 
 export default function SwapRequestPage() {
   const [activeTab, setActiveTab] = useState("request");
@@ -28,7 +27,7 @@ export default function SwapRequestPage() {
         <Text
           as="h1"
           content="Swap Request"
-          MyClass={`text-3xl font-semibold text-[${COLORS.primary}] mb-2`}
+          MyClass={`text-3xl font-semibold text-[#0F7B8A] mb-2`}
         />
         <Text
           as="p"
@@ -45,7 +44,7 @@ export default function SwapRequestPage() {
                         value={tab}
                         className={`pb-2 text-sm font-medium ${
                           activeTab === tab
-                            ? `border-b-2 border-[${COLORS.primary}] text-[${COLORS.primary}]`
+                            ? `border-b-2 border-[#0F7B8A] text-[#0F7B8A]`
                             : "text-gray-500 hover:text-[#0F7B8A]"
                         }`}
                       >

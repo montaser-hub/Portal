@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Calendar, Menu, House, RefreshCw } from "lucide-react";
+import { Calendar, CalendarDays, Menu, House, RefreshCw } from "lucide-react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import Text from "../../common/Text";
@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
   { id: "calendar", label: "My Calendar", icon: Calendar, path: "/Calendar" },
+  { id: "MySchedules", label: "My Schedules", icon: CalendarDays, path: "/mySchedules" },
   { id: "swap", label: "Swap Requests", icon: RefreshCw, path: "/SwapRequests" },
 ];
 
@@ -35,6 +36,7 @@ function Navbar() {
     const path = location.pathname.toLowerCase();
     if (path.includes("/dashboard")) setCurrentPage("dashboard");
     else if (path.includes("/calendar")) setCurrentPage("calendar");
+    else if (path.includes("/myschedules")) setCurrentPage("MySchedules");
     else if (path.includes("/swaprequests")) setCurrentPage("swap");
     else if (path.includes("/notifications")) setCurrentPage("notifications");
     else if (path.includes("/profile")) setCurrentPage("profile");
