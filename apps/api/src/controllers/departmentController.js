@@ -9,7 +9,7 @@ export const addDepartment = catchAsync(async (req, res) => {
 });
 export const getAllDepartments = catchAsync(async (req, res) => {
   const departments = await departmentService.getAllDepartments();
-  return res.status(200).json({ message: 'success', departments });
+  return res.status(200).json({ message: 'success', data: departments });
 });
 export const getDepartmentById = catchAsync(async (req, res) => {
   const department = await departmentService.getDepartment(req.params.id);
