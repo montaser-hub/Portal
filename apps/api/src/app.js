@@ -11,11 +11,19 @@ import subDepartmentRouter from './routes/subDepartmentRoutes'
 import swapRequestRouter from './routes/swapRequestRoutes'
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
 
-
+app.use( cors(
+  {
+    origin: ['http://localhost:4200', 'http://localhost:3001'],
+    credentials: true,
+  },
+) );
+app.use(cookieParser());
 
 app.use(express.json());
 

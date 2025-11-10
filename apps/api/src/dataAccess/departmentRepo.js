@@ -1,34 +1,26 @@
 import Department from '../models/departmentModel.js';
 
-export const create = (data) => {
-  const results = Department.create(data);
-  return results;
+export const create = async(data) => {
+  return await Department.create(data);
 };
 export const getAll = () => {
-  const results = Department.find().populate({
+  return Department.find()
+    .populate( {
     path: 'manager',
     select: 'firstName lastName nickname photo -_id',
   })
   .populate({ path: 'location', select: 'name -_id' });
-  return results;
 };
 
-export const getOne = (id) => {
-  const results = Department.findById(id).populate({
+export const getOne = async(id) => {
+  return await Department.findById(id).populate({
     path: 'manager',
     select: 'firstName lastName nickname photo -_id',
   });
-  return results;
 };
-export const update = (id, data) => {
-  const results = Department.findByIdAndUpdate(id, data, { new: true });
-  return results;
+export const update = async (id, data) => {
+  return await Department.findByIdAndUpdate(id, data, { new: true });
 };
-export const Delete = (id) => {
-  const results = Department.findByIdAndDelete(id);
-  return results;
-};
-export const deleteAll = () => {
-  const results = Department.deleteMany();
-  return results;
+export const Delete = async(id) => {
+  return await Department.findByIdAndDelete(id);
 };

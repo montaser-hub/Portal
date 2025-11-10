@@ -7,7 +7,6 @@ departmentRouter
   .route('/')
   .get(subdepartmentController.getAllSubDepartments)
   .post(subdepartmentController.addSubDepartment)
-  .delete(subdepartmentController.deleteAllSubDepartments);
 
 departmentRouter
   .route('/:id')

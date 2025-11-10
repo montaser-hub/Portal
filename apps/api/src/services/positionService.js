@@ -1,17 +1,20 @@
+import { query } from "express"
 import * as positionRepo from "../dataAccess/positionRepo.js"
 import AppError from "../utils/AppError.js"
+import { getAllDocuments } from "./queryService.js"
+
 export const  createPosition = async (data) => {
     return await positionRepo.create(data)
 }
-export const getAllPositions = async () => {
-    const results = await positionRepo.getAll()
-    return results
+export const getAllPositions = async ( query ) => {
+  const searchableFields = [ "name" ]
+  return await getAllDocuments( positionRepo, query, searchableFields )
 }
 
 export const getPositionById = async (id) => {
   const results = await positionRepo.getOne( id )
   if(!results){
-      throw new AppError("Position not found", 404);
+    throw new AppError("Position not found", 404);
   }
   return results
 }

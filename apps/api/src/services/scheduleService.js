@@ -1,5 +1,6 @@
 import * as scheduleRepo from '../dataAccess/scheduleRepo.js'
 import AppError from '../utils/AppError.js'
+import { getAllDocuments } from './queryService.js'
 
 
 export const createSchedule = async (data) => {
@@ -12,8 +13,8 @@ export const updateSchedule = async (id, data) => {
   return updatedschedule
 }
 
-export const getAllSchedules = async () => {
-  return await scheduleRepo.findAll()
+export const getAllSchedules = async (queryParams) => {
+  return  await getAllDocuments(scheduleRepo, queryParams);
 }
 
 export const getSchedule = async ( id ) => {
