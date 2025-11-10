@@ -50,6 +50,9 @@ export const updatePasswordSchema = Joi.object({
 });
 
 export const createUserSchema = Joi.object( {
+  employeeId: Joi.string()
+    .required()
+    .allow( '', null ),
   nickname: Joi.string()
     .min(3)
     .max(10)
@@ -87,15 +90,10 @@ export const createUserSchema = Joi.object( {
       'string.empty': 'Email cannot be empty.',
       'string.email': 'Invalid email format.'
     }),
-  password: Joi.string()
-    .min(8)
-    .max(20)
-    .required()
-    .pattern(passwordRegex)
-    .messages({
-    "string.pattern.base":`${passMessage}`,
-    "string.empty": "Password cannot be empty",
-  }),
+  contactNumber: Joi.string()
+    .optional()
+    .allow( '', null ),
+  password: Joi.string().optional().allow( '', null ),
   role: Joi.string()
   .valid('admin', 'manager', 'user')
   .required()
@@ -111,6 +109,10 @@ export const createUserSchema = Joi.object( {
 });
 
 export const updateUserSchema = Joi.object( {
+  employeeId: Joi.string()
+    .min(3)
+    .optional()
+    .allow( '', null ),
   nickname: Joi.string()
     .min(3)
     .max(10)
@@ -142,6 +144,9 @@ export const updateUserSchema = Joi.object( {
     .messages({
       'string.email': 'Invalid email format.'
     } ),
+  contactNumber: Joi.string()
+    .optional()
+    .allow( '', null ),
   role: Joi.string()
   .valid('admin', 'manager', 'user')
   .optional()
@@ -186,5 +191,8 @@ export const updateMyProfileSchema = Joi.object( {
     .messages({
       'string.email': 'Invalid email format.'
     } ),
+  contactNumber: Joi.string()
+    .optional()
+    .allow( '', null ),
   photo: Joi.string().optional(),
 });

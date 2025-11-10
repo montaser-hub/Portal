@@ -11,7 +11,7 @@ const locationSchema = new mongoose.Schema({
     type: String
   },
   state: {
-    type: String 
+    type: String
   },
   country: {
     type: String
@@ -19,7 +19,15 @@ const locationSchema = new mongoose.Schema({
   postalCode: {
     type: String
   }
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true }
+});
+
+locationSchema.virtual('Address').get(function () {
+  return `${this.street}, ${this.city}, ${this.state}, ${this.country}, ${this.postalCode}`
+});
 
 locationSchema.index({ state: 1, street: 1 }, { unique: true });
 
