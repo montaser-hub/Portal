@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import ProfileOverviewCard from "../components/pageComponents/ProfilePage/ProfileOverviewCard";
 import ProfileCard from "../components/pageComponents/ProfilePage/ProfileCard";
-import CredentialCard from "../components/pageComponents/ProfilePage/CredentialCard";
 import { getMe } from "../services/API-Services/UserService";
 import { toast } from "react-hot-toast";
 import HeartbeatSpinner from "../components/common/Spinner2";
@@ -58,16 +57,13 @@ export default function Profile() {
                     }`}
                   >
                     {tab === "Profile Info"
-                      ? "Porfile Information"
-                      : "Credentials"}
+                      && "Porfile Information"
+                      }
                   </Tabs.Trigger>
                 ))}
               </Tabs.List>
               <Tabs.Content value="Profile Info">
                 <ProfileOverviewCard currentUser={user} onSave={handleUserUpdate} />
-              </Tabs.Content>
-              <Tabs.Content value="Credentials">
-                <CredentialCard credentials={user.credentials} />
               </Tabs.Content>
             </Tabs.Root>
           </div>
