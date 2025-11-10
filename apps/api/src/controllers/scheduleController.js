@@ -10,19 +10,27 @@ export const addSchedule = catchAsync( async ( req, res, next ) => {
 export const updateSchedule = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
   const data = { ...req.body }
-  
+
   const updatedSchedule = await scheduleService.updateSchedule(id, data)
   res.status(200).json({ message: "Schedule updated successfully", data: updatedSchedule });
 })
 
 export const getAllSchedules = catchAsync( async ( req, res, next ) => {
-  const schedules = await scheduleService.getAllSchedules()
-  res.status(200).json({ message: "Schedules fetched successfully", data: schedules });
+  const query = {...req.query}
+  const {data, total, totalFiltered} = await scheduleService.getAllSchedules(query)
+  res.status(200).json({
+    message: "Schedules fetched successfully",
+    totalFiltered,
+    total,
+    limit: query.limit,
+    page: query.page,
+    data
+  });
 })
 
 export const getSchedule = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
-  
+
   const schedule = await scheduleService.getSchedule( id )
 
   res.status(200).json({ message: "Schedule fetched successfully", data: schedule });

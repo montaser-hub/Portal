@@ -1,10 +1,12 @@
 import * as levelRepo from '../dataAccess/levelRepo.js';
 import AppError from '../utils/AppError.js';
+import { getAllDocuments } from './queryService.js';
 export const createLevel = async (data) => {
   return await levelRepo.create(data);
 }
-export const getAllLevels = async () => {
-  const result = await levelRepo.getAll();
+export const getAllLevels = async (query) => {
+  const searchableFields = [ "name" ]
+  const result = await getAllDocuments(levelRepo, query, searchableFields);
  if(!result || result.length === 0) throw new AppError("Levels not found", 404);
   return result;
 }

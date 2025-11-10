@@ -26,8 +26,24 @@ const shiftSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SubDepartment'
   }
-}, {
-  timestamps: true
+},{
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+shiftSchema.virtual( 'department', {
+  ref: 'Department',
+  localField: 'departmentId',
+  foreignField: '_id',
+  justOne: true
+});
+
+shiftSchema.virtual( 'subDepartment', {
+  ref: 'SubDepartment',
+  localField: 'subDepartmentId',
+  foreignField: '_id',
+  justOne: true
 });
 
 shiftSchema.index( { shiftType: 1, shiftName: 1 }, { unique: true } );

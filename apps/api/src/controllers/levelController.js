@@ -5,15 +5,23 @@ export const createLevel = catchAsync(async (req, res) => {
     const level = await LevelService.createLevel(req.body);
   return res.status(201).json({ message: 'Level created successfully', data: level });
 });
-export const getAllLevels = catchAsync(async (req, res) => {
-    const levels = await LevelService.getAllLevels();
-  return res.status(200).json({ message: 'Levels retrieved successfully', data: levels });
+export const getAllLevels = catchAsync( async ( req, res ) => {
+  const query = {...req.query}
+    const { data, total, totalFiltered} = await LevelService.getAllLevels(query);
+  return res.status( 200 ).json({
+    message: 'Levels retrieved successfully',
+    totalFiltered,
+    total,
+    page: query.page,
+    limit: query.limit,
+    data
+  });
 });
 export const getLevelById = catchAsync(async (req, res) => {
     const id = req.params.id;
     const level = await LevelService.getLevelById(id);
   return res.status(200).json({ message: 'Level retrieved successfully', data: level });
-}); 
+});
 export const updateLevelById = catchAsync(async (req, res) => {
     const id = req.params.id;
     const data = req.body;

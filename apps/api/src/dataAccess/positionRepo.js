@@ -3,9 +3,8 @@ export const create = async (data) => {
   const results = await Position.create(data);
   return results;
 };
-export const getAll = async () => {
-  const results = await Position.find();
-  return results;
+export const getAll = () => {
+  return Position.find();
 };
 export const getOne = async (id) => {
   const results = await Position.findById(id);
@@ -19,3 +18,9 @@ export const remove = async (id) => {
   const results = await Position.findByIdAndDelete(id);
   return results;
 }
+
+// Get count of all records (useful for pagination)
+export const countAll = () => Position.countDocuments();
+
+// Optionally, get count based on filters (for filtered total)
+export const countFiltered = (filter) => Position.countDocuments(filter);
