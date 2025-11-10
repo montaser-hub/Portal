@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
@@ -20,7 +21,7 @@ export default function ProfileOverviewCard({ currentUser, onSave }) {
         setUser(currentUser);
     }
   }, [currentUser]);
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPendingData((prev) => ({
