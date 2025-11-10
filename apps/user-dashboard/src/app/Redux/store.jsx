@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+import userSlice from "./slices/userSlice";
 
 const loaderSlice = createSlice({
   name: "loader",
@@ -20,6 +21,7 @@ export const { showLoader, hideLoader } = loaderSlice.actions;
 const myStore = configureStore({
   reducer: {
     loader: loaderSlice.reducer,
+    user: userSlice.reducer, 
   },
 });
 
