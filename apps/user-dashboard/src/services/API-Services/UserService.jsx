@@ -1,40 +1,3 @@
-// import api from "../api";
-
-// export const getMe = async () => {
-//   //  جرب تعديل المسار هنا
-//   const res = await api.get("/users/me");
-//   return res.data.data;
-// };
-
-// export const updateMe = async (data) => {
-//   const allowedFields = (({ firstName, lastName, email, phone }) => ({
-//     firstName,
-//     lastName,
-//     email,
-//     phone,
-//   })
-// )(data);
-
-//   const res = await api.patch("/users/updateMe", allowedFields);
-//   return res.data.data;
-// };
-
-// export const updateUserPhoto = async (photo) => {
-//   const formData = new FormData();
-//   if (photo) {
-//     formData.append("photo", photo);
-//   } else {
-//     formData.append("photo", "");
-//   }
-//   const res = await api.patch("/users/updateMe", formData, {
-//     headers: { "Content-Type": "multipart/form-data" },
-//   });
-//   return res.data.data;
-// };
-
-
-// V2
-
 import api from "../api";
 
 export const getMe = async () => {
@@ -56,7 +19,11 @@ export const updateMe = async (data) => {
 
 export const updateUserPhoto = async (photo) => {
   const formData = new FormData();
-  if (photo) formData.append("photo", photo);
+  if (photo) {
+    formData.append("photo", photo);
+  } else {
+    formData.append("photo", "");
+  }
   const res = await api.patch("/users/updateMe", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
