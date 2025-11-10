@@ -16,9 +16,17 @@ export const getSwapRequest = catchAsync( async ( req, res, next ) => {
 });
 
 // Get All swapRequests
-export const getSwapRequests = catchAsync(async (req, res, next) => {
-  const swapRequests = await swapRequestService.getAllSwapRequests();
-  res.status(200).json({ message: "swapRequests fetched successfully", data: swapRequests });
+export const getSwapRequests = catchAsync( async ( req, res, next ) => {
+  const query = {...req.query}
+  const {data, total, totalFiltered} = await swapRequestService.getAllSwapRequests(query);
+  res.status( 200 ).json( {
+    message: "swapRequests fetched successfully",
+    totalFiltered,
+    total,
+    limit: query.limit,
+    page: query.page,
+    data
+  } );
 });
 
 // Update swapRequest
@@ -34,12 +42,6 @@ export const deleteSwapRequest = catchAsync( async ( req, res, next ) => {
   const id = req.params.id
   await swapRequestService.deleteSwapRequest(id)
   res.status(200).json({ message: "swapRequest deleted successfully"});
-});
-
-// Delete All swapRequests
-export const deleteAllSwapRequests = catchAsync( async ( req, res, next ) => {
-  await swapRequestService.deleteAllSwapRequests()
-  res.status(200).json({ message: "All swapRequests deleted successfully"});
 });
 
 

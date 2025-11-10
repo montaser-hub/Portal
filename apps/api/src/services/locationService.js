@@ -1,5 +1,6 @@
 import * as locationRepo from '../dataAccess/locationRepo.js'
 import AppError from '../utils/AppError.js'
+import { getAllDocuments } from "./queryService.js"
 
 // Check same location
 export const isExists = async (name) => {
@@ -22,8 +23,9 @@ export const getLocation = async (id) => {
 }
 
 // Get All Locations
-export const getAllLocations = async () => {
-  return await locationRepo.findAll()
+export const getAllLocations = async (query) => {
+  const searchableFields = ["name", "street", "city", "state", "country", "postalCode"];
+  return await getAllDocuments(locationRepo, query, searchableFields)
 }
 
 // Update Location
@@ -39,10 +41,5 @@ export const deleteLocation = async (id) => {
   const location = await locationRepo.findById(id)
   if (!location) throw new AppError("Location not found.", 404)
   return await locationRepo.removeById(id)
-}
-
-// Delete All Locations
-export const deleteAllLocations = async () => {
-  return await locationRepo.deleteAll()
 }
 

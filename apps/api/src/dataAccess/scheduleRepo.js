@@ -24,8 +24,8 @@ export const findById = async (id) => {
     });
 };
 
-export const findAll = async () => {
-  return await Schedule.find().findById(id)
+export const findAll = () => {
+  return Schedule.find().findById(id)
     .populate({path: 'department'
     , select: 'name'
     })
@@ -44,3 +44,9 @@ export const findAll = async () => {
 export const deleteOne = async (id) => {
   return await Schedule.findByIdAndDelete(id);
 };
+
+// Get count of all records (useful for pagination)
+export const countAll = () => Schedule.countDocuments();
+
+// Optionally, get count based on filters (for filtered total)
+export const countFiltered = (filter) => Schedule.countDocuments(filter);
