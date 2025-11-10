@@ -1,5 +1,6 @@
 import * as shiftRepo from '../dataAccess/shiftRepo.js'
 import AppError from '../utils/AppError.js'
+import { getAllDocuments } from './queryService.js'
 
 export const createShift = async (data) => {
   return await shiftRepo.create(data)
@@ -11,8 +12,9 @@ export const getShift = async (id) => {
   return shift
 }
 
-export const getAllShifts = async () => {
-  return await shiftRepo.findAll()
+export const getAllShifts = async (queryParams) => {
+const searchableFields = ['shiftName', 'shiftType'];
+return await getAllDocuments( shiftRepo, queryParams, searchableFields);
 }
 
 export const updateShift = async (id, data) => {
