@@ -1,18 +1,14 @@
 import * as departmentRepo from '../dataAccess/departmentRepo.js';
 import AppError from '../utils/AppError.js';
+import { getAllDocuments } from './queryService.js';
 
 export const createDepartment = async (data) => {
-  if (!data) throw new AppError('Invalid department data', 400);
-  const department = await departmentRepo.create(data);
-  return department;
+  return await departmentRepo.create(data);
 };
 
-export const getAllDepartments = async () => {
-  const departments = await departmentRepo.getAll();
-  if (!departments || departments.length === 0) {
-    throw new AppError('No departments found', 404);
-  }
-  return departments;
+export const getAllDepartments = async (query) => {
+  const searchableFields = ['name'];
+  return await getAllDocuments(departmentRepo, query, searchableFields);
 };
 
 export const getDepartment = async (id) => {
@@ -37,10 +33,4 @@ export const deleteDepartment = async (id) => {
     throw new AppError('Department not found', 404);
   }
   return department;
-};
-
-export const deleteAllDepartments = async () => {
-   await departmentRepo.deleteAll();
-
-
 };

@@ -7,7 +7,6 @@ locationRouter
   .route('/')
   .get(locationController.getLocations)
   .post(locationController.addLocation)
-  .delete(locationController.deleteAllLocations);
 
 locationRouter
   .route('/:id')

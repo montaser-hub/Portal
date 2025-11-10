@@ -16,8 +16,8 @@ export const findById = async (id) => {
 }
 
 // Get All Locations
-export const findAll = async () => {
-  return await Location.find()
+export const findAll = () => {
+  return Location.find()
 }
 
 // Update Location
