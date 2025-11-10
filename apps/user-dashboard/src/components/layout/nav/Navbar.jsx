@@ -6,7 +6,6 @@ import Text from "../../common/Text";
 import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
 import { getMe } from "../../../services/API-Services/UserService";
-import Spinner from "../../common/Spinner2";
 import { useLocation } from "react-router-dom";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
@@ -56,17 +55,11 @@ useEffect(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [userMenuOpen]);
 
-  if (!currentUser) {
-    return (
-      <header className="bg-white border-b shadow-sm sticky top-0 z-20 flex items-center justify-center h-16">
-        <Spinner />
-      </header>
-    );
-  }
+
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className=" px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
           <div className="flex items-center gap-2">
@@ -90,7 +83,7 @@ useEffect(() => {
               setUserMenuOpen={setUserMenuOpen}
               currentUser={currentUser}
               getUserInitials={getUserInitials}
-              profileImage = {currentUser.photo}
+              // profileImage = {currentUser.photo}
 
             />
 
@@ -116,7 +109,7 @@ useEffect(() => {
           setMobileMenuOpen={setMobileMenuOpen}
           unreadCount={unreadCount}
           currentUser={currentUser}
-          profileImage={currentUser.photo}
+          // profileImage={currentUser.photo}
         />
       </AnimatePresence>
     </header>

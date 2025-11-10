@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { LogIn, Eye, EyeOff, Calendar } from "lucide-react";
 import { login } from "../../services/API-Services/AuthService";
-import { showLoader, hideLoader } from "../../app/store";
+import { showLoader, hideLoader } from "../../app/Redux/store";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import Text from "../../components/common/Text";
@@ -59,9 +59,9 @@ const handleSubmit = (e) => {
   if (!errors.email && !errors.password && email && password) {
     dispatch(showLoader());
     login({ email, password })
-      .then((response) => {
-        console.log("Login response:", response);
-        if (response.token) {
+      .then(() => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
           toast.success("Welcome! To dashboard", {
             duration: 3000,
             position: "top-right",
@@ -75,7 +75,6 @@ const handleSubmit = (e) => {
         }
       })
       .catch((err) => {
-        console.error("Login Error:", err);
         let msg = "Login failed. Please try again.";
         if (err.response) {
           if (err.response.status === 401 || err.response.status === 400) {
@@ -94,6 +93,7 @@ const handleSubmit = (e) => {
       });
   }
 };
+
 
 
 

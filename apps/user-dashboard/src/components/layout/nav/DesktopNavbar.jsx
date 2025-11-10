@@ -111,7 +111,7 @@ export default function DesktopNavbar({
   }
 
   return (
-    <div className="hidden md:flex items-center flex-1">
+    <div className="hidden md:flex items-center   justify-between w-full px-4">
       {/* Navigation Links */}
       <nav className="flex items-center gap-4 ml-12">
         {navigation.map((item) => {
@@ -140,7 +140,7 @@ export default function DesktopNavbar({
       </nav>
 
       {/* Right Section */}
-      <div className="flex items-center gap-6 ml-auto">
+      <div className="flex items-center gap-6 ">
         {/* Notifications */}
         <div ref={notifRef} className="relative">
           <div

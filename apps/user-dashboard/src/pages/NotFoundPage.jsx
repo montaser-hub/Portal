@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function NotFoundPage({ isAuthenticated }) {
 
   const navigate = useNavigate();
-  const myToken = localStorage.getItem("token");
+  const myToken = sessionStorage.getItem("token");
   const handleGoBack = () => {
     if (myToken) {
       navigate("/Dashboard");
