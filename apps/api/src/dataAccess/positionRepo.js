@@ -3,7 +3,7 @@ export const create = async (data) => {
   const results = await Position.create(data);
   return results;
 };
-export const getAll = () => {
+export const findAll = () => {
   return Position.find();
 };
 export const getOne = async (id) => {
