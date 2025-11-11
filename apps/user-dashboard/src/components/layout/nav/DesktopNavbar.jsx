@@ -1,17 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Bell, User, LogOut, Calendar, CheckCircle, RefreshCw, Megaphone, AlertTriangle } from "lucide-react";
+import {
+  Bell,
+  User,
+  LogOut,
+  Calendar,
+  CheckCircle,
+  RefreshCw,
+  Megaphone,
+  AlertTriangle,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
+import { getMe } from "../../../services/API-Services/UserService";
+import { logout } from "../../../services/API-Services/AuthService";
 
 const mockNotifications = [
-  { id: 1, title: "New message from Support Team", message: "Please check your inbox.", type: "Announcement", read: false },
-  { id: 2, title: "Password changed successfully", message: "Your password was updated.", type: "Credential Expiring", read: true },
-  { id: 3, title: "Schedule updated", message: "Your schedule has been changed.", type: "Schedule Change", read: false },
-  { id: 3, title: "Schedule updated", message: "Your schedule has been changed.", type: "Swap Approved", read: false },
-
+  {id: 1,title: "New message from Support Team",message: "Please check your inbox.",type: "Announcement",read: false,},
+  {id: 2,title: "Password changed successfully",message: "Your password was updated.",type: "Credential Expiring",read: true,},
+  {id: 3,title: "Schedule updated",message: "Your schedule has been changed.",type: "Schedule Change",read: false,},
+  {id: 4,title: "Swap Approved",message: "Your swap request was approved.",type: "Swap Approved",read: false,}
 ];
 
 function getNotificationIcon(type) {
@@ -38,21 +48,41 @@ export default function DesktopNavbar({
   unreadCount,
   userMenuOpen,
   setUserMenuOpen,
-  currentUser,
+  profileImage,
   getUserInitials,
 }) {
-  const [notifMenuOpen, setNotifMenuOpen] = React.useState(false);
-  const latestNotifications = mockNotifications.slice(0, 6);
-  const notifRef = React.useRef();
-  const userRef = React.useRef();
-  React.useEffect(() => {
+  const [notifMenuOpen, setNotifMenuOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const notifRef = useRef();
+  const userRef = useRef();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getMe();
+        setUserData(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
-      if (notifRef.current && !notifRef.current.contains(event.target)) setNotifMenuOpen(false);
-      if (userRef.current && !userRef.current.contains(event.target)) setUserMenuOpen(false);
+      if (notifRef.current && !notifRef.current.contains(event.target))
+        setNotifMenuOpen(false);
+      if (userRef.current && !userRef.current.contains(event.target))
+        setUserMenuOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (!userData) {
+    return null;
+  }
+
   return (
     <div className="hidden md:flex items-center flex-1">
       {/* Navigation Links */}
@@ -81,6 +111,7 @@ export default function DesktopNavbar({
           );
         })}
       </nav>
+
       {/* Right Section */}
       <div className="flex items-center gap-6 ml-auto">
         {/* Notifications */}
@@ -113,8 +144,8 @@ export default function DesktopNavbar({
                 transition={{ duration: 0.2 }}
                 className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg py-2 z-30"
               >
-                {latestNotifications.length > 0 ? (
-                  latestNotifications.map((n) => (
+                {mockNotifications.length > 0 ? (
+                  mockNotifications.map((n) => (
                     <div
                       key={n.id}
                       onClick={() => setNotifMenuOpen(false)}
@@ -122,13 +153,23 @@ export default function DesktopNavbar({
                     >
                       <div>{getNotificationIcon(n.type)}</div>
                       <div className="flex-1">
-                        <Text as="h4" content={n.title} MyClass="font-medium text-sm text-gray-800" />
-                        <Text as="p" content={n.message} MyClass="text-xs text-gray-500 mt-1" />
+                        <Text
+                          as="h4"
+                          content={n.title}
+                          MyClass="font-medium text-sm text-gray-800"
+                        />
+                        <Text
+                          as="p"
+                          content={n.message}
+                          MyClass="text-xs text-gray-500 mt-1"
+                        />
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="px-4 py-4 text-center text-gray-500 text-sm">No new notifications</div>
+                  <div className="px-4 py-4 text-center text-gray-500 text-sm">
+                    No new notifications
+                  </div>
                 )}
                 <div className="mt-2">
                   <Link
@@ -146,6 +187,7 @@ export default function DesktopNavbar({
             )}
           </AnimatePresence>
         </div>
+
         {/* User Menu */}
         <div ref={userRef} className="relative">
           <div
@@ -157,12 +199,22 @@ export default function DesktopNavbar({
               setNotifMenuOpen(false);
             }}
           >
-            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-[#0F7B8A]">
-              {getUserInitials(currentUser.name)}
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-12 h-12 rounded-full object-cover transition-opacity duration-200"
+              />):(
+            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
+                <User className="h-12 w-12 text-gray-300" />
             </div>
-            <Text as="span" content={currentUser.name.split(" ")[0]} MyClass="text-sm font-medium text-gray-600" />
+              )}
+            <Text
+              as="span"
+              content={userData.firstName}
+              MyClass="text-sm font-medium text-gray-600"
+            />
           </div>
-
           <AnimatePresence>
             {userMenuOpen && (
               <motion.div
@@ -174,15 +226,22 @@ export default function DesktopNavbar({
               >
                 <div className="flex items-center gap-2 px-4 py-2 border-b mb-3">
                   <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#0F7B8A] text-white font-semibold">
-                    {getUserInitials(currentUser.name)}
+                    {getUserInitials(userData.firstName + " " + userData.lastName)}
                   </div>
                   <div className="flex flex-col">
-                    <Text as="span" content={currentUser.name} MyClass="font-medium text-sm text-gray-500 flex justify-center" />
-                    <Badge variant="outline">{currentUser.role}</Badge>
-                    <Text as="span" content={currentUser.email} MyClass="text-xs text-gray-500" />
+                    <Text
+                      as="span"
+                      content={`${userData.firstName} ${userData.lastName}`}
+                      MyClass="font-medium text-sm text-gray-500 flex justify-center"
+                    />
+                    <Badge variant="outline">{userData.role}</Badge>
+                    <Text
+                      as="span"
+                      content={userData.email}
+                      MyClass="text-xs text-gray-500"
+                    />
                   </div>
                 </div>
-
                 <Link
                   to="/Profile"
                   onClick={() => {
@@ -190,18 +249,22 @@ export default function DesktopNavbar({
                     setUserMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 text-sm transition duration-300 ${
-                    currentPage === "profile" ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
+                    currentPage === "profile"
+                      ? "bg-[#0F7B8A] text-white"
+                      : "text-gray-700 hover:bg-[#E0F4F6]"
                   }`}
                 >
                   <User className="h-4 w-4" /> Profile
                 </Link>
-                <Link
-                  to="/"
-                  onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
+                <button
+                  onClick={() => {
+                    setUserMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out
-                </Link>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
