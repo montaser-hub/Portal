@@ -5,7 +5,7 @@ const handleCastErrorDB = err => {
   return new AppError(message, 400);
 };
 const handleDuplicateFieldsDB = err => {
-  const value = err.keyValue.name;
+  const value = err.keyValue ? Object.values(err.keyValue)[0] : 'unknown';;
   console.log(value);
   const message = `Duplicate field value for : ${value}, please enter another value`;
   return new AppError(message, 400);
@@ -14,7 +14,7 @@ const handleDuplicateFieldsDB = err => {
 const handleValidationErrorDB = err => {
   // Ensure err.errors exists before trying to access it
   if (err.errors) {
-    const errors = Object.values(err.errors).map(el => el.message);
+    const errors = Object.values(err.errors|| {}).map(el => el.message);
     const message = `Invalid input data. ${errors.join('. ')}`;
     return new AppError(message, 400);
   }
@@ -23,7 +23,7 @@ const handleValidationErrorDB = err => {
 };
 const handleJWTError = () =>
   new AppError('Invalid token, please login again.', 401);
-const handleJWTExpierdError = () =>
+const handleJWTExpiredError = () =>
   new AppError('Your token has expired, please login again.', 401);
 const sendErrorDev = (err, req, res) => {
   //A) API
@@ -37,7 +37,7 @@ const sendErrorDev = (err, req, res) => {
   }
   //B) Render the error on the client
   console.error('ERROR: 💥', err);
-  return res.status(err.statusCode).render('error', {
+  return res.status(err.statusCode).json({
     title: 'Something went wrong',
     msg: err.message
   });
@@ -65,7 +65,7 @@ const sendErrorProd = (err, req, res) => {
   //B) Render the error on the client
   //(B.A) operational, trusted error: send message to client
   if (err.isOperational) {
-    return res.status(err.statusCode).render('error', {
+    return res.status(err.statusCode).json({
       title: 'Something went wrong',
       msg: err.message
     });
@@ -75,7 +75,7 @@ const sendErrorProd = (err, req, res) => {
   console.error('ERROR: 💥', err);
 
   //B_2) Send generic message to client
-  return res.status(err.statusCode).render('error', {
+  return res.status(err.statusCode).json({
     title: 'Something went wrong',
     msg: 'Something went wrong'
   });
@@ -97,7 +97,7 @@ export default (err, req, res, next) => {
       error = handleValidationErrorDB(error);
     }
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
-    if (error.name === 'TokenExpiredError') error = handleJWTExpierdError();
+    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
     sendErrorProd(error, req, res);
   }
 };

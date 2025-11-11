@@ -64,7 +64,9 @@ export const updateUser = catchAsync( async ( req, res, next ) => {
 });
 
 
-export const deleteUser = catchAsync(async (req, res, next) => {
+export const deleteUser = catchAsync( async ( req, res, next ) => {
+  const id = req.params.id
+  await userService.deleteUser(id)
   res.status(200).json({ message: "User deleted successfully" });
 });
 
