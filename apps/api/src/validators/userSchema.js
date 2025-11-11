@@ -50,9 +50,7 @@ export const updatePasswordSchema = Joi.object({
 });
 
 export const createUserSchema = Joi.object( {
-  employeeId: Joi.string()
-    .required()
-    .allow( '', null ),
+  employeeId: Joi.string().required(),
   nickname: Joi.string()
     .min(3)
     .max(10)
@@ -109,10 +107,6 @@ export const createUserSchema = Joi.object( {
 });
 
 export const updateUserSchema = Joi.object( {
-  employeeId: Joi.string()
-    .min(3)
-    .optional()
-    .allow( '', null ),
   nickname: Joi.string()
     .min(3)
     .max(10)

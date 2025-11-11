@@ -39,6 +39,9 @@ export const findById = async (id) => {
   })
 }
 
+export const deleteOne = async (id) => {
+  return await User.findByIdAndDelete(id);
+}
 
 export const findAll = () => {
   return User.find()

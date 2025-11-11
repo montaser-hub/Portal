@@ -229,3 +229,66 @@ npx nx g @nx/angular:directive apps/Admin-Portal/src/app/shared/directives/auto-
 ─────────────────────────────
 ✅ END OF DOCUMENT
 ─────────────────────────────
+
+
+
+─────────────────────────────
+✅ One-Liner to Stop + Rebuild + Run
+─────────────────────────────
+
+docker stop $(docker ps -q) && \
+docker rm $(docker ps -a -q -f status=exited) && \
+pnpm nx build api --prod && \
+docker build -t test-api -f apps/api/Dockerfile . && \
+docker run -p 3000:3000 -e PORT=3000 -e DB_URI="mongodb+srv://Portal:uxztZ2uraqmjCMgH@cluster0.8rds8tt.mongodb.net/Portal?retryWrites=true&w=majority" -e NODE_ENV=production test-api
+
+............
+test local
+..................
+
+
+ docker run -p 3000:3000 \
+>   -e PORT=3000 \
+>   -e NODE_ENV=production \
+>   -e DB_URI="mongodb+srv://Portal:uxztZ2uraqmjCMgH@cluster0.8rds8tt.mongodb.net/Portal?retryWrites=true" \
+>   -e JWT_SECRET=supersecretkey_PORTAL \
+>   -e JWT_EXPIRES_IN=24h \
+>   -e JWT_COOKIE_EXPIRES_IN=1 \
+>   -e EMAIL_FROM=montaserrelshrief@gmail.com \
+>   -e SENDGRID_USERNAME=apikey \
+>   -e SENDGRID_PASSWORD=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 \
+>   -e NX_CLOUD_ACCESS_TOKEN=GQzNGU0ZmMtYzI5MS00ZjA5LWFkYmQtN2JkNTBhMTE2NDNh \
+>   test-api
+
+............................
+Rebuild & Deploy Final Image
+...........................
+
+# Rebuild
+pnpm nx build api --prod
+docker build -t test-api -f apps/api/Dockerfile .
+
+# Push to Heroku
+heroku container:login
+heroku container:push web --app portal-api-backend
+heroku container:release web --app portal-api-backend
+heroku ps:scale web=1 --app portal-api-backend
+
+
+.....
+heroku container:login
+
+docker buildx create --use 2>/dev/null || true
+
+docker buildx build \
+  --platform linux/amd64 \
+  --provenance false \
+  --push \
+  -t registry.heroku.com/portal-api-backend/web:latest \
+  -f apps/api/Dockerfile .
+
+heroku container:release web --app portal-api-backend
+
+heroku ps:scale web=1 --app portal-api-backend
+
+heroku open --app portal-api-backend

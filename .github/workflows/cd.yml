@@ -1,0 +1,38 @@
+name: CD to Heroku
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm nx build api --configuration=production
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          echo "$HEROKU_API_KEY" | dk login --username=_ --password-stdin registry.heroku.com
+          docker buildx create --use
+          docker buildx build \
+            --platform linux/amd64 \
+            --provenance false \
+            --push \
+            -t registry.heroku.com/portal-api-backend-smartshift/web:latest \
+            -f apps/api/Dockerfile .
+          heroku container:release web --app portal-api-backend-smartshift

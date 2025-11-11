@@ -1,0 +1,4 @@
+node_modules
+.nx
+dist (except dist/apps/api, but COPY handles)
+.git
