@@ -6,7 +6,7 @@ export const create = async (data) => {
   return results;
 };
 
-export const getAll = () => {
+export const findAll = () => {
   return SubDepartment.find()
     .populate('department', 'name')
     .populate( 'subManager', 'firstName lastName role');
