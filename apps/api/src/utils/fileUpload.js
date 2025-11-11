@@ -23,7 +23,7 @@ export const resizeAndSaveImage = async (file, options = {}) => {
 
   if (!file) return null;
 
-  const filename = `${prefix}-${Date.now()}.jpeg`;
+  const filename = `${prefix}-${Date.now()}-${Math.floor(Math.random()*1e4)}.jpeg`;
 
 
   // Process and save image
