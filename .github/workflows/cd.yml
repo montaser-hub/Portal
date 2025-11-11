@@ -30,6 +30,6 @@ jobs:
             --platform linux/amd64 \
             --provenance false \
             --push \
-            -t registry.heroku.com/portal-api-backend-smartshift/web:latest \
+            -t registry.heroku.com/smartshift/web:latest \
             -f apps/api/Dockerfile .
           heroku container:release web --app portal-api-backend-smartshift
