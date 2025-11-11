@@ -15,7 +15,7 @@ const s3 = new S3Client({
 export const resizeAndSaveImage = async (file, options = {}) => {
   const {
     folder = 'users',
-    prefix = 'user',
+    prefix,
     width = 500,
     height = 500,
     quality = 90,
@@ -23,7 +23,7 @@ export const resizeAndSaveImage = async (file, options = {}) => {
 
   if (!file) return null;
 
-  const filename = `${prefix}-${Date.now()}-${Math.floor(Math.random()*1e4)}.jpeg`;
+  const filename = `${prefix}-${Date.now()}.jpeg`;
 
 
   // Process and save image
