@@ -62,7 +62,11 @@ export const updatePassword = async ( email, data ) => {
   return authService.createTokenPayload(user);
 }
 
-
+export const deleteUser = async ( id ) => {
+  const user = await userRepo.deleteOne( id )
+  if ( !user ) throw new AppError( "User Not Found", 404 )
+  return user
+}
 
 
 

@@ -13,13 +13,18 @@ ENV PORT=3000
 
 WORKDIR /app
 
-COPY package*.json ./
+# Install pnpm globally
+RUN npm install -g pnpm@10.19.0  # Match your CI version
 
-COPY dist/apps/api *
+COPY package*.json pnpm-lock.yaml ./
+
+COPY dist/apps/api ./
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.
 
-RUN npm --omit=dev -f install
+# RUN npm --omit=dev -f install
+# Use pnpm for install (omit dev deps)
+RUN pnpm install --prod --frozen-lockfile
 
 CMD [ "node", "main.js" ]

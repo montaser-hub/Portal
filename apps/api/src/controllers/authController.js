@@ -7,7 +7,7 @@ import AppError from '../utils/AppError.js';
 
 export const login = catchAsync( async ( req, res, next ) => {
   const { email, nickname, password } = req.body;
-  console.log(req);
+
   const { token, user } = await userService.login( email, nickname, password )
 
   // Set cookie
