@@ -10,7 +10,7 @@ export const resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = await resizeAndSaveImage(req.file, {
-    folder: "assets/images/users",
+    folder: "users",
     prefix: `user-${req.user.id}`,
   });
 

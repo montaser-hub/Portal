@@ -1,6 +1,12 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
+  "projects": {
+    "Admin-Portal": "apps/Admin-Portal",
+    "user-dashboard": "apps/Admin-dashboard",
+    "api": "apps/api"
+
+  },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
