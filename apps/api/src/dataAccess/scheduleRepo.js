@@ -25,7 +25,7 @@ export const findById = async (id) => {
 };
 
 export const findAll = () => {
-  return Schedule.find().findById(id)
+  return Schedule.find()
     .populate({path: 'department'
     , select: 'name'
     })
