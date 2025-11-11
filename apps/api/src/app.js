@@ -37,6 +37,18 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Portal SmartShift API is running',
+    version: '1.0.0',
+    time: new Date().toISOString(),
+    endpoints: {
+      login: '/api/v1/users/login',
+      docs: '/api-docs'
+    }
+  });
+});
 app.use( '/api/v1/users', userRouter);
 app.use( '/api/v1/departments', departmentRouter);
 app.use( '/api/v1/subDepartments', subDepartmentRouter);
@@ -47,10 +59,8 @@ app.use('/api/v1/positions', positionRouter);
 app.use('/api/v1/levels', levelRouter);
 app.use( '/api/v1/swapRequests', swapRequestRouter);
 
-
-
 app.all('*', (req, res, next) => {
-next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
+  next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
 });
 
 

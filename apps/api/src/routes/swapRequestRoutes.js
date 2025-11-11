@@ -9,6 +9,7 @@ swapRequestRouter
   .route('/')
   .get(swapRequestController.getSwapRequests)
   .post(swapRequestController.addSwapRequest)
+
 swapRequestRouter
   .route('/:id')
   .get(swapRequestController.getSwapRequest)
