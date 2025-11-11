@@ -3,7 +3,7 @@ export const create = async (data) => {
   const results = await Level.create(data);
   return results;
 }
-export const getAll =  () => {
+export const findAll =  () => {
   return Level.find().populate({
     path: 'Position',
     select: '-_id name'

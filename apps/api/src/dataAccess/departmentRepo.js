@@ -3,7 +3,7 @@ import Department from '../models/departmentModel.js';
 export const create = async(data) => {
   return await Department.create(data);
 };
-export const getAll = () => {
+export const findAll = () => {
   return Department.find()
     .populate( {
     path: 'manager',
