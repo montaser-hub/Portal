@@ -1,8 +1,9 @@
-import axios from "axios";
-import myStore from "../app/Redux/store";
-import { showLoader, hideLoader } from "../app/Redux/store";
+import axios from 'axios';
+import myStore from '../app/Redux/store';
+import { showLoader, hideLoader } from '../app/Redux/store';
 
-const baseURL = import.meta.env.VITE_POTRAL_API_URL;
+const baseURL =
+  process.env.VITE_POTRAL_API_URL || 'http://localhost:3000/api/v1';
 
 const api = axios.create({
   baseURL,
@@ -14,7 +15,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     myStore.dispatch(showLoader());
-    const myToken = sessionStorage.getItem("token");
+    const myToken = sessionStorage.getItem('token');
     if (myToken) {
       config.headers.Authorization = `Bearer ${myToken}`;
     }
@@ -35,7 +36,7 @@ api.interceptors.response.use(
   (error) => {
     myStore.dispatch(hideLoader());
     if (error.response && error.response.status === 401) {
-      sessionStorage.removeItem("token");
+      sessionStorage.removeItem('token');
     }
     return Promise.reject(error);
   }
