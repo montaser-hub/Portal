@@ -41,7 +41,6 @@ export const resizeAndSaveImage = async (file, options = {}) => {
       Key: `${folder}/${filename}`,
       Body: buffer,
       ContentType: "image/jpeg",
-      ACL: "public-read",
     };
 
     await s3.send(new PutObjectCommand(params));
