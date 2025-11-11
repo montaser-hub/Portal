@@ -31,7 +31,7 @@ export const resizeAndSaveImage = async (file, options = {}) => {
     .resize(width, height)
     .toFormat("jpeg")
     .jpeg({ quality })
-    .toFile( filepath );
+    .toBuffer()
 
   const uploadTarget = process.env.UPLOAD_TARGET || process.env.NODE_ENV;
   if (uploadTarget === "s3" || uploadTarget === "production") {
