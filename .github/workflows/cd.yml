@@ -9,17 +9,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10.19.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
+
       - run: pnpm install --frozen-lockfile
+
       - run: pnpm nx build api --configuration=production
+
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
+
       - name: Deploy to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -32,4 +38,4 @@ jobs:
             --push \
             -t registry.heroku.com/smartshift/web:latest \
             -f apps/api/Dockerfile .
-          heroku container:release web --app portal-api-backend-smartshift
+          heroku container:release web --app smartshift
