@@ -14,7 +14,9 @@ import globalErrorHandler from './controllers/errorController.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
+
 const app = express();
+
 app.use( cors(
   {
     origin: ['http://localhost:4200', 'http://localhost:3001'],
@@ -22,7 +24,9 @@ app.use( cors(
   },
 ) );
 app.use(cookieParser());
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -58,6 +62,7 @@ app.use( '/api/v1/swapRequests', swapRequestRouter);
 app.all('*', (req, res, next) => {
   next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));
 });
+
 
 app.use(globalErrorHandler);
 

@@ -1,2 +1,0 @@
-
-//main store  for redux
