@@ -2,7 +2,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScheduleModal({ isOpen, editing, data, setData, onClose, onSave, SHIFTS, STATUSES }) {
+export default function ScheduleModal({ isOpen, editing, data, setData, onClose, onSave, SHIFTS, STATUSES, SUBDEPARTMENTS }) {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -38,9 +38,21 @@ export default function ScheduleModal({ isOpen, editing, data, setData, onClose,
 
               {/* Sub-Department ثابتة */}
               <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Sub Department</label>
-                <input type="text" value={data.subdepartment} readOnly className="border p-2 rounded bg-gray-100 text-gray-700" />
-              </div>
+              <label className="text-gray-600 font-medium">Sub Department</label>
+              <select
+                name="subdepartment"
+                value={data.subdepartment}
+                onChange={(e) => setData(prev => ({ ...prev, subdepartment: e.target.value }))}
+                className="border p-2 rounded"
+              >
+                <option value="">Select Sub Department</option>
+                {SUBDEPARTMENTS.map(sd => (
+                  <option key={sd} value={sd}>
+                    {sd}
+                  </option>
+                ))}
+              </select>
+            </div>
 
               {/* Shift Dropdown */}
               <div className="flex flex-col gap-1">

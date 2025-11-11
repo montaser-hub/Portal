@@ -2,12 +2,13 @@ import React, { useState, useMemo } from "react";
 import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
-import {  STATUSES, TABLE_COLUMNS, SHIFTS } from "../components/common/constants";
+import {  STATUSES, TABLE_COLUMNS, SHIFTS, SUBDEPARTMENTS } from "../components/common/constants";
 
 export default function Schedules() {
   const [schedules, setSchedules] = useState([]);
-  const [selectedShift, setSelectedShift] = useState(""); // فلترة حسب الشيفت
+  const [selectedShift, setSelectedShift] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedSubDept, setSelectedSubDept] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [currentData, setCurrentData] = useState({});
@@ -28,9 +29,10 @@ export default function Schedules() {
   const filteredSchedules = useMemo(
     () => schedules.filter(s =>
       (!selectedShift || s.shift === selectedShift) &&
-      (!selectedStatus || s.status === selectedStatus)
+      (!selectedStatus || s.status === selectedStatus) &&
+      (!selectedSubDept || s.subdepartment === selectedSubDept)
     ),
-    [schedules, selectedShift, selectedStatus]
+    [schedules, selectedShift, selectedStatus, selectedSubDept]
   );
 
   const openModal = (schedule = null) => {
@@ -77,6 +79,22 @@ export default function Schedules() {
 
       {/* Filters */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 border border-gray-200 rounded-xl bg-white p-4">
+                <div className="flex flex-col gap-1">
+          <h4 className="text-gray-700">Sub Department</h4>
+          <select
+            value={selectedSubDept}
+            onChange={(e) => setSelectedSubDept(e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-gray-700"
+          >
+            <option value="">All</option>
+            {SUBDEPARTMENTS.map((sd) => (
+              <option key={sd} value={sd}>
+                {sd}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="flex items-center gap-2">
           <Filter className="text-teal-700" size={20} />
           <div className="flex flex-col gap-1 w-full">
@@ -150,6 +168,7 @@ export default function Schedules() {
         onSave={saveSchedule}
         STATUSES={STATUSES}
         SHIFTS={SHIFTS}
+        SUBDEPARTMENTS={SUBDEPARTMENTS}
       />
       <DeleteConfirm
         isOpen={showDeleteConfirm}

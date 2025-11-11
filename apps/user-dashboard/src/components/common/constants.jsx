@@ -1,6 +1,13 @@
 
 export const STATUSES = ["scheduled", "completed", "cancelled"];
 export const SHIFTS = ["Morning", "Afternoon", "Night"];
+
+  export const SUBDEPARTMENTS = [
+    "Central Health Care",
+    "Cardiac ICU",
+    "Heart Imaging Unit",
+    "Rehabilitation Center"
+  ];
 export const TABLE_COLUMNS = [
   {
     key: "department",
