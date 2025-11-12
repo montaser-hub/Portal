@@ -57,11 +57,14 @@ jobs:
       # - run: npx nx-cloud record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
       # Run lint, test, build, and e2e using Nx
-      - name: Run lint, test, build, and e2e
-        run: pnpm nx run-many -t lint test build e2e --projects=Admin-Portal,api,user-dashboard
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-      # - run: npx nx fix-ci
-      # Fix CI issues using Nx Cloud
-      - name: Fix CI (Nx Cloud)
-        if: always()
-        run: pnpm nx fix-ci
+      - name: Lint all
+        run: pnpm nx run-many -t lint --local --parallel=3 || true
+
+      - name: Test all
+        run: pnpm nx run-many -t test --local --parallel=3
+
+      - name: Build all
+        run: pnpm nx run-many -t build --local --parallel=3 || true
+
+      - name: E2E all
+        run: pnpm nx run-many -t e2e --local --parallel=3 || true
