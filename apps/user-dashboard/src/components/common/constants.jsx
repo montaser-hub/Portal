@@ -8,23 +8,21 @@ export const SHIFTS = ["Morning", "Afternoon", "Night"];
     "Heart Imaging Unit",
     "Rehabilitation Center"
   ];
+
 export const TABLE_COLUMNS = [
   {
     key: "department",
     header: "Department",
-    render: (s) => <span className="bg-teal-100 text-teal-800 rounded-xl px-3 py-1">{s.department}</span>,
+    render: (item) => <span>{item.department?.name || "-"}</span>,
   },
   {
-    key: "subdepartment",
+    key: "subDepartment",
     header: "Sub Department",
-    render: (s) => <span className="bg-teal-100 text-teal-800 rounded-xl px-3 py-1">{s.subdepartment}</span>,
+    render: (item) => <span>{item.subDepartment?.name || "-"}</span>,
   },
   { key: "shift", header: "Shift" },
   { key: "date", header: "Date" },
-  {
-    key: "status",
-    header: "Status",
-    render: (s) => {
+  {   key: "status", header: "Status", render: (s) => {
       const statusClasses =
         s.status === "scheduled"
           ? "bg-teal-100 text-teal-700"
@@ -34,5 +32,9 @@ export const TABLE_COLUMNS = [
       return <span className={`px-3 py-1 rounded-full text-sm capitalize ${statusClasses}`}>{s.status}</span>;
     },
   },
-  { key: "actions", header: "Actions", className: "text-center" },
+  {
+    key: "actions",
+    header: "Actions",
+    className: "text-center"
+  },
 ];
