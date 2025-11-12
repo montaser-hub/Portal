@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import path from 'path';
 
 export default defineConfig(({ mode }) => ({
   root: __dirname,
@@ -16,6 +17,11 @@ export default defineConfig(({ mode }) => ({
     host: 'localhost',
   },
   plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   define: {
     'process.env.VITE_POTRAL_API_URL': JSON.stringify(
       process.env.VITE_POTRAL_API_URL
