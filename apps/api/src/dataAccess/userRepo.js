@@ -57,8 +57,6 @@ export const findByToken = async (hashedToken) => {
   })
 }
 
-// Get count of all records (useful for pagination)
 export const countAll = () => User.countDocuments();
 
-// Optionally, get count based on filters (for filtered total)
 export const countFiltered = (filter) => User.countDocuments(filter);

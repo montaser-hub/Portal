@@ -19,8 +19,6 @@ export const remove = async (id) => {
   return results;
 }
 
-// Get count of all records (useful for pagination)
 export const countAll = () => Position.countDocuments();
 
-// Optionally, get count based on filters (for filtered total)
 export const countFiltered = (filter) => Position.countDocuments(filter);
