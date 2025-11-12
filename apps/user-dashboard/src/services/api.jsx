@@ -2,8 +2,7 @@ import axios from 'axios';
 import myStore from '../app/Redux/store';
 import { showLoader, hideLoader } from '../app/Redux/store';
 
-const baseURL =
-  process.env.VITE_POTRAL_API_URL || 'http://localhost:3000/api/v1';
+const baseURL = process.env.VITE_POTRAL_API_URL ;
 
 const api = axios.create({
   baseURL,

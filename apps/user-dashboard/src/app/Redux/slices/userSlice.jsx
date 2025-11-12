@@ -20,21 +20,18 @@ const userSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // عند بدء الطلب: حالة التحميل
       .addCase(fetchMe.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      // عند نجاح الطلب: تخزين البيانات
       .addCase(fetchMe.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload; // البيانات التي أرجعتها getMe
+        state.user = action.payload;
       })
-      // عند فشل الطلب: تخزين الخطأ
       .addCase(fetchMe.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user data";
-        state.user = null; // مسح بيانات المستخدم عند الفشل
+        state.user = null; 
       });
   },
 });
