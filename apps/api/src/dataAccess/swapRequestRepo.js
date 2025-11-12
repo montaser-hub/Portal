@@ -38,8 +38,6 @@ export const removeById = async (id) => {
   return await SwapRequest.findByIdAndDelete(id)
 }
 
-// Get count of all records (useful for pagination)
 export const countAll = () => SwapRequest.countDocuments();
 
-// Optionally, get count based on filters (for filtered total)
 export const countFiltered = (filter) => SwapRequest.countDocuments(filter);

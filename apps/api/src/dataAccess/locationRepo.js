@@ -35,3 +35,6 @@ export const deleteAll = async () => {
   return await Location.deleteMany()
 }
 
+export const countAll = () => Location.countDocuments();
+
+export const countFiltered = (filter) => Location.countDocuments(filter);

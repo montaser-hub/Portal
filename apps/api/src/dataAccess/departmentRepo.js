@@ -24,3 +24,7 @@ export const update = async (id, data) => {
 export const Delete = async(id) => {
   return await Department.findByIdAndDelete(id);
 };
+
+export const countAll = () => Department.countDocuments();
+
+export const countFiltered = (filter) => Department.countDocuments(filter);

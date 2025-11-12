@@ -26,8 +26,6 @@ export const findAll = () => {
     .populate('subDepartment', 'name');
 };
 
-// Get count of all records (useful for pagination)
 export const countAll = () => Shift.countDocuments();
 
-// Optionally, get count based on filters (for filtered total)
 export const countFiltered = (filter) => Shift.countDocuments(filter);

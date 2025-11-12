@@ -45,8 +45,6 @@ export const deleteOne = async (id) => {
   return await Schedule.findByIdAndDelete(id);
 };
 
-// Get count of all records (useful for pagination)
 export const countAll = () => Schedule.countDocuments();
 
-// Optionally, get count based on filters (for filtered total)
 export const countFiltered = (filter) => Schedule.countDocuments(filter);
