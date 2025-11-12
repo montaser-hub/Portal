@@ -16,9 +16,6 @@ export default defineConfig(({ mode }) => ({
     host: 'localhost',
   },
   plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
-  resolve: {
-    alias: {},
-  },
   define: {
     'process.env.VITE_POTRAL_API_URL': JSON.stringify(
       process.env.VITE_POTRAL_API_URL
