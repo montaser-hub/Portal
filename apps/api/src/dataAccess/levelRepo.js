@@ -25,3 +25,7 @@ export const remove = async (id) => {
   const results = await Level.findByIdAndDelete(id);
   return results;
 }
+
+export const countAll = () => Level.countDocuments();
+
+export const countFiltered = (filter) => Level.countDocuments(filter);
