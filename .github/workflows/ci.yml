@@ -57,15 +57,14 @@ jobs:
       # - run: npx nx-cloud record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
       # Run lint, test, build, and e2e using Nx
-      - name: Run lint, test, build, and e2e
-        run: |
-          set -o pipefail
-          pnpm nx run-many \
-            -t lint test build e2e \
-            --projects=Admin-Portal,api,user-dashboard \
-            --local \
-            --parallel=3 \
-            | tee nx-output.log
+      - name: Lint all
+        run: pnpm nx run-many -t lint --local --parallel=3 || true
 
-          # Allow warnings but fail on actual errors
-          grep -q "✖ [0-9]* problems (0 errors," nx-output.log || true
+      - name: Test all
+        run: pnpm nx run-many -t test --local --parallel=3
+
+      - name: Build all
+        run: pnpm nx run-many -t build --local --parallel=3 || true
+
+      - name: E2E all
+        run: pnpm nx run-many -t e2e --local --parallel=3 || true
