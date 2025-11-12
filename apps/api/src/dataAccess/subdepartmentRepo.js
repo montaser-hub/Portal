@@ -30,8 +30,6 @@ export const Delete = async (id) => {
   return results;
 };
 
-// Get count of all records (useful for pagination)
 export const countAll = () => SubDepartment.countDocuments();
 
-//get count based on filters (for filtered total)
 export const countFiltered = (filter) => SubDepartment.countDocuments(filter);
