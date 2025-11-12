@@ -14,10 +14,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     myStore.dispatch(showLoader());
-    const myToken = sessionStorage.getItem('token');
-    if (myToken) {
-      config.headers.Authorization = `Bearer ${myToken}`;
-    }
     return config;
   },
   (error) => {
@@ -34,8 +30,22 @@ api.interceptors.response.use(
   },
   (error) => {
     myStore.dispatch(hideLoader());
-    if (error.response && error.response.status === 401) {
-      sessionStorage.removeItem('token');
+
+    if (!error.response) {
+      console.error('Network error:', error);
+      return Promise.reject({
+        message: 'Network error. Please check your internet connection.',
+      });
+    }
+
+    // Handle specific errors
+    const status = error.response.status;
+
+    if (status === 401) {
+      console.warn('Unauthorized — redirecting to login...');
+      window.location.href = '/login';
+    } else if (status >= 500) {
+      console.error('Server error:', error.response.data?.message);
     }
     return Promise.reject(error);
   }

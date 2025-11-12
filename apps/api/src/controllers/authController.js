@@ -22,7 +22,7 @@ export const login = catchAsync( async ( req, res, next ) => {
 
   res.cookie('jwt', token, cookieOptions);
 
-  res.status(201).json({ message: 'Your login was successfully',token, data: user });
+  res.status(201).json({ message: 'Your login was successfully', data: user });
 });
 
 export const logout = (req, res) => {
@@ -47,7 +47,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    throw new AppError('You are not logged in', 401);
+    next( new AppError('You are not logged in', 401));
   }
 
   //2) Verification token
@@ -78,7 +78,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     console.log( err );
     // cleanup if email sending failed
     await authService.cleanupResetToken(user);
-    throw new AppError( 'Error sending email. Try again later', 500 );
+    next( new AppError( 'Error sending email. Try again later', 500 ));
   }
 });
 
