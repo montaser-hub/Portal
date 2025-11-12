@@ -33,10 +33,10 @@ export default class Email {
     });
   }
 
-  // Load template HTML and replace placeholders
+  // use embedded templates
   loadTemplate(templateName, replacements) {
-    const filePath = path.join(process.cwd(), 'apps/api/src/utils/emailTemplates', `${templateName}.html`);
-    let html = fs.readFileSync(filePath, 'utf-8');
+    let html = templates[templateName];
+    if (!html) throw new Error(`Template '${templateName}' not found`);
 
     // Replace placeholders like {{firstName}} or {{url}}
     Object.entries(replacements).forEach(([key, value]) => {
