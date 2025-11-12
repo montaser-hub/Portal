@@ -1,4 +1,4 @@
-import * as crudService from '@/services/crudService';
+import * as crudService from '../../services/crudService';
 
 const endpoint = '/schedules';
 
