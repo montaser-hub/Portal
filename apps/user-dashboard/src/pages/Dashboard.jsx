@@ -10,7 +10,7 @@ import SwapRequestsList from '../components/pageComponents/dashboardHome/SwapReq
 import RegisteredShift from "../components/pageComponents/dashboardHome/RegisteredShifts";
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMe } from "../app/Redux/slices/userSlice";
+import { fetchMe } from "../features/user/userSlice";
 
 
 function Dashboard({ onNavigate }) {

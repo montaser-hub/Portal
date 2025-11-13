@@ -31,9 +31,8 @@ const userSlice = createSlice({
       .addCase(fetchMe.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user data";
-        state.user = null; 
+        state.user = null;
       });
   },
 });
-
 export default userSlice;

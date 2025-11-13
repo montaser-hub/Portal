@@ -1,5 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import userSlice from "./slices/userSlice";
+import userSlice from "../../features/user/userSlice";
 import scheduleSlice from "./slices/scheduleSlice";
 
 const loaderSlice = createSlice({
