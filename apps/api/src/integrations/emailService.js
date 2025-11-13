@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
+import { templates } from '../utils/emailTemplates/index.js';
 import {htmlToText} from 'html-to-text';
 import { config } from '../configs/env.js';
 export default class Email {
