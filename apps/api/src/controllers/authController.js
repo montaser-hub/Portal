@@ -64,7 +64,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     // 3) Send it to user's email address
   const baseUrl =
     config.nodeEnv === "production"
-      ? config.frontendUrl
+      ? config.productionUrl
       : `http://${config.host}:${config.port}`;
    const resetUrl = `${baseUrl}/api/v1/users/resetPassword/${resetToken}`;
   try {
