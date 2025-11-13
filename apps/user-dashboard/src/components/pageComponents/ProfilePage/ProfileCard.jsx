@@ -3,7 +3,7 @@ import { User, Mail, Phone, Calendar, Camera, Trash2 } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Badge from "../../common/Badge";
-import { updateUserPhoto } from "../../../services/API-Services/UserService";
+import { uploadUserPhoto } from "../../../features/user/userAPI";
 import { toast } from "react-hot-toast";
 
 export default function ProfileCard({ user, profileImage, onProfileImageChange }) {
@@ -17,7 +17,7 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
     if (!file) return;
 
     try {
-      const updatedUser = await updateUserPhoto(file);
+      const updatedUser = await uploadUserPhoto(file);
       onProfileImageChange(updatedUser.photo || null);
       toast.success("Profile image updated successfully!");
     } catch (error) {
@@ -28,7 +28,7 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
 
   const handleDeleteImage = async () => {
     try {
-      const updatedUser = await updateUserPhoto(null);
+      const updatedUser = await uploadUserPhoto(null);
       onProfileImageChange(updatedUser.photo || null);
       toast.success("Profile image deleted successfully!");
       setIsHovered(false);

@@ -14,7 +14,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
-import { getMe } from "../../../services/API-Services/UserService";
 import { logout } from "../../../services/API-Services/AuthService";
 
 const mockNotifications = [
@@ -50,23 +49,11 @@ export default function DesktopNavbar({
   setUserMenuOpen,
   profileImage,
   getUserInitials,
+  currentUser,
 }) {
   const [notifMenuOpen, setNotifMenuOpen] = useState(false);
-  const [userData, setUserData] = useState(null);
   const notifRef = useRef();
   const userRef = useRef();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const data = await getMe();
-        setUserData(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -79,13 +66,12 @@ export default function DesktopNavbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!userData) {
+  if (!currentUser) {
     return null;
   }
 
   return (
     <div className="hidden md:flex items-center flex-1">
-      {/* Navigation Links */}
       <nav className="flex items-center gap-4 ml-12">
         {navigation.map((item) => {
           const Icon = item.icon;
@@ -112,9 +98,7 @@ export default function DesktopNavbar({
         })}
       </nav>
 
-      {/* Right Section */}
       <div className="flex items-center gap-6 ml-auto">
-        {/* Notifications */}
         <div ref={notifRef} className="relative">
           <div
             onClick={() => {
@@ -188,7 +172,6 @@ export default function DesktopNavbar({
           </AnimatePresence>
         </div>
 
-        {/* User Menu */}
         <div ref={userRef} className="relative">
           <div
             className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[#E0F4F6] transition ${
@@ -211,7 +194,7 @@ export default function DesktopNavbar({
               )}
             <Text
               as="span"
-              content={userData.firstName}
+              content={currentUser.firstName}
               MyClass="text-sm font-medium text-gray-600"
             />
           </div>
@@ -226,18 +209,18 @@ export default function DesktopNavbar({
               >
                 <div className="flex items-center gap-2 px-4 py-2 border-b mb-3">
                   <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#0F7B8A] text-white font-semibold">
-                    {getUserInitials(userData.firstName + " " + userData.lastName)}
+                    {getUserInitials(currentUser.firstName + " " + currentUser.lastName)}
                   </div>
                   <div className="flex flex-col">
                     <Text
                       as="span"
-                      content={`${userData.firstName} ${userData.lastName}`}
+                      content={`${currentUser.firstName} ${currentUser.lastName}`}
                       MyClass="font-medium text-sm text-gray-500 flex justify-center"
                     />
-                    <Badge variant="outline">{userData.role}</Badge>
+                    <Badge variant="outline">{currentUser.role}</Badge>
                     <Text
                       as="span"
-                      content={userData.email}
+                      content={currentUser.email}
                       MyClass="text-xs text-gray-500"
                     />
                   </div>

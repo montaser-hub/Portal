@@ -2,7 +2,7 @@ import axios from 'axios';
 import myStore from '../app/Redux/store';
 import { showLoader, hideLoader } from '../app/Redux/store';
 
-const baseURL = process.env.VITE_POTRAL_API_URL ;
+const baseURL = import.meta.env.VITE_PORTAL_API_URL;
 
 const api = axios.create({
   baseURL,
@@ -43,7 +43,8 @@ api.interceptors.response.use(
 
     if (status === 401) {
       console.warn('Unauthorized — redirecting to login...');
-      window.location.href = '/login';
+      // sessionStorage.removeItem("isLoggedIn");
+      // window.location.href = '/Login';
     } else if (status >= 500) {
       console.error('Server error:', error.response.data?.message);
     }

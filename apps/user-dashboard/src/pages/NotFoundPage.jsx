@@ -4,12 +4,12 @@ import Card from '../components/common/Card';
 import Text from '../components/common/Text';
 import { useNavigate } from "react-router-dom";
 
-export default function NotFoundPage({ isAuthenticated }) {
+export default function NotFoundPage() {
 
   const navigate = useNavigate();
-  const myToken = sessionStorage.getItem("token");
+  // const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const handleGoBack = () => {
-    if (myToken) {
+    if (isLoggedIn) {
       navigate("/Dashboard");
     } else {
       navigate("/Login");
@@ -50,7 +50,7 @@ export default function NotFoundPage({ isAuthenticated }) {
             onClick={handleGoBack}
             className="flex items-center justify-center text-teal-600 hover:text-teal-500"
           >
-            {myToken ? (
+            {isLoggedIn ? (
               <>
                 <Home className="mr-2 h-4 w-4" /> To Dashboard
               </>
