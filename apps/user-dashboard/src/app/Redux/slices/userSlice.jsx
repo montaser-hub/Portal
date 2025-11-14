@@ -1,9 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getMe } from "../../../services/API-Services/UserService";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import * as crudService from '../../../services/crudService';
 
-export const fetchMe = createAsyncThunk("user/fetchMe", async () => {
-  const user = await getMe();
-  return user;
+export const fetchMe = createAsyncThunk('user/fetchMe', async () => {
+  const res = await crudService.getAll('/users/me');
+  return res.data.data.user;
 });
 
 const initialState = {
@@ -13,15 +13,21 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
 
-  reducers: {},
+  reducers: {
+    logoutUser: (state) => {
+      state.user = null;
+      state.status = 'idle'; // Reset status so fetchMe won't break
+      state.error = null;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
       .addCase(fetchMe.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
         state.error = null;
       })
       .addCase(fetchMe.fulfilled, (state, action) => {
@@ -31,9 +37,10 @@ const userSlice = createSlice({
       .addCase(fetchMe.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user data";
-        state.user = null; 
+        state.user = null;
       });
   },
 });
 
-export default userSlice;
+export const { logoutUser } = userSlice.actions;
+export default userSlice.reducer;

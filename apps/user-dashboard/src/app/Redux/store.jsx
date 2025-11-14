@@ -1,5 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import userSlice from "./slices/userSlice";
+import userReducer from './slices/userSlice';
 import scheduleSlice from "./slices/scheduleSlice";
 
 const loaderSlice = createSlice({
@@ -22,7 +22,7 @@ export const { showLoader, hideLoader } = loaderSlice.actions;
 const myStore = configureStore({
   reducer: {
     loader: loaderSlice.reducer,
-    user: userSlice.reducer,
+    user: userReducer,
     schedule: scheduleSlice.reducer,
   },
 });
