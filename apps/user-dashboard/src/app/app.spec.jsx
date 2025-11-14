@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import myStore  from '../app/Redux/store';
+import store from '../app/store';
 import App from './app';
 describe('App', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
-      <Provider store={myStore}>
+      <Provider store={store}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

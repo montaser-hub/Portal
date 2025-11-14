@@ -1,25 +1,20 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchMe } from '../app/Redux/slices/userSlice';
+import { fetchMe } from '../features/user/userThunks';
+import SpinnerPage from '../pages/SpinnerPage.jsx';
 
 export default function ProtectedRoute() {
   const dispatch = useDispatch();
   const { user, status } = useSelector((state) => state.user);
 
-  const isLoginPage = window.location.pathname === '/Login';
-
   useEffect(() => {
-    // Only fetch user IF NOT on login page
-    if (!isLoginPage && status === 'idle') {
+    if (status === 'idle' || status === 'failed') {
       dispatch(fetchMe());
     }
-  }, [dispatch, status, isLoginPage]);
+  }, [status, dispatch]);
 
-  // While fetching user data
-  if (status === 'idle' || status === 'loading') return null;
-
-  // Not logged in → redirect to login
+  if (status === 'loading') return <SpinnerPage />;
   if (!user) return <Navigate to="/Login" replace />;
 
   return <Outlet />;
@@ -29,16 +24,13 @@ export function PublicRoute() {
   const dispatch = useDispatch();
   const { user, status } = useSelector((state) => state.user);
 
-  // Only fetch user once
   useEffect(() => {
-    if (status === 'idle') {
+    if (status === 'idle' && window.location.pathname !== '/Login') {
       dispatch(fetchMe());
     }
-  }, [dispatch, status]);
+  }, [status, dispatch]);
 
-  if (status === 'idle' || status === 'loading') return null;
-
-  // If logged in → redirect to dashboard
+  if (status === 'loading') return <SpinnerPage />;
   if (user) return <Navigate to="/Dashboard" replace />;
 
   return <Outlet />;
