@@ -1,8 +1,9 @@
 import axios from 'axios';
-import myStore from '../app/Redux/store';
-import { showLoader, hideLoader } from '../app/Redux/store';
+import store from '../app/store';
+import { showLoader, hideLoader } from '../app/store';
+import { logoutUser } from '../features/user/userSlice';
 
-const baseURL = process.env.VITE_POTRAL_API_URL ;
+const baseURL = import.meta.env.VITE_POTRAL_API_URL;
 
 const api = axios.create({
   baseURL,
@@ -13,11 +14,11 @@ const api = axios.create({
 //  Request Interceptor
 api.interceptors.request.use(
   (config) => {
-    myStore.dispatch(showLoader());
+    store.dispatch(showLoader());
     return config;
   },
   (error) => {
-    myStore.dispatch(hideLoader());
+    store.dispatch(hideLoader());
     return Promise.reject(error);
   }
 );
@@ -25,33 +26,21 @@ api.interceptors.request.use(
 //  Response Interceptor
 api.interceptors.response.use(
   (response) => {
-    myStore.dispatch(hideLoader());
+    store.dispatch(hideLoader());
     return response;
   },
   (error) => {
-    myStore.dispatch(hideLoader());
+    store.dispatch(hideLoader());
+    if (!error.response) return Promise.reject({ message: 'Network error.' });
 
-    if (!error.response) {
-      console.error('Network error:', error);
-      return Promise.reject({
-        message: 'Network error. Please check your internet connection.',
-      });
-    }
-
-    // Handle specific errors
     const status = error.response.status;
-    const isLoginPage = window.location.pathname === '/Login';
-
     if (status === 401) {
-      console.warn('Unauthorized — redirecting to login...');
-      myStore.dispatch(logoutUser());
-
-      if (!isLoginPage) {
+      store.dispatch(logoutUser());
+      if (window.location.pathname !== '/Login') {
         window.location.href = '/Login';
       }
-    } else if (status >= 500) {
-      console.error('Server error:', error.response.data?.message);
     }
+
     return Promise.reject(error);
   }
 );
