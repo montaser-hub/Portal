@@ -60,11 +60,11 @@ const handleSubmit = (e) => {
     dispatch(showLoader());
     login({ email, password })
       .then(() => {
-        // sessionStorage.setItem("isLoggedIn", "true");
-        // toast.success("Welcome! To dashboard", {
-        //   duration: 3000,
-        //   position: "top-right",
-        // });
+        sessionStorage.setItem("isLoggedIn", "true");
+        toast.success("Welcome! To dashboard", {
+          duration: 3000,
+          position: "top-right",
+        });
         navigate("/Dashboard");
       })
       .catch((err) => {
@@ -156,7 +156,7 @@ const handleSubmit = (e) => {
                 label="Password"
                 name="password"
                 placeholder="Enter your password"
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={handlePasswordChange}
                 myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(

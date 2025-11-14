@@ -15,10 +15,11 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
+    const localPreview = URL.createObjectURL(file);
+    onProfileImageChange(localPreview);
     try {
       const updatedUser = await uploadUserPhoto(file);
-      onProfileImageChange(updatedUser.photo || null);
+      onProfileImageChange(updatedUser.photo);
       toast.success("Profile image updated successfully!");
     } catch (error) {
       console.error(error);
@@ -28,8 +29,8 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
 
   const handleDeleteImage = async () => {
     try {
-      const updatedUser = await uploadUserPhoto(null);
-      onProfileImageChange(updatedUser.photo || null);
+      await uploadUserPhoto(null);
+      onProfileImageChange(null);
       toast.success("Profile image deleted successfully!");
       setIsHovered(false);
     } catch (error) {

@@ -26,14 +26,14 @@ function AppLayout() {
 export default function AppRouter() {
   return (
     <Routes>
-      {/* <Route element={<PublicRoute />}> */}
+      <Route element={<PublicRoute />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
-      {/* </Route> */}
+      </Route>
 
-      {/* <Route element={<ProtectedRoute />}> */}
+      <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Calendar" element={<CalendarPage />} />
@@ -42,7 +42,7 @@ export default function AppRouter() {
           <Route path="/Notifications" element={<NotificationsPage />} />
           <Route path="/Profile" element={<Profile />} />
         </Route>
-      {/* </Route> */}
+      </Route>
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
