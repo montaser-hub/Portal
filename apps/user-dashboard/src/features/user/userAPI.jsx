@@ -5,18 +5,18 @@ const endpoint = '/users';
 
 export const fetchCurrentUser = async () => {
   const user = await crudService.getAll(`${endpoint}/me`);
-  return user;
+  return user.data.data;
 };
 
 export const updateCurrentUser = async (data) => {
   const updatedUser = await crudService.edit(`${endpoint}/updateMe`, '', data);
-  return updatedUser;
+  return updatedUser.data.data;
 };
 
-export const uploadUserPhoto = async (file) => {
+export const uploadUserPhoto = async (photo) => {
   const formData = new FormData();
-  if (file) {
-    formData.append('photo', file);
+  if (photo) {
+    formData.append('photo', photo);
   } else {
     formData.append('photo', "");
   }

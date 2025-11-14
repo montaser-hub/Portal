@@ -3,22 +3,23 @@ import { User, Mail, Phone, Calendar, Camera, Trash2 } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Badge from "../../common/Badge";
-import { uploadUserPhoto } from "../../../features/user/userAPI";
+import { uploadPhoto } from "../../../features/user/userSlice";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 export default function ProfileCard({ user, profileImage, onProfileImageChange }) {
   const fileInputRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-
   const handleEditImageClick = () => fileInputRef.current.click();
+  const dispatch = useDispatch();
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    const localPreview = URL.createObjectURL(file);
-    onProfileImageChange(localPreview);
+    const previewURL = URL.createObjectURL(file);
+    onProfileImageChange(previewURL);
     try {
-      const updatedUser = await uploadUserPhoto(file);
+      const updatedUser = await dispatch(uploadPhoto(file)).unwrap();
       onProfileImageChange(updatedUser.photo);
       toast.success("Profile image updated successfully!");
     } catch (error) {
@@ -29,7 +30,7 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
 
   const handleDeleteImage = async () => {
     try {
-      await uploadUserPhoto(null);
+      await dispatch(uploadPhoto(null)).unwrap();
       onProfileImageChange(null);
       toast.success("Profile image deleted successfully!");
       setIsHovered(false);
@@ -38,6 +39,7 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
       toast.error("Failed to delete image");
     }
   };
+  
     const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
