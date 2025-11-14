@@ -63,17 +63,7 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [userMenuOpen]);
 
-  if (!currentUser && userStatus === 'loading') {
-    return (
-      <header className="bg-white border-b shadow-sm sticky top-0 z-20 h-16 flex items-center justify-center">
-        <Text content="Loading user data..." MyClass="text-gray-500" />
-      </header>
-    );
-  }
 
-  if (!currentUser && userStatus === 'failed') {
-      return null;
-  }
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-20">
