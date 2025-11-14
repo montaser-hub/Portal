@@ -1,26 +1,26 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { LogIn, Eye, EyeOff, Calendar } from "lucide-react";
-import { login } from "../../services/API-Services/AuthService";
-import { showLoader, hideLoader } from "../../app/Redux/store";
-import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
-import Text from "../../components/common/Text";
-import Card from "../../components/common/Card";
-import Input from "../../components/common/Input";
-import myStore from '../../app/Redux/store';
-import { fetchMe } from '../../app/Redux/slices/userSlice';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { LogIn, Eye, EyeOff, Calendar } from 'lucide-react';
+import { login } from '../../services/API-Services/AuthService';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
+import Text from '../../components/common/Text';
+import Card from '../../components/common/Card';
+import Input from '../../components/common/Input';
+import { fetchMe } from '../../features/user/userThunks';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({ email: '', password: '' });
   const [touched, setTouched] = useState({ email: false, password: false });
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -59,45 +59,26 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!errors.email && !errors.password && email && password) {
-      dispatch(showLoader());
+      setIsSubmitting(true);
 
       try {
-        // Send login request
         await login({ email, password });
+        await dispatch(fetchMe()).unwrap();
+        toast.success('Welcome! Redirecting...');
 
-        // Fetch user after login
-        await myStore.dispatch(fetchMe()).unwrap();
-
-        toast.success('Welcome! Redirecting...', {
-          duration: 3000,
-          position: 'top-right',
-        });
-
-        navigate('/Dashboard'); // Redirect after successful login
+        navigate('/Dashboard', { replace: true });
       } catch (err) {
         let msg = 'Login failed. Please try again.';
-
-        if (err.response) {
-          // Server responded with a status outside 2xx
-          if (err.response.status === 401 || err.response.status === 400) {
-            msg = 'Incorrect email or password.';
-          } else if (err.response.data?.message) {
-            msg = err.response.data.message;
-          }
-        } else if (err.request) {
-          // Request was made but no response received
-          msg = 'No response from server. Check your network or backend.';
-        } else {
-          // Error setting up the request
+        if (err.response?.data?.message) {
+          msg = err.response.data.message;
+        } else if (err.message) {
           msg = err.message;
+        } else if (!err.response) {
+          msg = 'Network error. Check your connection.';
         }
-
-        toast.error(msg, {
-          duration: 3000,
-          position: 'top-right',
-        });
+        toast.error(msg);
       } finally {
-        dispatch(hideLoader());
+        setIsSubmitting(false);
       }
     }
   };
