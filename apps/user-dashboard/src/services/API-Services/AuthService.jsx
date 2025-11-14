@@ -9,6 +9,6 @@ export const login = async ({ email, password }) => {
 
 // Logout
 export const logout = async () => {
-  // sessionStorage.removeItem("isLoggedIn");
+  sessionStorage.removeItem("isLoggedIn");
   window.location.href = "/Login";
 };

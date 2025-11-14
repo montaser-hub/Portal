@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function NotFoundPage() {
 
   const navigate = useNavigate();
-  // const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const handleGoBack = () => {
     if (isLoggedIn) {
       navigate("/Dashboard");
