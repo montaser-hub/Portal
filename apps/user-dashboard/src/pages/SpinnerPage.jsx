@@ -1,5 +1,3 @@
-import React from "react";
-import ECGHeartSpinner from "../components/common/Spinner";
 import HeartbeatSpinner from "../components/common/Spinner2";
 
 

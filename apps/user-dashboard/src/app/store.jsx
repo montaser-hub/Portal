@@ -1,12 +1,9 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import userReducer from './slices/userSlice';
-import scheduleSlice from "./slices/scheduleSlice";
+import { configureStore, createSlice } from '@reduxjs/toolkit';
+import userReducer from '../features/user/userSlice';
 
 const loaderSlice = createSlice({
-  name: "loader",
-  initialState: {
-    isLoading: false,
-  },
+  name: 'loader',
+  initialState: { isLoading: false },
   reducers: {
     showLoader: (state) => {
       state.isLoading = true;
@@ -19,12 +16,11 @@ const loaderSlice = createSlice({
 
 export const { showLoader, hideLoader } = loaderSlice.actions;
 
-const myStore = configureStore({
+const store = configureStore({
   reducer: {
     loader: loaderSlice.reducer,
     user: userReducer,
-    schedule: scheduleSlice.reducer,
   },
 });
 
-export default myStore;
+export default store;
