@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
+import myStore from '../../app/Redux/store';
+import { fetchMe } from '../../app/Redux/slices/userSlice';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,78 +23,84 @@ export default function LoginPage() {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleEmailChange = (e) => {
-  const value = e.target.value;
-  if (/[ء-ي]/.test(value)) return;
-  setEmail(value);
-  setTouched((prev) => ({ ...prev, email: true }));
-  setErrors((prev) => ({
-    ...prev,
-    email:
-      value.length === 0
+    const value = e.target.value;
+    if (/[ء-ي]/.test(value)) return;
+    setEmail(value);
+    setTouched((prev) => ({ ...prev, email: true }));
+    setErrors((prev) => ({
+      ...prev,
+      email:
+        value.length === 0
         ? "Email is required"
-        : !emailRegex.test(value)
+          : !emailRegex.test(value)
         ? "Email is not valid"
         : "",
-  }));
-};
+    }));
+  };
 
-const handlePasswordChange = (e) => {
-  const value = e.target.value;
-  if (/[ء-ي]/.test(value)) return;
-  setPassword(value);
-  setTouched((prev) => ({ ...prev, password: true }));
-  setErrors((prev) => ({
-    ...prev,
-    password:
-      value.length === 0
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    if (/[ء-ي]/.test(value)) return;
+    setPassword(value);
+    setTouched((prev) => ({ ...prev, password: true }));
+    setErrors((prev) => ({
+      ...prev,
+      password:
+        value.length === 0
         ? "Password is required"
-        : !passwordRegex.test(value)
+          : !passwordRegex.test(value)
         ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
         : "",
-  }));
-};
+    }));
+  };
 
-const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  if (!errors.email && !errors.password && email && password) {
-    dispatch(showLoader());
-    login({ email, password })
-      .then(() => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-          toast.success("Welcome! To dashboard", {
-            duration: 3000,
-            position: "top-right",
-          });
-          navigate("/Dashboard");
-        } else {
-          toast.error("Sorry! Something went wrong.", {
-            duration: 3000,
-            position: "top-right",
-          });
-        }
-      })
-      .catch((err) => {
-        let msg = "Login failed. Please try again.";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!errors.email && !errors.password && email && password) {
+      dispatch(showLoader());
+
+      try {
+        // Send login request
+        await login({ email, password });
+
+        // Fetch user after login
+        await myStore.dispatch(fetchMe()).unwrap();
+
+        toast.success('Welcome! Redirecting...', {
+          duration: 3000,
+          position: 'top-right',
+        });
+
+        navigate('/Dashboard'); // Redirect after successful login
+      } catch (err) {
+        let msg = 'Login failed. Please try again.';
+
         if (err.response) {
+          // Server responded with a status outside 2xx
           if (err.response.status === 401 || err.response.status === 400) {
-            msg = "Incorrect email or password.";
+            msg = 'Incorrect email or password.';
           } else if (err.response.data?.message) {
             msg = err.response.data.message;
           }
+        } else if (err.request) {
+          // Request was made but no response received
+          msg = 'No response from server. Check your network or backend.';
+        } else {
+          // Error setting up the request
+          msg = err.message;
         }
+
         toast.error(msg, {
           duration: 3000,
-          position: "top-right",
+          position: 'top-right',
         });
-      })
-      .finally(() => {
+      } finally {
         dispatch(hideLoader());
-      });
-  }
-};
+      }
+    }
+  };
 
 
 
