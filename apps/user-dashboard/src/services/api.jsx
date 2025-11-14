@@ -40,10 +40,15 @@ api.interceptors.response.use(
 
     // Handle specific errors
     const status = error.response.status;
+    const isLoginPage = window.location.pathname === '/Login';
 
     if (status === 401) {
       console.warn('Unauthorized — redirecting to login...');
-      window.location.href = '/login';
+      myStore.dispatch(logoutUser());
+
+      if (!isLoginPage) {
+        window.location.href = '/Login';
+      }
     } else if (status >= 500) {
       console.error('Server error:', error.response.data?.message);
     }
