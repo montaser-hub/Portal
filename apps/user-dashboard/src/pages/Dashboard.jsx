@@ -7,7 +7,6 @@ import CalendarComponent from '../components/pageComponents/dashboardHome/Calend
 import UpcomingShiftCard from '../components/pageComponents/dashboardHome/UpcomingShiftCard';
 import NotesCard from '../components/pageComponents/dashboardHome/NotesCard';
 import SwapRequestsList from '../components/pageComponents/dashboardHome/SwapRequestsList';
-import RegisteredShift from "../components/pageComponents/dashboardHome/RegisteredShifts";
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector } from "react-redux";
 
@@ -53,9 +52,7 @@ function Dashboard({ onNavigate }) {
         <SwapRequestsList requests={swapRequests} currentUserId={user.id} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RegisteredShift onNavigate={onNavigate} />
-      </div>
+
     </div>
   );
 }
