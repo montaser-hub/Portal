@@ -3,10 +3,14 @@ import { User, Mail, Phone, Calendar, Camera, Trash2 } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Badge from "../../common/Badge";
-import { updateUserPhoto } from "../../../services/API-Services/UserService";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserPhoto } from "../../../features/user/userThunks";
 
-export default function ProfileCard({ user, profileImage, onProfileImageChange }) {
+export default function ProfileCard() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user) || {};
+  const profileImage = user.photo;
   const fileInputRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -15,28 +19,26 @@ export default function ProfileCard({ user, profileImage, onProfileImageChange }
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     try {
-      const updatedUser = await updateUserPhoto(file);
-      onProfileImageChange(updatedUser.photo || null);
+      await dispatch(updateUserPhoto(file)).unwrap();
       toast.success("Profile image updated successfully!");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to upload image");
+      toast.error(error.message || "Failed to upload image");
     }
   };
 
   const handleDeleteImage = async () => {
     try {
-      const updatedUser = await updateUserPhoto(null);
-      onProfileImageChange(updatedUser.photo || null);
+      await dispatch(updateUserPhoto(null)).unwrap();
       toast.success("Profile image deleted successfully!");
       setIsHovered(false);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to delete image");
+      toast.error(error.message || "Failed to delete image");
     }
   };
+  
     const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);

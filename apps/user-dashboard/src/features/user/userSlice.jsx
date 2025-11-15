@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchMe } from './userThunks';
+import { fetchMe, updateMe , updateUserPhoto } from './userThunks';
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
 const initialState = {
@@ -20,6 +20,8 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     handleAsyncThunk(builder, fetchMe, 'user');
+    handleAsyncThunk(builder, updateMe, 'user');
+    handleAsyncThunk(builder, updateUserPhoto, 'user');
   },
 });
 
