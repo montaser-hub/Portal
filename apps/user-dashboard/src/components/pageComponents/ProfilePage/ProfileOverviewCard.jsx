@@ -1,27 +1,22 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import Modal from "../../../modals/EditProfileModal";
 import { toast } from "react-hot-toast";
-import { updateMe } from "../../../services/API-Services/UserService";
-import { useSelector } from "react-redux";
+import { updateMe } from "../../../features/user/userThunks";
+import { useSelector, useDispatch } from "react-redux";
 import HeartbeatSpinner from "../../common/Spinner2";
 
-export default function ProfileOverviewCard({ currentUser, onSave }) {
-  const [user, setUser] = useState(currentUser || {});
+export default function ProfileOverviewCard() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
   const [pendingData, setPendingData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mySppinerStatus = useSelector((state) => state.loader.isLoading);
-  useEffect(() => {
-    if (currentUser && currentUser !== user) {
-        setUser(currentUser);
-    }
-  }, [currentUser]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPendingData((prev) => ({
@@ -30,7 +25,6 @@ export default function ProfileOverviewCard({ currentUser, onSave }) {
     }));
   };
 
-  /** Ask user to confirm save */
   const handleSaveAttempt = () => {
     if (Object.keys(pendingData).length === 0) {
       toast("No changes to save", { icon: "ℹ️" });
@@ -41,21 +35,18 @@ export default function ProfileOverviewCard({ currentUser, onSave }) {
 
   /** Save to server */
   const handleConfirmSave = async () => {
-    updateMe(pendingData)
-      .then((updatedUser) => {
-        setUser((prev) => ({
-          ...prev,
-          ...pendingData,
-        }));
-
+    dispatch(updateMe(pendingData))
+      .unwrap()
+      .then(() => {
         setPendingData({});
         setIsEditing(false);
         setIsModalOpen(false);
-
-        onSave?.(updatedUser);
         toast.success("Changes saved successfully!");
       })
-      .catch(() => toast.error("Failed to save changes"));
+      .catch((error) => {
+        console.error("Update failed:", error);
+        toast.error("Failed to save changes");
+      });
   };
 
   const handleCancel = () => {
@@ -64,15 +55,18 @@ export default function ProfileOverviewCard({ currentUser, onSave }) {
   };
 
   const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
+  if (!user) {
+    return <Card className="p-6">Loading user data...</Card>;
+  }
 
   return (
     <>
