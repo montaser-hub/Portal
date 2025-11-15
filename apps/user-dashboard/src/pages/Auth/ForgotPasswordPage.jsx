@@ -4,6 +4,7 @@ import { Mail } from "lucide-react";
 import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
+import { forgotPassword } from "../../services/API-Services/AuthService";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ export default function ForgotPasswordPage() {
   const [errors, setErrors] = useState("");
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
+
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
   const handleEmailChange = (e) => {
@@ -18,13 +20,26 @@ export default function ForgotPasswordPage() {
     if (/[ء-ي]/.test(value)) return;
     setEmail(value);
     setTouched(true);
-    setErrors(value.length === 0 ? "" : !emailRegex.test(value) ? "Email is not valid" : "");
+    setErrors(
+      value.length === 0
+        ? ""
+        : !emailRegex.test(value)
+        ? "Email is not valid"
+        : ""
+    );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || errors) return;
-    setSent(true);
+
+    try {
+      await forgotPassword(email);
+      setSent(true);
+    } catch (err) {
+      console.error(err);
+      setErrors(err.response?.data?.message || "Something went wrong!");
+    }
   };
 
   const getBorderColor = () => {
@@ -43,17 +58,39 @@ export default function ForgotPasswordPage() {
               <Mail className="h-7 w-7 text-white" />
             </div>
           </div>
-          <Text as="h1" content="Forgot Password" MyClass="text-2xl font-semibold text-[#0F7B8A] mt-4" />
-          <Text as="p" content="Enter your email and we'll send you a link to reset your password." MyClass="text-sm text-gray-500 mt-2" />
+
+          <Text
+            as="h1"
+            content="Forgot Password"
+            MyClass="text-2xl font-semibold text-[#0F7B8A] mt-4"
+          />
+
+          <Text
+            as="p"
+            content="Enter your email and we'll send you a link to reset your password."
+            MyClass="text-sm text-gray-500 mt-2"
+          />
         </div>
 
         <Card className="p-6 shadow-sm border bg-white border-gray-200 space-y-4">
           {sent ? (
             <div className="text-center space-y-3">
-              <Text as="h2" content="Check your email" MyClass="text-lg font-medium text-gray-700" />
-              <Text as="p" content={`A password reset link has been sent to ${email}.`} MyClass="text-sm text-gray-500" />
+              <Text
+                as="h2"
+                content="Check your email"
+                MyClass="text-lg font-medium text-gray-700"
+              />
+              <Text
+                as="p"
+                content={`A password reset link has been sent to ${email}.`}
+                MyClass="text-sm text-gray-500"
+              />
+
               <div className="mt-4">
-                <button onClick={() => navigate("/Login")} className="px-4 py-2 bg-[#0F7B8A] text-white rounded-md shadow-sm">
+                <button
+                  onClick={() => navigate("/Login")}
+                  className="px-4 py-2 bg-[#0F7B8A] text-white rounded-md shadow-sm"
+                >
                   Back to Login
                 </button>
               </div>
@@ -66,17 +103,31 @@ export default function ForgotPasswordPage() {
                 placeholder="Enter your Email"
                 value={email}
                 onChange={handleEmailChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor("password")}`}
+                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor()}`}
               />
-              {errors && <p className="text-sm text-red-500 mt-2">{errors}</p>}
 
-              <button type="submit" disabled={!email || !!errors} className={`w-full h-11 mt-2 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${!email || !!errors ? "opacity-60 cursor-not-allowed" : ""}`}>
+              {errors && (
+                <p className="text-sm text-red-500 mt-2">{errors}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={!email || !!errors}
+                className={`w-full h-11 mt-2 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
+                  !email || !!errors ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+              >
                 Send Reset Link
               </button>
 
               <div className="text-center text-sm text-gray-500">
                 <span>Remember your password? </span>
-                <Link to="/Login" className="text-[#0F7B8A] hover:text-[#0D6C78]">Sign In</Link>
+                <Link
+                  to="/Login"
+                  className="text-[#0F7B8A] hover:text-[#0D6C78]"
+                >
+                  Sign In
+                </Link>
               </div>
             </form>
           )}
