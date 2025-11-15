@@ -5,3 +5,27 @@ export const fetchMe = createAsyncThunk('user/fetchMe', async () => {
   const res = await userService.fetchMeAPI();
   return res.data.data;
 });
+
+export const updateMe = createAsyncThunk('user/updateMe', async (data) => {
+  const res = await userService.updateMeAPI(data);
+  return res.data.data;
+});
+
+
+export const updateUserPhoto = createAsyncThunk(
+  'user/updateUserPhoto',
+  async (file) => {
+    let data;
+
+    if (file === null) {
+    data = new FormData();
+    data.append('photo', '');
+    } else {
+        data = new FormData();
+        data.append('photo', file);
+    }
+
+    const res = await userService.updateUserPhotoAPI(data);
+    return res.data.data;
+  }
+);
