@@ -4,9 +4,8 @@ const endpoint = '/schedules';
 
 export const fetchSchedules = async (filters = {}) => {
   // filters can include search, status, date ranges, etc.
-  const schedules = await crudService.getAll(endpoint, filters);
-
-  return schedules
+  const schedules = await crudService.getAll( endpoint, filters );
+  return schedules;
 };
 
 export const addSchedule = async (data) => crudService.create(endpoint, data);
