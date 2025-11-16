@@ -14,12 +14,12 @@ export default function Profile() {
   const userStatus = useSelector((state) => state.user.status);
   const [activeTab, setActiveTab] = useState("Profile Info");
   useEffect(() => {
-  if (userStatus === "idle") {
-    dispatch(fetchMe()).unwrap().catch(() => {
-      toast.error("Failed to load profile data");
-    });
-  }
-}, [userStatus]);
+    if (userStatus === "idle") {
+      dispatch(fetchMe()).unwrap().catch(() => {
+        toast.error("Failed to load profile data");
+      });
+    }
+  }, [userStatus]);
 
   const isLoading = userStatus === 'loading';
 
@@ -35,28 +35,27 @@ export default function Profile() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {isLoading ? <HeartbeatSpinner /> : user && (
-          <>
-            <ProfileCard />
-            <div className="lg:col-span-2 space-y-6">
-            <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-              <Tabs.List className="flex space-x-6 border-b border-gray-200 mb-4">
-                <Tabs.Trigger
-                  value="Profile Info"
-                  className={`pb-2 text-sm font-medium ${
-                    activeTab === "Profile Info"
-                      ? "border-b-2 border-[#0F7B8A] text-[#0F7B8A]"
-                      : "text-gray-500 hover:text-[#0F7B8A]"
-                  }`}
-                >
-                  Profile Information
-                </Tabs.Trigger>
-              </Tabs.List>
-              <Tabs.Content value="Profile Info">
-                <ProfileOverviewCard />
-              </Tabs.Content>
-            </Tabs.Root>
-            </div>
-          </>
+            <>
+              <ProfileCard />
+              <div className="lg:col-span-2 space-y-6">
+                <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
+                  <Tabs.List className="flex space-x-6 border-b border-gray-200 mb-4">
+                    <Tabs.Trigger
+                      value="Profile Info"
+                      className={`pb-2 text-sm font-medium ${activeTab === "Profile Info"
+                          ? "border-b-2 border-[#0F7B8A] text-[#0F7B8A]"
+                          : "text-gray-500 hover:text-[#0F7B8A]"
+                        }`}
+                    >
+                      Profile Information
+                    </Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="Profile Info">
+                    <ProfileOverviewCard />
+                  </Tabs.Content>
+                </Tabs.Root>
+              </div>
+            </>
           )}
         </div>
       </div>
