@@ -16,6 +16,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     env:
+      DB_URI: ${{ secrets.DB_URI }}
       NX_CLOUD_AUTH_TOKEN: ""
     steps:
       - name: Checkout repository
@@ -58,13 +59,13 @@ jobs:
       # When you enable task distribution, run the e2e-ci task instead of e2e
       # Run lint, test, build, and e2e using Nx
       - name: Lint all
-        run: pnpm nx run-many -t lint --local --parallel=3 || true
+        run: pnpm nx run-many -t lint --parallel=3 || true
 
       - name: Test all
-        run: pnpm nx run-many -t test --local --parallel=3
+        run: pnpm nx run-many -t test --parallel=3
 
       - name: Build all
-        run: pnpm nx run-many -t build --local --parallel=3 || true
+        run: pnpm nx run-many -t build --parallel=3 || true
 
       - name: E2E all
-        run: pnpm nx run-many -t e2e --local --parallel=3 || true
+        run: pnpm nx run-many -t e2e --parallel=3 || true
