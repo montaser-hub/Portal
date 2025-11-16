@@ -23,7 +23,7 @@ export const login = catchAsync( async ( req, res, next ) => {
 
   res.cookie('jwt', token, cookieOptions);
 
-  res.status(201).json({ message: 'Your login was successfully', data: user });
+  res.status(201).json({ message: 'Your login was successfully', token, data: user });
 });
 
 export const logout = (req, res) => {
