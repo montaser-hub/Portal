@@ -35,7 +35,7 @@ export default function SwapRequestForm({ formData, onChange, onSubmit, user }) 
     const user = sched.user || {};
     const subDep = sched.subDepartment || {};
     const date = new Date(sched.date).toLocaleDateString();
-    return `${subDep.name || '-'} — 📅 ${date} ⏰ ${shift.startTime || '-'} - ${shift.endTime || '-'} 👤 ${user.fullName || '-'}`;
+    return `${subDep.name || '-'} — 📅 ${date} ⏰ ${shift.startTimeFormatted || '-'} - ${shift.endTimeFormatted || '-'} 👤 ${user.fullName || '-'}`;
   };
 
   return (
