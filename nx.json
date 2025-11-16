@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
+  "useDaemon": false,
   "projects": {
     "Admin-Portal": "apps/Admin-Portal",
     "user-dashboard": "apps/Admin-dashboard",
