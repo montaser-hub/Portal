@@ -3,12 +3,12 @@ import * as userService from './userService';
 
 export const fetchMe = createAsyncThunk('user/fetchMe', async () => {
   const res = await userService.fetchMeAPI();
-  return res.data.data;
+  return res.data;
 });
 
 export const updateMe = createAsyncThunk('user/updateMe', async (data) => {
   const res = await userService.updateMeAPI(data);
-  return res.data.data;
+  return res.data;
 });
 
 
@@ -26,6 +26,6 @@ export const updateUserPhoto = createAsyncThunk(
     }
 
     const res = await userService.updateUserPhotoAPI(data);
-    return res.data.data;
+    return res.data;
   }
 );

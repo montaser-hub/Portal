@@ -1,13 +1,27 @@
 import api from './api';
 
-export const getAll = async (endpoint, params = {}) => api.get(endpoint, { params });
+const handleRequest = async (request) => {
+  try {
+    const res = await request;
+    return res.data;
+  } catch (err) {
+    console.error( 'API Error:', err );
+    if (!err.response) {
+      throw { message: 'Network error. Please try again.' };
+    }
+    // Throw consistent error message for thunks
+    throw new Error(err.response?.data?.message || err.message || 'API request failed');
+  }
+};
 
-export const getById = async (endpoint, id) => api.get(`${endpoint}/${id}`);
+export const getAll = (endpoint, params = {}) => handleRequest(api.get(endpoint, { params }));
 
-export const create = async (endpoint, data) => api.post(endpoint, data);
+export const getById = (endpoint, id) => handleRequest(api.get(`${endpoint}/${id}`));
 
-export const update = async ( endpoint, id, data ) => api.put( `${endpoint}/${id}`, data );
+export const create = (endpoint, data) => handleRequest(api.post(endpoint, data));
 
-export const updatePartial = async (endpoint, id, data) => api.patch(`${endpoint}/${id}`, data);
+export const update = (endpoint, id, data) => handleRequest(api.put(`${endpoint}/${id}`, data));
 
-export const remove = async (endpoint, id) => api.delete(`${endpoint}/${id}`);
+export const updatePartial = (endpoint, id, data) => handleRequest(api.patch(`${endpoint}/${id}`, data));
+
+export const remove = (endpoint, id) => handleRequest(api.delete(`${endpoint}/${id}`));

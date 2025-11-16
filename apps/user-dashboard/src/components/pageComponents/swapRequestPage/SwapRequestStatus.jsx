@@ -1,4 +1,3 @@
-import React from "react";
 import { CheckCircle, Clock, UserCheck, RefreshCw } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";

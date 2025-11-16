@@ -1,4 +1,3 @@
-import React from 'react';
 export function Badge({ children, variant = "default", className = "" }) {
     const base = "inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium";
     let variantClasses = "bg-gray-100 text-gray-700";
