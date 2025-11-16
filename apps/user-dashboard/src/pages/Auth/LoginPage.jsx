@@ -32,10 +32,10 @@ export default function LoginPage() {
       ...prev,
       email:
         value.length === 0
-        ? "Email is required"
+          ? "Email is required"
           : !emailRegex.test(value)
-        ? "Email is not valid"
-        : "",
+            ? "Email is not valid"
+            : "",
     }));
   };
 
@@ -48,10 +48,10 @@ export default function LoginPage() {
       ...prev,
       password:
         value.length === 0
-        ? "Password is required"
+          ? "Password is required"
           : !passwordRegex.test(value)
-        ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
-        : "",
+            ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
+            : "",
     }));
   };
 
@@ -98,7 +98,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <Text
               as="h1"
-              content="SmartShift"
+              content="SmartShift sgryjkghilhjlhjklh;lkjl;jkl;dydfdfgfdhfgjghkjhgjkjlhsfjosrgjr'dl;gkhktl;ktrb,tglkwr't;ykrtl;"
               MyClass="text-2xl font-semibold text-[#0F7B8A] text-center"
             />
             <Text
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 label="Password"
                 name="password"
                 placeholder="Enter your password"
-                type={showPassword ? "text" : "password"} // ✅ هنا التعديل المهم
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={handlePasswordChange}
                 myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-2 top-9 focus:outline-none" // ✅ أزلنا فوكَس الإطار
+                  className="absolute right-2 top-9 focus:outline-none"
                 >
                   {showPassword ? (
                     <Eye className="h-5 w-5 text-[#0F7B8A]" />
@@ -185,8 +185,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={!email || !password || !!errors.email || !!errors.password}
-              className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                !email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
+              className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${!email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
               <LogIn className="mr-2 h-4 w-4" />
               Sign In
             </button>

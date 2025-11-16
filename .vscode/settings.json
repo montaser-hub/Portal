@@ -1,14 +1,29 @@
 {
-
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/build/**": true
+    "**/build/**": true,
+    "**/.nx/**": true,
+    "**/apps/**/node_modules/**": true,
+    "**/libs/**/node_modules/**": true
   },
-
   "files.exclude": {
-    "**/node_modules": true
-
-}
-
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.nx": true
+  },
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "terminal.integrated.inheritEnv": false,
+  "files.autoSave": "onFocusChange",
+  "telemetry.enableTelemetry": false,
+  "telemetry.enableCrashReporter": false,
+  "workbench.editor.enablePreview": false,
+  "workbench.startupEditor": "none",
+  "editor.largeFileOptimizations": true,
+  "search.followSymlinks": false,
+  "search.useIgnoreFiles": true,
+  "search.useGlobalIgnoreFiles": true,
+  "gitlens.views.repositories.autoRefresh": false
 }
