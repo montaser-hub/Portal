@@ -41,11 +41,11 @@ export default function ProfileOverviewCard() {
         setPendingData({});
         setIsEditing(false);
         setIsModalOpen(false);
-        toast.success("Changes saved successfully!");
+        toast.success("User updated successfully");
       })
-      .catch((error) => {
-        console.error("Update failed:", error);
-        toast.error("Failed to save changes");
+      .catch((err) => {
+        const msg = err.response.data.message;
+        toast.error(msg);
       });
   };
 

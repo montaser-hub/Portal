@@ -61,22 +61,14 @@ export default function LoginPage() {
     e.preventDefault();
     if (!errors.email && !errors.password && email && password) {
       setIsSubmitting(true);
-
       try {
-        await login({ email, password });
+        const res = await login({ email, password });
+        toast.success(res.message);
         await dispatch(fetchMe()).unwrap();
-        toast.success('Welcome! Redirecting...');
-
+        toast.success('Welcome! To Your Dashboard');
         navigate('/Dashboard', { replace: true });
       } catch (err) {
-        let msg = 'Login failed. Please try again.';
-        if (err.response?.data?.message) {
-          msg = err.response.data.message;
-        } else if (err.message) {
-          msg = err.message;
-        } else if (!err.response) {
-          msg = 'Network error. Check your connection.';
-        }
+        const msg = err.response.data.message;
         toast.error(msg);
       } finally {
         setIsSubmitting(false);
