@@ -98,7 +98,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <Text
               as="h1"
-              content="SmartShift sgryjkghilhjlhjklh;lkjl;jkl;dydfdfgfdhfgjghkjhgjkjlhsfjosrgjr'dl;gkhktl;ktrb,tglkwr't;ykrtl;"
+              content="SmartShift"
               MyClass="text-2xl font-semibold text-[#0F7B8A] text-center"
             />
             <Text
@@ -185,7 +185,8 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={!email || !password || !!errors.email || !!errors.password}
-              className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${!email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
+              className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78]
+              ${!email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
               <LogIn className="mr-2 h-4 w-4" />
               Sign In
             </button>
