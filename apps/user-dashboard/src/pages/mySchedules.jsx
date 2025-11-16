@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSchedules } from "../app/Redux/slices/scheduleSlice";
 import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
@@ -30,9 +29,6 @@ export default function Schedules() {
     status: STATUSES[0],
   };
 
-  useEffect(() => {
-    dispatch(fetchSchedules());
-  }, [dispatch]);
 
   const filteredSchedules = useMemo(() => {
     return schedules.filter(
