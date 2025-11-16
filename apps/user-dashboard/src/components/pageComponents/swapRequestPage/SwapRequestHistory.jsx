@@ -1,4 +1,3 @@
-import React from "react";
 import Text from "../../common/Text";
 
 export default function SwapRequestHistory() {
