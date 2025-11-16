@@ -1,8 +1,11 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Text from '../../common/Text';
 import Button from '../../common/Button';
+import { fetchSchedules, fetchUpcomingSchedules } from '../../../features/schedule/scheduleThunks';
 
 export default function SwapRequestForm({ formData, onChange, onSubmit, user }) {
+  const dispatch = useDispatch();
   const {
     allSchedules,
     upcomingSchedules,
@@ -10,6 +13,18 @@ export default function SwapRequestForm({ formData, onChange, onSubmit, user }) 
     upcomingSchedulesStatus,
   } = useSelector((state) => state.schedule);
 
+  // Load schedules on mount
+  useEffect(() => {
+    if (allSchedulesStatus === 'idle')
+      dispatch(
+        fetchSchedules({
+          departmentId: user.departmentId,
+          excludeUserId: user._id,
+        })
+      );
+    if (upcomingSchedulesStatus === 'idle')
+      dispatch(fetchUpcomingSchedules({ userId: user._id }));
+  }, [dispatch, allSchedulesStatus, upcomingSchedulesStatus]);
 
   const loading =
     allSchedulesStatus === 'loading' || upcomingSchedulesStatus === 'loading';
@@ -48,7 +63,7 @@ export default function SwapRequestForm({ formData, onChange, onSubmit, user }) 
               onChange={onChange}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0F7B8A]"
             >
-              <option value="">Select your Schedule</option>
+              <option value="">Select your shift</option>
                 {loading ? (
                 <option>Loading schedules...</option>
                 ) : (
@@ -72,7 +87,7 @@ export default function SwapRequestForm({ formData, onChange, onSubmit, user }) 
               onChange={onChange}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0F7B8A]"
             >
-              <option value="">Select target Schedule</option>
+              <option value="">Select target shift</option>
                 {loading ? (
                 <option>Loading schedules...</option>
                 ) : (
