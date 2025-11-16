@@ -10,34 +10,18 @@ export const update = async (id, data) => {
 
 export const findById = async (id) => {
   return await Schedule.findById(id)
-    .populate({path: 'department'
-    , select: 'name'
-    })
-    .populate({path: 'subDepartment'
-    , select: 'name'
-    })
-    .populate({path: 'user'
-    , select: 'nickname'
-    })
-    .populate({path: 'shift'
-    , select: 'name'
-    });
+    .populate('department','name')
+    .populate('subDepartment','name')
+    .populate('user', 'firstName lastName')
+    .populate('shift', 'shiftName shiftType startTime endTime');
 };
 
 export const findAll = () => {
   return Schedule.find()
-    .populate({path: 'department'
-    , select: 'name'
-    })
-    .populate({path: 'subDepartment'
-    , select: 'name'
-    })
-    .populate({path: 'user'
-    , select: 'nickname'
-    })
-    .populate({path: 'shift'
-    , select: 'name'
-    });
+    .populate('department','name')
+    .populate('subDepartment','name')
+    .populate('user', 'firstName lastName')
+    .populate('shift', 'shiftName shiftType startTime endTime');
 
 };
 

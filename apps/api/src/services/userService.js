@@ -47,7 +47,7 @@ export const getUsers = async ( queryParams ) => {
 }
 
 export const updatePassword = async ( email, data ) => {
-  if (data.newPassword !== data.confirmNewPassword) {
+  if (data.newPassword !== data.confirmPassword) {
     throw new AppError('Passwords do not match', 400);
   }
     // 1) Get user from token

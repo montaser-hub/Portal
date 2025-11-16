@@ -60,11 +60,11 @@ jobs:
       - name: Lint all
         run: pnpm nx run-many -t lint --local --parallel=3 || true
 
-      # - name: Test all
-      #   run: pnpm nx run-many -t test --local --parallel=3
+      - name: Test all
+        run: pnpm nx run-many -t test --local --parallel=3
 
       - name: Build all
         run: pnpm nx run-many -t build --local --parallel=3 || true
 
-      # - name: E2E all
-      #   run: pnpm nx run-many -t e2e --local --parallel=3 || true
+      - name: E2E all
+        run: pnpm nx run-many -t e2e --local --parallel=3 || true
