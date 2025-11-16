@@ -3,7 +3,7 @@ import store from '../app/store';
 import { showLoader, hideLoader } from '../app/store';
 import { logoutUser } from '../features/user/userSlice';
 
-const baseURL = import.meta.env.VITE_POTRAL_API_URL;
+const baseURL = 'https://smartshift-c240077eea3a.herokuapp.com/api/v1';
 
 const api = axios.create({
   baseURL,
