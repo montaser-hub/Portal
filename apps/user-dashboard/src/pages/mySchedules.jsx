@@ -222,7 +222,7 @@ export default function Schedules() {
         </table>
       </div>
 
-      {/* Modals */}
+      {/* Modals*/}
       <ScheduleModal
         isOpen={isModalOpen}
         editing={editing}
