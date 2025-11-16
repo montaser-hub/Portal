@@ -31,7 +31,7 @@ export default function Input({
 
   return (
     <div className="w-full">
-      {label && <label className="block mb-1 text-sm font-medium">{label}</label>}
+      {label && <label className="block mb-1 text-sm font-medium text-gray-600">{label}</label>}
       <div className="relative">
         <input
           type={inputType}

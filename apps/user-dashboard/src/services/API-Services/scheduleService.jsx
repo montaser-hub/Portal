@@ -19,3 +19,4 @@ export const deleteSchedule = async (id) => {
   const res = await api.delete(`/schedules/${id}`);
   return res.data.data;
 };
+
