@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Button from "../../common/Button";
@@ -41,11 +41,11 @@ export default function ProfileOverviewCard() {
         setPendingData({});
         setIsEditing(false);
         setIsModalOpen(false);
-        toast.success("User updated successfully");
+        toast.success("Changes saved successfully!");
       })
-      .catch((err) => {
-        const msg = err.response.data.message;
-        toast.error(msg);
+      .catch((error) => {
+        console.error("Update failed:", error);
+        toast.error("Failed to save changes");
       });
   };
 
@@ -71,7 +71,7 @@ export default function ProfileOverviewCard() {
   return (
     <>
       {mySppinerStatus ? <HeartbeatSpinner /> : <Card className="p-6 space-y-4 bg-white border-gray-200">
-        <Text as="h3" content="Contact Information" MyClass="text-lg font-medium text-teal-700" />
+        <Text as="h3" content="Contact Information" MyClass="text-lg font-medium" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="First Name"
@@ -108,7 +108,7 @@ export default function ProfileOverviewCard() {
         <Text
           as="h4"
           content="Employment Details"
-          MyClass="mt-4 text-md font-medium text-teal-700"
+          MyClass="mt-4 text-md font-medium"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input label="Department" value={user?.department?.name || "N/A"} disabled />
