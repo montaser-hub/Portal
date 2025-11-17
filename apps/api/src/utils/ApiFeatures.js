@@ -7,8 +7,20 @@ class APIFeatures {
   // Filtering (supports advanced operators like gte, lte, in, etc.)
   filter() {
     const queryObj = { ...this.queryString };
-    const excluded = ['page', 'sort', 'limit', 'fields', 'all', 'search'];
+    const excluded = ['page', 'sort', 'limit', 'fields', 'all', 'search', 'startDate', 'endDate'];
     excluded.forEach(key => delete queryObj[key]);
+
+    // --- DATE RANGE SUPPORT ---
+    if (this.queryString.startDate || this.queryString.endDate) {
+      queryObj.date = {};
+
+      if (this.queryString.startDate) {
+        queryObj.date.gte = new Date(this.queryString.startDate);
+      }
+      if (this.queryString.endDate) {
+        queryObj.date.lte = new Date(this.queryString.endDate);
+      }
+    }
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lt|lte|in|ne)\b/g, m => `$${m}`);
