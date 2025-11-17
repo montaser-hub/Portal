@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchSchedules } from "../app/Redux/slices/scheduleSlice";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
@@ -9,7 +8,7 @@ import { STATUSES, TABLE_COLUMNS, SHIFTS, SUBDEPARTMENTS } from "../components/c
 export default function Schedules() {
   const dispatch = useDispatch();
 
-  const { schedules, status, error } = useSelector((state) => state.schedule);
+  const schedules =[]
 
   const [selectedShift, setSelectedShift] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -30,9 +29,6 @@ export default function Schedules() {
     status: STATUSES[0],
   };
 
-  useEffect(() => {
-    dispatch(fetchSchedules());
-  }, [dispatch]);
 
   const filteredSchedules = useMemo(() => {
     return schedules.filter(
