@@ -1,26 +1,26 @@
-import { getTimeUntilShift, getUpcomingShift, getUserShiftDates } from '../components/common/dateHelpers';
-import { swapRequests, notes, shifts } from "../components/common/mockData";
+import {  getScheduleDates } from '../components/common/dateHelpers';
+import { swapRequests, notes } from "../components/common/mockData";
 import Badge from '../components/common/Badge';
 import Text from '../components/common/Text';
-import ErrorMessage from '../components/common/ErrorMessage';
 import CalendarComponent from '../components/pageComponents/dashboardHome/CalendarComponent';
-import UpcomingShiftCard from '../components/pageComponents/dashboardHome/UpcomingShiftCard';
+import UpcomingscheduleCard from '../components/pageComponents/dashboardHome/UpcomingscheduleCard';
 import NotesCard from '../components/pageComponents/dashboardHome/NotesCard';
 import SwapRequestsList from '../components/pageComponents/dashboardHome/SwapRequestsList';
 import HeartbeatSpinner from "../components/common/Spinner2";
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
 
 function Dashboard({ onNavigate }) {
-  const { user, status, error } = useSelector((state) => state.user);
+  const { user, userStatus, userError } = useSelector((state) => state.user);
+  const { upcomingSchedules, upcomingSchedulesStatus } = useSelector( ( state ) => state.schedule );
 
-  if (status === 'idle' || status === 'loading') return <HeartbeatSpinner />;
-  if (status === 'failed') return <ErrorMessage errorMessage={error} />;
+  if (userStatus === 'idle' || userStatus === 'loading' || upcomingSchedulesStatus === 'loading') return <HeartbeatSpinner />;
+  if (userStatus === 'failed') return <ErrorMessage errorMessage={userError} />;
 
-  const upcomingShift = getUpcomingShift(shifts, user._id);
-  const userShiftDates = getUserShiftDates(shifts, user.id);
-  const timeUntil = upcomingShift ? getTimeUntilShift(upcomingShift) : null;
-  const featuredUpcomingShift = upcomingShift || shifts.find(s => s.id === 1);
+  const upcomingSchedule = upcomingSchedules[0] || null;
+
+  const userScheduleDates = getScheduleDates(upcomingSchedules);
+
 
   return (
     <div className="p-6 md:p-8 space-y-6 bg-[#F8F9FA] min-h-screen">
@@ -29,7 +29,7 @@ function Dashboard({ onNavigate }) {
           as="h1"
           MyClass="text-2xl font-normal text-[#0F7B8A]"
           content={
-            <>Welcome back, <span className="font-semibold italic">{user.firstName || ''} {user.lastName || ''}</span></>
+            <>Welcome back, <span className="font-semibold italic">{user.nickname || user.fullName } </span></>
           }
         />
         <div className="flex items-center gap-3 text-gray-600 text-sm">
@@ -43,8 +43,8 @@ function Dashboard({ onNavigate }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <UpcomingShiftCard shift={featuredUpcomingShift} timeUntil={timeUntil} />
-        <CalendarComponent shiftDates={userShiftDates} />
+        <UpcomingscheduleCard schedule={upcomingSchedule} />
+        <CalendarComponent schedulesDates={userScheduleDates} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
