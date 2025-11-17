@@ -117,11 +117,7 @@ export default function ProfileOverviewCard() {
             <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
           )}
         </div>
-        <Text
-          as="h4"
-          content="Employment Details"
-          MyClass="mt-4 text-md font-medium text-teal-700"
-        />
+        <Text as="h4" content="Employment Details" MyClass="mt-4 text-md font-medium text-teal-700" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input label="Department" value={user?.department?.name || "N/A"} disabled />
           <Input label="Position" value={user?.position?.name || "N/A"} disabled />
