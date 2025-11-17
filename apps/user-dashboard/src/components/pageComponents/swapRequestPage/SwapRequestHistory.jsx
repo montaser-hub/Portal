@@ -25,40 +25,23 @@ export default function SwapRequestHistory({ requests = [] }) {
         >
           {/* Header Row */}
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-800">
-              Swap Request #{req.id.slice(-5)}
-            </h3>
-
-            <span
-              className={`px-3 py-1 rounded-lg text-sm font-medium border ${
-                statusColors[req.status] || statusColors['pending']
-              }`}
-            >
-              {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
-            </span>
+            <Text as="h3" content={`Swap Request #${req.id.slice(-5)}`} MyClass="font-semibold text-gray-800"  />
+            <Text as="span" content={req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+            MyClass={`px-3 py-1 rounded-lg text-sm font-medium border ${statusColors[req.status] || statusColors['pending']}`}  />
           </div>
-
           {/* Shift Info */}
           <div className="mb-3 text-gray-700">
-            <p>
-              <strong>From Shift:</strong> {req.fromScheduleId}
-            </p>
-            <p>
-              <strong>To Shift:</strong> {req.toScheduleId}
-            </p>
+            <Text as="p" content={ <> <strong>From Shift:</strong> {req.fromScheduleId}</> } />
+            <Text as="p" content={ <> <strong>To Shift:</strong> {req.toScheduleId}</> } />
           </div>
 
           {/* Message */}
           {req.message && (
-            <p className="text-gray-600 italic border-l-4 pl-3 border-gray-300 mb-3">
-              “{req.message}”
-            </p>
+            <Text as="p" content={`“${req.message}”`} MyClass="text-gray-600 italic border-l-4 pl-3 border-gray-300 mb-3" />
           )}
 
           {/* Date */}
-          <p className="text-sm text-gray-500">
-            Created at: {new Date(req.createdAt).toLocaleString()}
-          </p>
+          <Text as="p" content={`Created at: ${new Date(req.createdAt).toLocaleString()}`} MyClass="text-sm text-gray-500"  />
         </div>
       ))}
     </div>

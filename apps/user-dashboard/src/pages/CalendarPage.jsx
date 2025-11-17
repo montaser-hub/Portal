@@ -4,6 +4,7 @@ import MonthView from "../components/pageComponents/candelarPage/MonthView";
 import ShiftDetails from "../components/pageComponents/candelarPage/ShiftDetails";
 import { getShiftsForDate } from "../components/pageComponents/candelarPage/Calendar";
 import { COLORS  } from "../components/common/colors";
+import Text from "../components/common/Text";
 
 // ---------------- Calendar Page ----------------
 export default function CalendarPage() {
@@ -17,8 +18,8 @@ export default function CalendarPage() {
     <div className="p-8 space-y-6 bg-0F7B8A">
           <div className="flex items-center justify-between">
       <div>
-        <h1>Schedule Calendar</h1>
-        <p className="text-muted-foreground mt-1">View and manage your shifts</p>
+        <Text as="h1" content="Schedule Calendar" MyClass="text-2xl font-semibold text-[#0F7B8A]" />
+        <Text as="p" MyClass="text-gray-600" content="View and manage your shcedules" />
       </div>
 
     </div>
