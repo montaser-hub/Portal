@@ -5,11 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 
-export const logout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/Login";
-};
-
 function MobileNavbar({
   navigation,
   currentPage,
@@ -41,10 +36,9 @@ function MobileNavbar({
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
         >
-          {/* ✅ User Info */}
+          {/* User Info */}
           <div className="flex flex-col items-start gap-2 p-4 border-b relative">
             <div className="flex items-center gap-2">
-                {/* {getUserInitials(`${currentUser.firstName} ${currentUser.lastName}`)} */}
                 {profileImage ? (
                               <img
                                 src={profileImage}
@@ -70,7 +64,7 @@ function MobileNavbar({
             </button>
           </div>
 
-          {/* ✅ Menu Items */}
+          {/* Menu Items */}
           <div className="flex-1 flex flex-col gap-4 p-4 mt-2">
             {navigation.map((item) => {
               const Icon = item.icon;

@@ -5,7 +5,6 @@ import MobileNavbar from "./MobileNavbar";
 import Text from "../../common/Text";
 import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
-import { getMe } from "../../../services/API-Services/UserService";
 import { useLocation } from "react-router-dom";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
@@ -25,10 +24,12 @@ function getUserInitials(name = "") {
 
 function Navbar() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.user);
+  const userStatus = useSelector((state) => state.user.status);
   const [currentPage, setCurrentPage] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const unreadCount = mockNotifications.filter((n) => !n.read).length;
   const dropdownRef = useRef(null);
 
@@ -42,10 +43,11 @@ function Navbar() {
     else if (path.includes("/profile")) setCurrentPage("profile");
   }, [location.pathname]);
 
-useEffect(() => {
-  getMe().then(userData => {setCurrentUser(userData);})
-        .catch(error => {console.error("Failed to fetch user:", error);});
-}, []);
+  useEffect(() => {
+    if (userStatus === 'idle') {
+      dispatch(fetchMe());
+    }
+  }, [dispatch, userStatus]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -100,7 +102,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* ✅ Mobile Navbar */}
+      {/* Mobile Navbar */}
       <AnimatePresence mode="wait">
         <MobileNavbar
           key="mobile-navbar"

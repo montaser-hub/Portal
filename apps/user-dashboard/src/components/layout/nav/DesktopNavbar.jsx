@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -14,7 +14,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
-import { getMe } from "../../../services/API-Services/UserService";
 import { logout } from "../../../services/API-Services/AuthService";
 
 const mockNotifications = [
@@ -50,23 +49,11 @@ export default function DesktopNavbar({
   setUserMenuOpen,
   profileImage,
   getUserInitials,
+  currentUser,
 }) {
   const [notifMenuOpen, setNotifMenuOpen] = useState(false);
-  const [userData, setUserData] = useState(null);
   const notifRef = useRef();
   const userRef = useRef();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const data = await getMe();
-        setUserData(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -75,11 +62,11 @@ export default function DesktopNavbar({
       if (userRef.current && !userRef.current.contains(event.target))
         setUserMenuOpen(false);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  if (!userData) {
+  if (!currentUser) {
     return null;
   }
 
@@ -89,7 +76,8 @@ export default function DesktopNavbar({
       <nav className="flex items-center gap-4 ml-12">
         {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = currentPage === item.id && item.id !== "notifications";
+          const isActive =
+            currentPage === item.id && item.id !== 'notifications';
           return (
             <Link
               key={item.id}
@@ -101,8 +89,8 @@ export default function DesktopNavbar({
               }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
                 isActive
-                  ? "bg-[#0F7B8A] text-white shadow-md"
-                  : "text-gray-700 hover:bg-[#E0F4F6] hover:text-black"
+                  ? 'bg-[#0F7B8A] text-white shadow-md'
+                  : 'text-gray-700 hover:bg-[#E0F4F6] hover:text-black'
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -122,9 +110,9 @@ export default function DesktopNavbar({
               setUserMenuOpen(false);
             }}
             className={`relative cursor-pointer p-2 rounded-lg transition duration-300 ${
-              notifMenuOpen || currentPage === "notifications"
-                ? "bg-[#E0F4F6] text-gray-700"
-                : "text-gray-700 hover:bg-[#E0F4F6]"
+              notifMenuOpen || currentPage === 'notifications'
+                ? 'bg-[#E0F4F6] text-gray-700'
+                : 'text-gray-700 hover:bg-[#E0F4F6]'
             }`}
           >
             <Bell className="h-5 w-5" />
@@ -175,7 +163,7 @@ export default function DesktopNavbar({
                   <Link
                     to="/Notifications"
                     onClick={() => {
-                      setCurrentPage("notifications");
+                      setCurrentPage('notifications');
                       setNotifMenuOpen(false);
                     }}
                     className="block text-center text-[#0F7B8A] py-2 font-medium text-sm hover:bg-[#E0F4F6] rounded-none"
@@ -192,7 +180,7 @@ export default function DesktopNavbar({
         <div ref={userRef} className="relative">
           <div
             className={`flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[#E0F4F6] transition ${
-              userMenuOpen ? "bg-[#E0F4F6]" : ""
+              userMenuOpen ? 'bg-[#E0F4F6]' : ''
             }`}
             onClick={() => {
               setUserMenuOpen(!userMenuOpen);
@@ -204,14 +192,15 @@ export default function DesktopNavbar({
                 src={profileImage}
                 alt="Profile"
                 className="w-12 h-12 rounded-full object-cover transition-opacity duration-200"
-              />):(
-            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
+              />
+            ) : (
+              <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
                 <User className="h-12 w-12 text-gray-300" />
-            </div>
-              )}
+              </div>
+            )}
             <Text
               as="span"
-              content={userData.firstName}
+              content={currentUser.firstName}
               MyClass="text-sm font-medium text-gray-600"
             />
           </div>
@@ -226,18 +215,20 @@ export default function DesktopNavbar({
               >
                 <div className="flex items-center gap-2 px-4 py-2 border-b mb-3">
                   <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#0F7B8A] text-white font-semibold">
-                    {getUserInitials(userData.firstName + " " + userData.lastName)}
+                    {getUserInitials(
+                      currentUser.firstName + ' ' + currentUser.lastName
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <Text
                       as="span"
-                      content={`${userData.firstName} ${userData.lastName}`}
+                      content={`${currentUser.firstName} ${currentUser.lastName}`}
                       MyClass="font-medium text-sm text-gray-500 flex justify-center"
                     />
-                    <Badge variant="outline">{userData.role}</Badge>
+                    <Badge variant="outline">{currentUser.role}</Badge>
                     <Text
                       as="span"
-                      content={userData.email}
+                      content={currentUser.email}
                       MyClass="text-xs text-gray-500"
                     />
                   </div>
@@ -245,13 +236,13 @@ export default function DesktopNavbar({
                 <Link
                   to="/Profile"
                   onClick={() => {
-                    setCurrentPage("profile");
+                    setCurrentPage('profile');
                     setUserMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 px-4 py-2 text-sm transition duration-300 ${
-                    currentPage === "profile"
-                      ? "bg-[#0F7B8A] text-white"
-                      : "text-gray-700 hover:bg-[#E0F4F6]"
+                    currentPage === 'profile'
+                      ? 'bg-[#0F7B8A] text-white'
+                      : 'text-gray-700 hover:bg-[#E0F4F6]'
                   }`}
                 >
                   <User className="h-4 w-4" /> Profile

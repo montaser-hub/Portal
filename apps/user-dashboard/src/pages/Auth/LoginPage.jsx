@@ -63,20 +63,13 @@ export default function LoginPage() {
       setIsSubmitting(true);
 
       try {
-        await login({ email, password });
+        const res = await login({ email, password });
         await dispatch(fetchMe()).unwrap();
-        toast.success('Welcome! Redirecting...');
+        toast.success(res.message || 'Welcome! Redirecting...');
 
         navigate('/Dashboard', { replace: true });
       } catch (err) {
-        let msg = 'Login failed. Please try again.';
-        if (err.response?.data?.message) {
-          msg = err.response.data.message;
-        } else if (err.message) {
-          msg = err.message;
-        } else if (!err.response) {
-          msg = 'Network error. Check your connection.';
-        }
+        const msg = err.response.data.message;
         toast.error(msg);
       } finally {
         setIsSubmitting(false);
@@ -154,7 +147,7 @@ export default function LoginPage() {
                 label="Password"
                 name="password"
                 placeholder="Enter your password"
-                type={showPassword ? "text" : "password"} // ✅ هنا التعديل المهم
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={handlePasswordChange}
                 myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
@@ -165,7 +158,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-2 top-9 focus:outline-none" // ✅ أزلنا فوكَس الإطار
+                  className="absolute right-2 top-9 focus:outline-none"
                 >
                   {showPassword ? (
                     <Eye className="h-5 w-5 text-[#0F7B8A]" />
