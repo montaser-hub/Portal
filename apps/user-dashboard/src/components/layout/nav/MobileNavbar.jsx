@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Bell, User, LogOut, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { logout } from "../../../services/API-Services/AuthService";
+import { logout } from '../../../services/API-Services/AuthService';
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 
