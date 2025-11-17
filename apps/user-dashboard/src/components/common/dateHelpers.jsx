@@ -1,29 +1,48 @@
-export const getTimeUntilShift = (shift) => {
-    const shiftDateTime = new Date(`${shift.date}T${shift.startTime}`);
-    const now = new Date();
-    const diff = shiftDateTime.getTime() - now.getTime();
+import { addMinutes, differenceInMinutes, isPast, format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
-    if (diff <= 0) return 'Shift is over';
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(hours / 24);
-    const remainingHours = hours % 24;
-
-    if (days > 0) return `${days} days ${remainingHours} hrs`;
-    if (hours > 1) return `${hours} hours`;
-    if (hours > 0) return 'Less than 1 hour';
-    return 'Starting Soon';
+/**
+ * Helper to get schedule DateTime with timezone support
+ * @private
+ */
+const getScheduleDateTime = (schedule, userTimezone = null) => {
+  const scheduleDate = new Date(schedule.date);
+  return addMinutes(scheduleDate, schedule.shift.startTime);
 };
 
-export const getUpcomingShift = (shifts, userId) => {
-    return shifts
-        .filter(s => s.assignedUserId === userId && s.status === 'Assigned')
-        .sort((a, b) => new Date(`${a.date}T${a.startTime}`) - new Date(`${b.date}T${b.startTime}`))
-        .find(s => new Date(`${s.date}T${s.startTime}`) > new Date());
+
+/**
+ * Formats schedule date for display
+ * @param {Object} schedule - Schedule object
+ * @param {string} userTimezone - Optional: User's timezone
+ * @returns {string} Formatted date string
+ */
+export const formatScheduleDate = (schedule, userTimezone = null) => {
+  if (!schedule?.date) {
+    return 'Date not available';
+  }
+
+  try {
+    const scheduleDate = new Date(schedule.date);
+    const formatPattern = 'EEEE, MMMM d, yyyy';
+
+    if (userTimezone) {
+      return formatInTimeZone(scheduleDate, userTimezone, formatPattern);
+    }
+
+    return format(scheduleDate, formatPattern);
+  } catch (error) {
+    console.error('Error formatting schedule date:', error);
+    return 'Date not available';
+  }
 };
 
-export const getUserShiftDates = (shifts, userId) => {
-    return shifts
-        .filter(s => s.assignedUserId === userId && s.status === 'Assigned')
-        .map(s => s.date);
+/**
+ * Extracts schedule dates for calendar display
+ * @param {Array} schedules - Array of schedule objects
+ * @returns {Array<string>} Array of date strings
+ */
+export const getScheduleDates = (schedules) => {
+  if (!Array.isArray(schedules)) return [];
+  return schedules.map((s) => s.date).filter(Boolean);
 };
