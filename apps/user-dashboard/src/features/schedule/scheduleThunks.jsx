@@ -4,8 +4,7 @@ import * as scheduleService from './scheduleService';
 // Upcoming schedules for current user
 export const fetchUpcomingSchedules = createAsyncThunk(
   'schedule/fetchUpcomingSchedules',
-  async ({ userId, startTime, endTime } = {}, thunkAPI) => {
-    const state = thunkAPI.getState().schedule;
+  async ({ userId, startTime, endTime } = {}) => {
 
     const now = new Date();
     const filters = {
@@ -20,12 +19,7 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
-  async (
-    { departmentId, excludeUserId, startTime, endTime } = {},
-    thunkAPI
-  ) => {
-    const state = thunkAPI.getState().schedule;
-
+  async ({ departmentId, excludeUserId, startTime, endTime } = {}) => {console.log('thunks file loaded');
     const now = new Date();
     const filters = {
       departmentId,
