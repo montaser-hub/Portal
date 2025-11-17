@@ -1,6 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlice';
 import scheduleReducer from '../features/schedule/ScheduleSlice';
+import swapReducer from '../features/swaprequest/swapSlice';
 
 const loaderSlice = createSlice({
   name: 'loader',
@@ -22,6 +23,7 @@ const store = configureStore({
     loader: loaderSlice.reducer,
     user: userReducer,
     schedule: scheduleReducer,
+    swap: swapReducer,
   },
 });
 

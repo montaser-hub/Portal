@@ -292,3 +292,47 @@ heroku container:release web --app portal-api-backend
 heroku ps:scale web=1 --app portal-api-backend
 
 heroku open --app portal-api-backend
+
+
+.....................................
+
+Notes:
+
+➤ When do you NEED a thunk?
+
+  Use them for asynchronous operations:
+
+    Fetch schedules
+
+    Fetch swap requests
+
+    Add swap request
+
+    Update swap request
+
+    Delete swap request
+
+➤ When you DO NOT need a thunk
+
+  Updating form fields
+
+  Changing tabs
+
+  UI interactions
+
+  Storing selected items
+  (All these are sync, simple reducers)
+
+➤ When do you need a slice?
+
+  When you want Redux to store:
+
+    A list of records
+
+    Async loading state
+
+    Errors
+
+    Meta (pagination)
+
+    Create/edit/delete effects

@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import api from './api';
 
 const handleRequest = async (request) => {
@@ -6,11 +7,16 @@ const handleRequest = async (request) => {
     return res.data;
   } catch (err) {
     console.error( 'API Error:', err );
-    if (!err.response) {
-      throw { message: 'Network error. Please try again.' };
+    if ( !err.response ) {
+      toast.error('Network error. Please try again.');
+      throw err;
     }
-    // Throw consistent error message for thunks
-    throw new Error(err.response?.data?.message || err.message || 'API request failed');
+    const message =
+      err.response?.data?.message || err.message || 'Request failed';
+    toast.error(message);
+
+    // Re-throw so .unwrap() rejects
+    throw new Error(message);
   }
 };
 
