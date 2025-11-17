@@ -14,7 +14,8 @@ export const updateSchedule = async (id, data) => {
 }
 
 export const getAllSchedules = async (queryParams) => {
-  return  await getAllDocuments(scheduleRepo, queryParams);
+  const searchableFields = ['userId', 'date', 'shiftId', 'subDepartmentId', 'departmentId', 'swapRequestId', 'isActive'];
+  return  await getAllDocuments(scheduleRepo, queryParams, searchableFields);
 }
 
 export const getSchedule = async ( id ) => {
