@@ -74,7 +74,7 @@ export default function UpcomingscheduleCard({ schedule, timeUntil }) {
               <Text
                 as="p"
                 MyClass="font-medium text-gray-800"
-                content={`${schedule.shift.startTimeFormatted} - ${schedule.shift.endTimeFormatted}`}
+                content={`${schedule.shift?.startTimeFormatted} - ${schedule.shift?.endTimeFormatted}`}
               />
               {schedule.shift?.durationFormatted && (
                 <Text
