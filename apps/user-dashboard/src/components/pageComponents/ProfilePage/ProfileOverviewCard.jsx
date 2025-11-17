@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Button from "../../common/Button";
@@ -64,15 +64,20 @@ export default function ProfileOverviewCard() {
     });
   };
 
-  if (!user) {
-    return <Card className="p-6">Loading user data...</Card>;
-  }
+
 
   return (
     <>
       {mySppinerStatus ? <HeartbeatSpinner /> : <Card className="p-6 space-y-4 bg-white border-gray-200">
         <Text as="h3" content="Contact Information" MyClass="text-lg font-medium text-teal-700" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Nick Name"
+            name="nickname"
+            value={pendingData.nickname ?? user.nickname ?? ""}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
           <Input
             label="First Name"
             name="firstName"
@@ -91,6 +96,13 @@ export default function ProfileOverviewCard() {
             label="Email"
             name="email"
             value={pendingData.email ?? user.email ?? ""}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
+          <Input
+            label="Phone Number"
+            name="contactNumber"
+            value={pendingData.contactNumber ?? user.contactNumber ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
