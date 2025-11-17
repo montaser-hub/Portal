@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Calendar, CalendarDays, Menu, House, RefreshCw } from "lucide-react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
@@ -6,6 +6,7 @@ import Text from "../../common/Text";
 import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
   { id: "calendar", label: "My Calendar", icon: Calendar, path: "/Calendar" },
