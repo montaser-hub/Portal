@@ -81,6 +81,13 @@ export default function ProfileCard() {
                   >
                     <Trash2 className="h-6 w-6" />
                   </button>
+                  <button
+                    onClick={handleEditImageClick}
+                    className="p-2 rounded-full bg-teal-600 text-white hover:bg-teal-700 transition"
+                    title="Change Profile Image"
+                  >
+                    <Camera className="h-6 w-6" />
+                  </button>
                 </div>
               )}
             </>
@@ -113,7 +120,7 @@ export default function ProfileCard() {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Phone className="h-4 w-4 text-gray-400" />
-            <Text as="span" content={user.phone || "N/A"} MyClass="text-gray-700" />
+            <Text as="span" content={user.contactNumber || "N/A"} MyClass="text-gray-700" />
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Calendar className="h-4 w-4 text-gray-400" />
