@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchSchedules } from "../app/Redux/slices/scheduleSlice";
 import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
@@ -29,6 +30,9 @@ export default function Schedules() {
     status: STATUSES[0],
   };
 
+  useEffect(() => {
+    dispatch(fetchSchedules());
+  }, [dispatch]);
 
   const filteredSchedules = useMemo(() => {
     return schedules.filter(
@@ -135,90 +139,90 @@ export default function Schedules() {
         </div>
       </div>
       {/* Table */}
-      {/* Table */}
-      <div className="overflow-x-auto bg-white border border-gray-200 rounded-xl">
-        <table className="min-w-full border-collapse">
-          {/* Table Header */}
-          <thead className="text-gray-700 text-sm capitalize border-b border-gray-200">
-            <tr>
-              {TABLE_COLUMNS.map((col) => (
-                <th
-                  key={col.key}
-                  className={`px-4 py-2 text-left ${col.className || ""}`}
-                >
-                  {col.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+{/* Table */}
+<div className="overflow-x-auto bg-white border border-gray-200 rounded-xl">
+  <table className="min-w-full border-collapse">
+    {/* Table Header */}
+    <thead className="text-gray-700 text-sm capitalize border-b border-gray-200">
+      <tr>
+        {TABLE_COLUMNS.map((col) => (
+          <th
+            key={col.key}
+            className={`px-4 py-2 text-left ${col.className || ""}`}
+          >
+            {col.header}
+          </th>
+        ))}
+      </tr>
+    </thead>
 
-          {/* Table Body */}
-          <tbody>
-            {filteredSchedules.length === 0 ? (
-              <tr>
+    {/* Table Body */}
+    <tbody>
+      {filteredSchedules.length === 0 ? (
+        <tr>
+          <td
+            colSpan={TABLE_COLUMNS.length}
+            className="p-10 text-center text-gray-500"
+          >
+            No schedules found. Click "Create Schedule" to add one.
+          </td>
+        </tr>
+      ) : (
+        filteredSchedules.map((s) => (
+          <tr
+            key={s.id || s._id}
+            className="border-b border-gray-200 hover:bg-gray-50 transition"
+          >
+            {TABLE_COLUMNS.map((col) => {
+              if (col.key === "actions") {
+                return (
+                  <td
+                    key={col.key}
+                    className="p-4 flex gap-2 justify-center"
+                  >
+                    <button
+                      onClick={() => openModal(s)}
+                      className="p-2 rounded-full hover:bg-gray-100 transition"
+                    >
+                      <Pencil size={18} className="text-gray-600" />
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(s.id || s._id)}
+                      className="p-2 rounded-full hover:bg-gray-100 transition"
+                    >
+                      <Trash2 size={18} className="text-red-500" />
+                    </button>
+                  </td>
+                );
+              }
+
+              let value = s[col.key];
+              if (typeof value === "object" && value !== null) {
+                if ("name" in value) value = value.name;
+                else if ("nickname" in value) value = value.nickname;
+                else value = JSON.stringify(value);
+              }
+              if (value === null || value === undefined || value === "") {
+                value = "ـــــ";
+              }
+              const content = col.render ? col.render(s) : value;
+              return (
                 <td
-                  colSpan={TABLE_COLUMNS.length}
-                  className="p-10 text-center text-gray-500"
+                  key={col.key}
+                  className="px-4 py-2 text-sm text-gray-700"
                 >
-                  No schedules found. Click "Create Schedule" to add one.
+                  {content}
                 </td>
-              </tr>
-            ) : (
-              filteredSchedules.map((s) => (
-                <tr
-                  key={s.id || s._id}
-                  className="border-b border-gray-200 hover:bg-gray-50 transition"
-                >
-                  {TABLE_COLUMNS.map((col) => {
-                    if (col.key === "actions") {
-                      return (
-                        <td
-                          key={col.key}
-                          className="p-4 flex gap-2 justify-center"
-                        >
-                          <button
-                            onClick={() => openModal(s)}
-                            className="p-2 rounded-full hover:bg-gray-100 transition"
-                          >
-                            <Pencil size={18} className="text-gray-600" />
-                          </button>
-                          <button
-                            onClick={() => confirmDelete(s.id || s._id)}
-                            className="p-2 rounded-full hover:bg-gray-100 transition"
-                          >
-                            <Trash2 size={18} className="text-red-500" />
-                          </button>
-                        </td>
-                      );
-                    }
+              );
+            })}
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
+</div>
 
-                    let value = s[col.key];
-                    if (typeof value === "object" && value !== null) {
-                      if ("name" in value) value = value.name;
-                      else if ("nickname" in value) value = value.nickname;
-                      else value = JSON.stringify(value);
-                    }
-                    if (value === null || value === undefined || value === "") {
-                      value = "ـــــ";
-                    }
-                    const content = col.render ? col.render(s) : value;
-                    return (
-                      <td
-                        key={col.key}
-                        className="px-4 py-2 text-sm text-gray-700"
-                      >
-                        {content}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Modals*/}
+      {/* Modals */}
       <ScheduleModal
         isOpen={isModalOpen}
         editing={editing}

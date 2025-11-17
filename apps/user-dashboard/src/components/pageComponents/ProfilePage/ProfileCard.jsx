@@ -22,9 +22,9 @@ export default function ProfileCard() {
     try {
       await dispatch(updateUserPhoto(file)).unwrap();
       toast.success("Profile image updated successfully!");
-    } catch (err) {
-      const msg = err.response.data.message;
-      toast.error(msg);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Failed to upload image");
     }
   };
 
@@ -33,12 +33,12 @@ export default function ProfileCard() {
       await dispatch(updateUserPhoto(null)).unwrap();
       toast.success("Profile image deleted successfully!");
       setIsHovered(false);
-    } catch (err) {
-      const msg = err.response.data.message;
-      toast.error(msg);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Failed to delete image");
     }
   };
-
+  
     const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
