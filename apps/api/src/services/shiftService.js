@@ -13,7 +13,7 @@ export const getShift = async (id) => {
 }
 
 export const getAllShifts = async (queryParams) => {
-const searchableFields = ['shiftName', 'shiftType'];
+const searchableFields = ['shiftName', 'shiftType', 'departmentId', 'subDepartmentId'];
 return await getAllDocuments( shiftRepo, queryParams, searchableFields);
 }
 
