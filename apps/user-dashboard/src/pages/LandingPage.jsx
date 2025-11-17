@@ -2,13 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Calendar, CheckCircle, Users, Clock } from "lucide-react";
 import Text from "../components/common/Text";
-import Card from "../components/common/Card";
+import  Card  from "../components/common/Card";
 
 export default function LandingPage({ onNavigate }) {
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
-      <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
-        <div className="text-center space-y-6">
+  <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
+      <div className="text-center space-y-6">
           <div className="flex justify-center">
             <div
               className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg bg-[#0F7B8A]"
@@ -35,13 +35,13 @@ export default function LandingPage({ onNavigate }) {
           </div>
           <div className="pt-4">
             <Link
-              to="/login"
-              className="inline-block bg-[#0F7B8A] hover:bg-[#149daf] text-white px-8 py-3 text-lg rounded-lg shadow-md transition"
+            to="/login"
+            className="inline-block bg-[#0F7B8A] hover:bg-[#149daf] text-white px-8 py-3 text-lg rounded-lg shadow-md transition"
             >
-              Go to Login
+            Go to Login
             </Link>
           </div>
-        </div>
+      </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-6 space-y-4 bg-white border-gray-200">
@@ -104,23 +104,23 @@ export default function LandingPage({ onNavigate }) {
           </Card>
         </div>
         <div>
-          <Card className="p-8 bg-[#0F7B8A]/5 border-[#0F7B8A]/20 shadow-sm">
-            <div className="space-y-4 text-center">
-              <Text
+        <Card className="p-8 bg-[#0F7B8A]/5 border-[#0F7B8A]/20 shadow-sm">
+          <div className="space-y-4 text-center">
+            <Text
                 as="h3"
                 MyClass="text-[#0F7B8A] font-semibold text-xl"
                 content="Designed for Healthcare Professionals"
-              />
-              <Text
+                />
+            <Text
                 as="p"
                 MyClass="text-[#6B7280] max-w-3xl mx-auto"
                 content="SmartShift reduces administrative burden and minimizes visual fatigue during long shifts.
                 Our premium clinical aesthetic ensures a professional, reliable central source of truth for all scheduling needs."
-              />
-            </div>
-          </Card>
+                />
+          </div>
+        </Card>
         </div>
-      </div>
     </div>
+  </div>
   );
 }
