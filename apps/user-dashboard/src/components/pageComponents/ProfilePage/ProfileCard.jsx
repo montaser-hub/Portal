@@ -124,11 +124,7 @@ export default function ProfileCard() {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Calendar className="h-4 w-4 text-gray-400" />
-            <Text
-              as="span"
-              content={`Start Date: ${user.createdAt ?  formatDate(user.createdAt) : "N/A"}`}
-              MyClass="text-gray-700"
-            />
+            <Text as="span" content={`Start Date: ${user.createdAt ?  formatDate(user.createdAt) : "N/A"}`} MyClass="text-gray-700"/>
           </div>
         </div>
       </div>

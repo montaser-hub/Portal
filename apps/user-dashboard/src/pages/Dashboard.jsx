@@ -8,9 +8,10 @@ import NotesCard from '../components/pageComponents/dashboardHome/NotesCard';
 import SwapRequestsList from '../components/pageComponents/dashboardHome/SwapRequestsList';
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector } from 'react-redux';
+import ErrorMessage from '../components/common/ErrorMessage';
 
 
-function Dashboard({ onNavigate }) {
+function Dashboard() {
   const { user, userStatus, userError } = useSelector((state) => state.user);
   const { upcomingSchedules, upcomingSchedulesStatus } = useSelector( ( state ) => state.schedule );
 
@@ -25,13 +26,8 @@ function Dashboard({ onNavigate }) {
   return (
     <div className="p-6 md:p-8 space-y-6 bg-[#F8F9FA] min-h-screen">
       <div className="space-y-1">
-        <Text
-          as="h1"
-          MyClass="text-2xl font-normal text-[#0F7B8A]"
-          content={
-            <>Welcome back, <span className="font-semibold italic">{user.nickname || user.fullName } </span></>
-          }
-        />
+        <Text as="h1" MyClass="text-2xl font-normal text-[#0F7B8A]"
+          content={  <>Welcome back, <span className="font-semibold italic">{user.nickname || user.fullName } </span></>  }  />
         <div className="flex items-center gap-3 text-gray-600 text-sm">
           <Badge variant="outline">{user.role}</Badge>
           <Text as="span" content="•" />

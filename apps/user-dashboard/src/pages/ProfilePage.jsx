@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMe } from "../features/user/userThunks";
+import Text from "../components/common/Text";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -26,13 +27,10 @@ export default function Profile() {
   return (
     <div className="bg-[#F8F9FA] min-h-screen py-12">
       <div className="max-w-5xl mx-40 mb-8">
-        <h1 className="text-3xl font-semibold text-[#0F7B8A] mb-2">
-          Your Profile
-        </h1>
-        <p className="text-gray-600">Manage your Profile Info.</p>
+        <Text as="h1" MyClass="text-3xl font-semibold text-[#0F7B8A] mb-2" content="Your Profile" />
+        <Text as="p" content="Manage your Profile Info." MyClass="text-gray-600" />
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {isLoading ? <HeartbeatSpinner /> : user && (
           <>

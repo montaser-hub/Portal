@@ -156,10 +156,7 @@ export function CalendarComponent({ schedulesDates = [] }) {
       {/* Header */}
       <div className="px-4 pt-4 flex items-center gap-2 text-gray-800">
         <CalendarIcon className="h-5 w-5 text-[#0F7B8A]" />
-        <Text
-          as="span"
-          MyClass="font-normal text-gray-500"
-          content="Your Schedule"
+        <Text as="span" MyClass="font-normal text-gray-500" content="Your Schedule"
         />
       </div>
 
@@ -205,21 +202,21 @@ export function CalendarComponent({ schedulesDates = [] }) {
                 className="h-3 w-3 rounded-full"
                 style={{ backgroundColor: '#0F7B8A' }}
               ></div>
-              <span className="text-gray-600">Scheduled</span>
+              <Text as="span" MyClass="text-gray-600" content="Scheduled" />
             </div>
             <div className="flex items-center gap-1">
               <div
                 className="h-3 w-3 rounded-full"
                 style={{ backgroundColor: '#FFD580' }}
               ></div>
-              <span className="text-gray-600">Today</span>
+              <Text as="span" MyClass="text-gray-600" content="Today" />
             </div>
             <div className="flex items-center gap-1">
               <div
                 className="h-3 w-3 rounded-full"
                 style={{ backgroundColor: '#0F7B8ACC' }}
               ></div>
-              <span className="text-gray-600">Past</span>
+              <Text as="span" MyClass="text-gray-600" content="Past" />
             </div>
           </div>
         )}

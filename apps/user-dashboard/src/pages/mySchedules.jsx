@@ -4,6 +4,7 @@ import { Filter, Pencil, Trash2, Plus } from "lucide-react";
 import ScheduleModal from "../modals/ScheduleModal";
 import DeleteConfirm from "../modals/DeleteConfirm";
 import { STATUSES, TABLE_COLUMNS, SHIFTS, SUBDEPARTMENTS } from "../components/common/constants";
+import Text from "../components/common/Text";
 
 export default function Schedules() {
   const dispatch = useDispatch();
@@ -70,8 +71,8 @@ export default function Schedules() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl text-gray-700">Schedules</h1>
-          <p className="text-gray-500 mt-1">Manage and assign work schedules</p>
+          <Text as="h1" content="Schedules" MyClass="text-2xl font-semibold text-[#0F7B8A]" />
+          <Text as="p" content="Manage and assign work schedules" MyClass="text-gray-500 mt-1" />
         </div>
         <button
           onClick={() => openModal()}
@@ -84,7 +85,7 @@ export default function Schedules() {
       {/* Filters */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 border border-gray-200 rounded-xl bg-white p-4">
         <div className="flex flex-col gap-1">
-          <h4 className="text-gray-700">Sub Department</h4>
+          <Text as="h4" content="Sub Department" MyClass="text-gray-700" />
           <select
             value={selectedSubDept}
             onChange={(e) => setSelectedSubDept(e.target.value)}
@@ -102,7 +103,7 @@ export default function Schedules() {
         <div className="flex items-center gap-2">
           <Filter className="text-teal-700" size={20} />
           <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-gray-700">Shift</h4>
+            <Text as="h4" content="Shift" MyClass="text-gray-700" />
             <select
               value={selectedShift}
               onChange={(e) => setSelectedShift(e.target.value)}
@@ -119,7 +120,7 @@ export default function Schedules() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <h4 className="text-gray-700">Status</h4>
+          <Text as="h4" content="Status" MyClass="text-gray-700" />
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
