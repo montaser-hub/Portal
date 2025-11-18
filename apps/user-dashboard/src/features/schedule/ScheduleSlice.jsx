@@ -4,9 +4,7 @@ import {
   fetchUpcomingSchedules,
   addSchedule,
   editSchedule,
-  removeSchedule,
-  fetchShifts,
-  fetchSubDepartments
+  removeSchedule
 } from './scheduleThunks';
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
@@ -15,16 +13,10 @@ const initialState = {
   allSchedulesMeta: {},
   upcomingSchedules: [],
   upcomingSchedulesMeta: {},
-  shifts: [], // الشفتات المتاحة
-  subDepartments: [], // الـsubDepartments المتاحة
   allSchedulesStatus: 'idle',
   upcomingSchedulesStatus: 'idle',
-  shiftsStatus: 'idle',
-  subDepartmentsStatus: 'idle',
   allSchedulesError: null,
   upcomingSchedulesError: null,
-  shiftsError: null,
-  subDepartmentsError: null,
 };
 
 const scheduleSlice = createSlice({
@@ -34,8 +26,6 @@ const scheduleSlice = createSlice({
     clearScheduleError: (state) => {
       state.allSchedulesError = null;
       state.upcomingSchedulesError = null;
-      state.shiftsError = null;
-      state.subDepartmentsError = null;
     }
   },
   extraReducers: (builder) => {
@@ -56,24 +46,6 @@ const scheduleSlice = createSlice({
       'upcomingSchedulesStatus',
       'upcomingSchedulesError',
       'upcomingSchedulesMeta'
-    );
-
-    // Fetch Shifts
-    handleAsyncThunk(
-      builder,
-      fetchShifts,
-      'shifts',
-      'shiftsStatus',
-      'shiftsError'
-    );
-
-    // Fetch SubDepartments
-    handleAsyncThunk(
-      builder,
-      fetchSubDepartments,
-      'subDepartments',
-      'subDepartmentsStatus',
-      'subDepartmentsError'
     );
 
     // Add Schedule

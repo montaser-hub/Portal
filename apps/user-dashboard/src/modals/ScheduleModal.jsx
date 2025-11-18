@@ -13,8 +13,7 @@ export default function ScheduleModal({
   subDepartments = [],
   loading = false 
 }) {
-  if (!isOpen) return null;
-
+  // يجب أن تكون جميع الـ functions في الأعلى قبل أي return
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData(prev => ({ ...prev, [name]: value }));
@@ -48,6 +47,9 @@ export default function ScheduleModal({
   const currentShiftId = data.shift?.id || data.shiftId || "";
   const currentSubDeptId = data.subDepartment?.id || data.subDepartmentId || "";
   const isFormValid = currentShiftId && currentSubDeptId && data.date;
+
+  // يجب أن يكون الـ return الأخير فقط
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
