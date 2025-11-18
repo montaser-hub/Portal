@@ -2,6 +2,8 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlice';
 import scheduleReducer from '../features/schedule/ScheduleSlice';
 import swapReducer from '../features/swaprequest/swapSlice';
+import shiftReducer from '../features/Shift/shiftSlice';
+import subDepartmentReducer from '../features/subDepartment/subDepartmentSlice';
 
 const loaderSlice = createSlice({
   name: 'loader',
@@ -24,6 +26,8 @@ const store = configureStore({
     user: userReducer,
     schedule: scheduleReducer,
     swap: swapReducer,
+    shift: shiftReducer,
+    subDepartment: subDepartmentReducer,
   },
 });
 

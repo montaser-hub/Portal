@@ -28,3 +28,18 @@ export const fetchSchedules = createAsyncThunk(
     return await scheduleService.fetchSchedules(filters);
   }
 );
+
+export const editSchedule = createAsyncThunk(
+  'schedule/editSchedule',
+  async ({ id, data }) => await scheduleService.editSchedule(id, data)
+);
+
+export const removeSchedule = createAsyncThunk(
+  'schedule/removeSchedule',
+  async (id) => await scheduleService.removeSchedule(id)
+);
+
+export const addSchedule = createAsyncThunk(
+  'schedule/addSchedule',
+  async (data) => await scheduleService.addSchedule(data)
+);
