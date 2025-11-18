@@ -42,7 +42,6 @@ export const editSchedule = async (id, data) => {
   console.log('📤 editSchedule service - sending PATCH to API:', apiData);
   
   try {
-    // استخدام PATCH للـupdate
     const result = await crudService.updatePartial(endpoint, id, apiData);
     console.log('✅ editSchedule service - success:', result);
     return result;
