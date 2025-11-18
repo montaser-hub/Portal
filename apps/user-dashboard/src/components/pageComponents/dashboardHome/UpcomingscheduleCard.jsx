@@ -21,11 +21,7 @@ export default function UpcomingscheduleCard({ schedule }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-gray-800">
           <Clock className="h-5 w-5 text-[#0F7B8A]" />
-          <Text
-            as="h3"
-            MyClass="font-normal text-gray-500"
-            content="Upcoming Schedule"
-          />
+          <Text as="h3" MyClass="font-normal text-gray-500" content="Upcoming Schedule"  />
         </div>
         {isStartingSoon && (
           <Badge
@@ -54,34 +50,19 @@ export default function UpcomingscheduleCard({ schedule }) {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="h-4 w-4 text-gray-500" />
-                <Text
-                  as="p"
-                  MyClass="text-gray-500 text-sm font-normal"
-                  content="Date"
-                />
+                <Text as="p" MyClass="text-gray-500 text-sm font-normal" content="Date"  />
               </div>
-              <Text
-                as="p"
-                MyClass="font-normal text-gray-800"
-                content={formatScheduleDate(schedule)}
-              />
+              <Text as="p" MyClass="font-normal text-gray-800" content={formatScheduleDate(schedule)}  />
             </div>
             <div className="text-right">
               <div className="flex items-center justify-end gap-2 mb-1">
                 <Text as="p" MyClass="text-gray-500 text-sm" content="Time" />
                 <Clock className="h-4 w-4 text-gray-500" />
               </div>
-              <Text
-                as="p"
-                MyClass="font-medium text-gray-800"
-                content={`${schedule.shift?.startTimeFormatted} - ${schedule.shift?.endTimeFormatted}`}
-              />
+              <Text as="p"MyClass="font-medium text-gray-800"
+              content={`${schedule.shift?.startTimeFormatted} - ${schedule.shift?.endTimeFormatted}`} />
               {schedule.shift?.durationFormatted && (
-                <Text
-                  as="p"
-                  MyClass="text-xs text-gray-500 mt-1"
-                  content={`(${schedule.shift.durationFormatted})`}
-                />
+                <Text as="p" MyClass="text-xs text-gray-500 mt-1" content={`(${schedule.shift.durationFormatted})`}  />
               )}
             </div>
           </div>
@@ -90,18 +71,10 @@ export default function UpcomingscheduleCard({ schedule }) {
           {(schedule.department || schedule.subDepartment) && (
             <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
               {schedule.department && (
-                <Text
-                  as="p"
-                  MyClass="text-sm text-gray-700 font-medium"
-                  content={schedule.department.name}
-                />
+                <Text as="p" MyClass="text-sm text-gray-700 font-medium" content={schedule.department.name}  />
               )}
               {schedule.subDepartment && (
-                <Text
-                  as="p"
-                  MyClass="text-xs text-gray-500 mt-0.5"
-                  content={schedule.subDepartment.name}
-                />
+                <Text as="p" MyClass="text-xs text-gray-500 mt-0.5" content={schedule.subDepartment.name}  />
               )}
             </div>
           )}
@@ -123,11 +96,7 @@ export default function UpcomingscheduleCard({ schedule }) {
                     : 'text-[#0F7B8A]'
                 }`}
               />
-              <Text
-                as="p"
-                MyClass="text-gray-600 text-sm font-medium"
-                content="Time until schedule"
-              />
+              <Text as="p"MyClass="text-gray-600 text-sm font-medium" content="Time until schedule"  />
             </div>
             <CountdownTimer
               schedule={schedule}
@@ -136,11 +105,7 @@ export default function UpcomingscheduleCard({ schedule }) {
           </div>
         </div>
       ) : (
-        <Text
-          as="p"
-          MyClass="text-gray-500 py-8 text-center"
-          content="No upcoming schedules"
-        />
+        <Text as="p" MyClass="text-gray-500 py-8 text-center" content="No upcoming schedules"  />
       )}
     </Card>
   );

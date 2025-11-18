@@ -27,16 +27,8 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
   return (
     <div className="space-y-4">
       <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 shadow-sm">
-        <Text
-          as="h2"
-          content="Step 1: Create Swap Request"
-          MyClass="text-lg font-medium text-[#0F7B8A] mb-2"
-        />
-        <Text
-          as="p"
-          content="Fill in the details below to initiate a swap."
-          MyClass="text-sm text-gray-600 mb-4"
-        />
+        <Text as="h2" content="Step 1: Create Swap Request" MyClass="text-lg font-medium text-[#0F7B8A] mb-2" />
+        <Text as="p" content="Fill in the details below to initiate a swap." MyClass="text-sm text-gray-600 mb-4"  />
         <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           {/* Current User Shift */}
           <div>
