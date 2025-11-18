@@ -6,10 +6,8 @@ const endpoint = '/shifts';
 export const fetchShifts = async () => {
   try {
     const result = await crudService.getAll(endpoint);
-    console.log('✅ fetchShifts service - result:', result);
     return result;
   } catch (error) {
-    console.error('❌ fetchShifts service - error:', error);
     throw error;
   }
 };
