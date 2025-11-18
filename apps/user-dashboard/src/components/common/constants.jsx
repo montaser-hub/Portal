@@ -1,40 +1,43 @@
-
+// ثوابت الـStatus - للاستخدام الداخلي فقط
 export const STATUSES = ["scheduled", "completed", "cancelled"];
-export const SHIFTS = ["Morning", "Afternoon", "Night"];
 
-  export const SUBDEPARTMENTS = [
-    "Central Health Care",
-    "Cardiac ICU",
-    "Heart Imaging Unit",
-    "Rehabilitation Center"
-  ];
-
+// أعمدة الجدول - بدون Department و Status
 export const TABLE_COLUMNS = [
   {
-    key: "department",
-    header: "Department",
-    render: (item) => <span>{item.department?.name || "-"}</span>,
-  },
-  {
-    key: "subDepartment",
+    key: "subDepartment", 
     header: "Sub Department",
     render: (item) => <span>{item.subDepartment?.name || "-"}</span>,
   },
-  { key: "shift", header: "Shift" },
-  { key: "date", header: "Date" },
-  {   key: "status", header: "Status", render: (s) => {
-      const statusClasses =
-        s.status === "scheduled"
-          ? "bg-teal-100 text-teal-700"
-          : s.status === "completed"
-          ? "bg-green-100 text-green-700"
-          : "bg-red-100 text-red-700";
-      return <span className={`px-3 py-1 rounded-full text-sm capitalize ${statusClasses}`}>{s.status}</span>;
-    },
+  { 
+    key: "shift", 
+    header: "Shift",
+    render: (item) => <span>{item.shift?.name || item.shift || "-"}</span>,
+  },
+  { 
+    key: "date", 
+    header: "Date",
+    render: (item) => {
+      if (!item.date) return "-";
+      const date = new Date(item.date);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
   },
   {
     key: "actions",
     header: "Actions",
     className: "text-center"
   },
+];
+
+// Backup constants (استخدمهم لو الـAPI مش راجع بيانات)
+export const BACKUP_SHIFTS = ["Morning", "Afternoon", "Night"];
+export const BACKUP_SUBDEPARTMENTS = [
+  "Central Health Care",
+  "Cardiac ICU", 
+  "Heart Imaging Unit",
+  "Rehabilitation Center"
 ];

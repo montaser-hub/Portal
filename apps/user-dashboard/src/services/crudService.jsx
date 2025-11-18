@@ -12,7 +12,7 @@ const handleRequest = async (request) => {
       throw err;
     }
     const message =
-      err.response?.data?.message || err.message || 'Request failed';
+      err.response?.data?.message || err.message || err.response?.data?.error || 'Request failed';
     toast.error(message);
 
     // Re-throw so .unwrap() rejects
