@@ -2,14 +2,51 @@ import React from "react";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScheduleModal({ isOpen, editing, data, setData, onClose, onSave, SHIFTS, STATUSES, SUBDEPARTMENTS }) {
+export default function ScheduleModal({ isOpen, editing, data, setData, onClose, onSave, shifts = [], subDepartments = [], loading = false }) {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData(prev => ({ ...prev, [name]: value }));
   };
+   const handleShiftChange = (e) => {
+     const selectedShiftId = e.target.value;
+     const selectedShift = shifts.find((s) => s.id === selectedShiftId);
 
+     setData((prev) => ({
+       ...prev,
+       shift: selectedShift
+         ? { id: selectedShift.id, name: selectedShift.name }
+         : { id: '', name: '' },
+       shiftId: selectedShiftId,
+       shiftName: selectedShift?.name || '',
+     }));
+   };
+
+   const handleSubDepartmentChange = (e) => {
+     const selectedSubDeptId = e.target.value;
+     const selectedSubDept = subDepartments.find(
+       (sd) => sd.id === selectedSubDeptId
+     );
+
+     setData((prev) => ({
+       ...prev,
+       subDepartment: selectedSubDept
+         ? { id: selectedSubDept.id, name: selectedSubDept.name }
+         : { id: '', name: '' },
+       subDepartmentId: selectedSubDeptId,
+       subDepartmentName: selectedSubDept?.name || '',
+     }));
+   };
+
+   // Get current values
+   const currentShiftId = data.shift?.id || data.shiftId || '';
+   const currentSubDeptId =
+     data.subDepartment?.id || data.subDepartmentId || '';
+   const isFormValid = currentShiftId && currentSubDeptId && data.date;
+
+   // يجب أن يكون الـ return الأخير فقط
+   if (!isOpen) return null;
   return (
     <AnimatePresence>
       {isOpen && (
@@ -29,65 +66,97 @@ export default function ScheduleModal({ isOpen, editing, data, setData, onClose,
               {editing ? "Edit Schedule" : "Create Schedule"}
             </h2>
 
-            <div className="grid grid-cols-1 gap-4">
-              {/* Department ثابتة */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Department</label>
-                <input type="text" value={data.department} readOnly className="border p-2 rounded bg-gray-100 text-gray-700" />
-              </div>
-
-              {/* Sub-Department ثابتة */}
-              <div className="flex flex-col gap-1">
-              <label className="text-gray-600 font-medium">Sub Department</label>
-              <select
-                name="subdepartment"
-                value={data.subdepartment}
-                onChange={(e) => setData(prev => ({ ...prev, subdepartment: e.target.value }))}
-                className="border p-2 rounded"
-              >
-                <option value="">Select Sub Department</option>
-                {SUBDEPARTMENTS.map(sd => (
-                  <option key={sd} value={sd}>
-                    {sd}
+                     <div className="space-y-4">
+              {/* Sub-Department - مطلوب */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">Sub Department *</label>
+                <select
+                  value={currentSubDeptId}
+                  onChange={handleSubDepartmentChange}
+                  className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                  disabled={loading}
+                >
+                  <option value="">
+                    {loading ? "Loading sub-departments..." : "Select Sub Department"}
                   </option>
-                ))}
-              </select>
+                  {subDepartments.map(sd => (
+                    <option key={sd.id} value={sd.id}>
+                      {sd.name}
+                    </option>
+                  ))}
+                </select>
+                {subDepartments.length === 0 && !loading && (
+                  <p className="text-xs text-red-500">
+                    No sub-departments available
+                  </p>
+                )}
+              </div>
+
+              {/* Shift - مطلوب */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">Shift *</label>
+                <select
+                  value={currentShiftId}
+                  onChange={handleShiftChange}
+                  className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                  disabled={loading}
+                >
+                  <option value="">
+                    {loading ? "Loading shifts..." : "Select Shift"}
+                  </option>
+                  {shifts.map(shift => (
+                    <option key={shift.id} value={shift.id}>
+                      {shift.name}
+                    </option>
+                  ))}
+                </select>
+                {shifts.length === 0 && !loading && (
+                  <p className="text-xs text-red-500">
+                    No shifts available
+                  </p>
+                )}
+              </div>
+
+              {/* Date - مطلوب */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">Date *</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={data.date ? data.date.split('T')[0] : ''}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                />
+              </div>
             </div>
 
-              {/* Shift Dropdown */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Shift</label>
-                <select name="shift" value={data.shift} onChange={handleChange} className="border p-2 rounded">
-                  <option value="">Select Shift</option>
-                  {SHIFTS.map(shift => <option key={shift} value={shift}>{shift}</option>)}
-                </select>
+            {/* Validation Message */}
+            {!isFormValid && (
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-yellow-700 text-sm">
+                  ⚠️ Please fill in all required fields
+                </p>
               </div>
-
-              {/* Time */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Time</label>
-                <input type="text" name="time" value={data.time} onChange={handleChange} placeholder="08:00 - 16:00" className="border p-2 rounded" />
-              </div>
-
-              {/* Date */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Date</label>
-                <input type="date" name="date" value={data.date} onChange={handleChange} className="border p-2 rounded" />
-              </div>
-
-              {/* Status */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Status</label>
-                <select name="status" value={data.status} onChange={handleChange} className="border p-2 rounded">
-                  {STATUSES.map(status => <option key={status} value={status}>{status}</option>)}
-                </select>
-              </div>
-            </div>
+            )}
 
             {/* Buttons */}
-            <div className="flex justify-end gap-3 mt-6">
-              <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
-              <button onClick={onSave} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{editing ? "Update" : "Save"}</button>
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={onClose}
+                className="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onSave}
+                disabled={!isFormValid || loading}
+                className="px-6 py-2.5 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {loading ? "Loading..." : editing ? "Update" : "Save"}
+              </button>
             </div>
           </motion.div>
         </div>
