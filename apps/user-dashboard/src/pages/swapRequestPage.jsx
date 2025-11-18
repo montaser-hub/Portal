@@ -28,13 +28,13 @@ export default function SwapRequestPage() {
       return;
     }
     // Split the combined value
-    const [toScheduleId, toUserId] = formData.swapWith.split('___');
+    const [toScheduleId, fromUserId] = formData.swapWith.split('___');
 
     dispatch(
       addSwapRequest({
         fromScheduleId: formData.currentShift,
         toScheduleId,
-        toUserId,
+        fromUserId,
         message: formData.message || '',
       })
     )
@@ -51,7 +51,7 @@ export default function SwapRequestPage() {
   const loading = swapStatus === 'loading';
 
   useEffect(() => {
-    dispatch(fetchSwapRequests({ toUserId: user._id }));
+    dispatch(fetchSwapRequests({ fromUserId: user._id }));
   }, [dispatch, user?._id]);
 
   return (
