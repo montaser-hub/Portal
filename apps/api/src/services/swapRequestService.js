@@ -15,7 +15,7 @@ export const getSwapRequest = async (id) => {
 }
 
 // Get All SwapRequests
-export const getAllSwapRequests = async () => {
+export const getAllSwapRequests = async (queryParams) => {
   const searchableFields = [ 'status' ];
   return await getAllDocuments( SwapRequestRepo, queryParams, searchableFields);
 }

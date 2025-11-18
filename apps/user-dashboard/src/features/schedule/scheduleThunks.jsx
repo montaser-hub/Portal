@@ -30,10 +30,11 @@ export const fetchSubDepartments = createAsyncThunk(
 // Upcoming schedules for current user
 export const fetchUpcomingSchedules = createAsyncThunk(
   'schedule/fetchUpcomingSchedules',
-  async ({ userId, startTime, endTime } = {}) => {
+  async ({ userId, startDate } = {}) => {
     const now = new Date();
     const filters = {
       userId,
+      startDate: startDate || now.toISOString(),
     };
     return await scheduleService.fetchSchedules(filters);
   }
@@ -42,11 +43,12 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 // Fetch all schedules
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
-  async ({ departmentId, excludeUserId, startTime, endTime } = {}) => {
-    console.log('thunks file loaded');
+  async ({ departmentId, excludeUserId, startDate } = {}) => {
     const now = new Date();
     const filters = {
       departmentId,
+      'userId[ne]': excludeUserId,
+      startDate: startDate || now.toISOString(),
     };
     return await scheduleService.fetchSchedules(filters);
   }

@@ -1,26 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import SwapRequestForm from '../components/pageComponents/swapRequestPage/SwapRequestForm';
 import SwapRequestStatus from '../components/pageComponents/swapRequestPage/SwapRequestStatus';
 import SwapRequestHistory from '../components/pageComponents/swapRequestPage/SwapRequestHistory';
 import Text from '../components/common/Text';
-import { shallowEqual, useSelector } from 'react-redux';
+import { addSwapRequest, fetchSwapRequests } from '../features/swaprequest/swapThunks';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-hot-toast';
 
 export default function SwapRequestPage() {
-  const [activeTab, setActiveTab] = useState("request");
+  const [activeTab, setActiveTab] = useState('request');
   const [formData, setFormData] = useState({});
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const user = useSelector((state) => state.user.user, shallowEqual);
+  const dispatch = useDispatch();
+
+  const { swapRequests, swapStatus } = useSelector( ( state ) => state.swap );
+  const { user } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    console.log("Submit:", formData);
-    // منطق الإرسال هنا
+  const handleSubmit = async () => {
+    if (!formData.currentShift || !formData.swapWith) {
+      toast.error('Please select both shifts.');
+      return;
+    }
+    // Split the combined value
+    const [toScheduleId, fromUserId] = formData.swapWith.split('___');
+
+    dispatch(
+      addSwapRequest({
+        fromScheduleId: formData.currentShift,
+        toScheduleId,
+        fromUserId,
+        message: formData.message || '',
+      })
+    )
+      .unwrap()
+      .then(() => {
+        toast.success('Swap request submitted successfully!');
+        setFormData({});
+      })
+      .catch((err) => {
+        toast.error(err?.message || 'Failed to submit swap request.');
+      });
   };
+
+  const loading = swapStatus === 'loading';
+
+  useEffect(() => {
+    dispatch(fetchSwapRequests({ fromUserId: user._id }));
+  }, [dispatch, user?._id]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -39,23 +71,23 @@ export default function SwapRequestPage() {
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
         <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
           <Tabs.List className="flex space-x-6 border-b border-gray-200 mb-4">
-        {["request", "status", "history", "received"].map((tab) => (
+            {['request', 'status', 'history', 'received'].map((tab) => (
               <Tabs.Trigger
                 key={tab}
                 value={tab}
                 className={`pb-2 text-sm font-medium ${
                   activeTab === tab
                     ? `border-b-2 border-[#0F7B8A] text-[#0F7B8A]`
-                            : "text-gray-500 hover:text-[#0F7B8A]"
+                    : 'text-gray-500 hover:text-[#0F7B8A]'
                 }`}
               >
-                        {tab === "request"
-                          ? "New Request"
-                          : tab === "status"
-                          ? "Request Status"
-                          : tab === "history"
-                          ? "Requests History"
-                          : "Received Requests History"}
+                {tab === 'request'
+                  ? 'New Request'
+                  : tab === 'status'
+                  ? 'Request Status'
+                  : tab === 'history'
+                  ? 'Requests History'
+                  : 'Received Requests History'}
               </Tabs.Trigger>
             ))}
           </Tabs.List>
@@ -64,17 +96,17 @@ export default function SwapRequestPage() {
             <SwapRequestForm
               formData={formData}
               onChange={handleChange}
-              onSubmit={ handleSubmit }
-              user={user}
+              onSubmit={handleSubmit}
+              loading={loading}
             />
           </Tabs.Content>
 
           <Tabs.Content value="status">
-            <SwapRequestStatus request={selectedRequest} />
+            <SwapRequestStatus requests={swapRequests} />
           </Tabs.Content>
 
           <Tabs.Content value="history">
-            <SwapRequestHistory />
+            <SwapRequestHistory requests={swapRequests} />
           </Tabs.Content>
           <Tabs.Content value="received">
             <div className="text-gray-600">
