@@ -27,21 +27,9 @@ export default function NotFoundPage({ isAuthenticated }) {
 
         {/* Text */}
         <div className="space-y-3">
-          <Text
-            as="h1"
-            content="Oops!"
-            MyClass="text-4xl font-bold text-teal-500"
-          />
-          <Text
-            as="h2"
-            content="Page Not Found"
-            MyClass="text-2xl font-semibold text-gray-400"
-          />
-          <Text
-            as="p"
-            content="The page you're looking for doesn't exist or has been moved."
-            MyClass="text-gray-500 text-sm"
-          />
+          <Text as="h1" content="Oops!" MyClass="text-4xl font-bold text-teal-500"  />
+          <Text as="h2" content="Page Not Found" MyClass="text-2xl font-semibold text-gray-400"  />
+          <Text as="p" content="The page you're looking for doesn't exist or has been moved." MyClass="text-gray-500 text-sm"  />
         </div>
 
         {/* Links */}

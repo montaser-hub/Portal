@@ -4,7 +4,7 @@ import { Calendar, CheckCircle, Users, Clock } from "lucide-react";
 import Text from "../components/common/Text";
 import  Card  from "../components/common/Card";
 
-export default function LandingPage({ onNavigate }) {
+export default function LandingPage() {
   return (
   <div className="min-h-screen bg-[#F8F9FA]">
     <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
@@ -17,21 +17,10 @@ export default function LandingPage({ onNavigate }) {
             </div>
           </div>
           <div className="space-y-3">
-            <Text
-              as="h1"
-              content="SmartShift"
-              MyClass="text-4xl font-semibold text-[#0F7B8A]"
-            />
-            <Text
-              as="h2"
-              content="Healthcare Scheduling Made Simple"
-              MyClass="text-2xl font-normal text-gray-600"
-            />
-            <Text
-              as="p"
-              content="A comprehensive scheduling platform designed for healthcare professionals. Manage shifts, coordinate swap requests, and maintain compliance—all in one place."
-              MyClass="text-gray-600 max-w-2xl mx-auto"
-            />
+            <Text as="h1" content="SmartShift" MyClass="text-4xl font-semibold text-[#0F7B8A]"  />
+            <Text as="h2" content="Healthcare Scheduling Made Simple" MyClass="text-2xl font-normal text-gray-600"  />
+            <Text as="p"  MyClass="text-gray-600 max-w-2xl mx-auto" content="A comprehensive scheduling platform designed for
+            healthcare professionals. Manage shifts, coordinate swap requests, and maintain compliance—all in one place."  />
           </div>
           <div className="pt-4">
             <Link
@@ -52,16 +41,9 @@ export default function LandingPage({ onNavigate }) {
               <CheckCircle className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
-              <Text
-                as="h3"
-                content="Easy Scheduling"
-                MyClass="text-lg font-normal text-gray-600"
-              />
-              <Text
-                as="p"
-                content="Intuitive calendar interface with drag-and-drop functionality for effortless shift management."
-                MyClass="text-sm text-gray-600"
-              />
+              <Text as="h3" content="Easy Scheduling" MyClass="text-lg font-normal text-gray-600"  />
+              <Text as="p" MyClass="text-sm text-gray-600"
+              content="Intuitive calendar interface with drag-and-drop functionality for effortless shift management."   />
             </div>
           </Card>
           <Card className="p-6 space-y-4 bg-white border-gray-200">
@@ -71,16 +53,9 @@ export default function LandingPage({ onNavigate }) {
               <Users className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
-              <Text
-                as="h3"
-                content="Team Coordination"
-                MyClass="text-lg font-normal text-gray-600"
-              />
-              <Text
-                as="p"
-                content="Streamlined swap requests with approval workflows to maintain proper staffing levels."
-                MyClass="text-sm text-gray-600"
-              />
+              <Text as="h3" content="Team Coordination" MyClass="text-lg font-normal text-gray-600"  />
+              <Text as="p"  MyClass="text-sm text-gray-600"
+              content="Streamlined swap requests with approval workflows to maintain proper staffing levels."  />
             </div>
           </Card>
           <Card className="p-6 space-y-4 bg-white border-gray-200">
@@ -90,33 +65,19 @@ export default function LandingPage({ onNavigate }) {
               <Clock className="h-6 w-6 text-[#0F7B8A]" />
             </div>
             <div className="space-y-2">
-              <Text
-                as="h3"
-                content="Compliance Tracking"
-                MyClass="text-lg font-normal text-gray-600"
-              />
-              <Text
-                as="p"
-                content="Automated alerts for shift limits and compliance requirements to prevent scheduling conflicts."
-                MyClass="text-sm text-gray-600"
-              />
+              <Text as="h3" content="Compliance Tracking" MyClass="text-lg font-normal text-gray-600"  />
+              <Text as="p"  MyClass="text-sm text-gray-600"
+              content="Automated alerts for shift limits and compliance requirements to prevent scheduling conflicts."  />
             </div>
           </Card>
         </div>
         <div>
         <Card className="p-8 bg-[#0F7B8A]/5 border-[#0F7B8A]/20 shadow-sm">
           <div className="space-y-4 text-center">
-            <Text
-                as="h3"
-                MyClass="text-[#0F7B8A] font-semibold text-xl"
-                content="Designed for Healthcare Professionals"
-                />
-            <Text
-                as="p"
-                MyClass="text-[#6B7280] max-w-3xl mx-auto"
-                content="SmartShift reduces administrative burden and minimizes visual fatigue during long shifts.
-                Our premium clinical aesthetic ensures a professional, reliable central source of truth for all scheduling needs."
-                />
+            <Text as="h3" MyClass="text-[#0F7B8A] font-semibold text-xl" content="Designed for Healthcare Professionals"  />
+            <Text as="p" MyClass="text-[#6B7280] max-w-3xl mx-auto" content="SmartShift reduces administrative burden and minimizes
+            visual fatigue during long shifts. Our premium clinical aesthetic ensures a professional, reliable central source of
+            truth for all scheduling needs."  />
           </div>
         </Card>
         </div>
