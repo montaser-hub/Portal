@@ -5,12 +5,18 @@ const handleRequest = async (request) => {
     const res = await request;
     return res.data;
   } catch (err) {
-    console.error( 'API Error:', err );
+    console.error('API Error:', err);
     if (!err.response) {
       throw { message: 'Network error. Please try again.' };
     }
-    // Throw consistent error message for thunks
-    throw new Error(err.response?.data?.message || err.message || 'API request failed');
+    
+    // تحسين الـerror message
+    const errorMessage = err.response?.data?.message || 
+                        err.response?.data?.error || 
+                        err.message || 
+                        'API request failed';
+    
+    throw new Error(errorMessage);
   }
 };
 
