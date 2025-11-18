@@ -71,7 +71,7 @@ export default function Schedules() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <Text as="h1" content="Schedules" MyClass="text-2xl text-gray-700" />
+          <Text as="h1" content="Schedules" MyClass="text-2xl font-semibold text-[#0F7B8A]" />
           <Text as="p" content="Manage and assign work schedules" MyClass="text-gray-500 mt-1" />
         </div>
         <button
