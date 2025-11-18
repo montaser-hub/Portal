@@ -45,11 +45,17 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
               {loading ? (
                 <option>Loading schedules...</option>
               ) : (
-                upcomingSchedules.map((sched) => (
-                  <option key={sched._id} value={sched._id}>
-                    {formatScheduleOption(sched)}
-                  </option>
-                ))
+                upcomingSchedules.map((sched) => {
+                  const userId = sched.user?._id || '';
+                  const fromScheduleId = sched._id || '';
+                  // Combine scheduleId + userId with a separator
+                  const optionValue = `${fromScheduleId}___${userId}`;
+                  return (
+                    <option key={sched._id} value={optionValue}>
+                      {formatScheduleOption(sched)}
+                    </option>
+                  );
+                })
               )}
             </select>
           </div>
@@ -69,17 +75,11 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
               {loading ? (
                 <option>Loading schedules...</option>
               ) : (
-                allSchedules.map((sched) => {
-                  const userId = sched.user?._id || '';
-                  const toScheduleId = sched._id || '';
-                  // Combine scheduleId + userId with a separator
-                  const optionValue = `${toScheduleId}___${userId}`;
-                  return (
-                    <option key={sched._id} value={optionValue}>
-                      {formatScheduleOption(sched)}
-                    </option>
-                  );
-                })
+                allSchedules.map((sched) => (
+                  <option key={sched._id} value={sched._id}>
+                    {formatScheduleOption(sched)}
+                  </option>
+                ))
               )}
             </select>
           </div>
