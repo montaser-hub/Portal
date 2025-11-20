@@ -6,7 +6,7 @@ import { logout } from '../../../services/API-Services/AuthService';
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 
-function MobileNavbar({
+export default function MobileNavbar({
   navigation,
   currentPage,
   setCurrentPage,
@@ -40,16 +40,16 @@ function MobileNavbar({
           {/* User Info */}
           <div className="flex flex-col items-start gap-2 p-4 border-b relative">
             <div className="flex items-center gap-2">
-                {profileImage ? (
-                              <img
-                                src={profileImage}
-                                alt="Profile"
-                                className="w-12 h-12 rounded-full object-cover transition-opacity duration-200"
-                              />):(
-                            <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
-                                <User className="h-12 w-12 text-gray-300" />
-                            </div>
-                              )}
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-full object-cover transition-opacity duration-200"
+                />) : (
+                <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
+                  <User className="h-12 w-12 text-gray-300" />
+                </div>
+              )}
               <div className="flex flex-col">
                 <Text
                   as="span"
@@ -78,9 +78,8 @@ function MobileNavbar({
                     setCurrentPage(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
-                    isActive ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${isActive ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
+                    }`}
                 >
                   <Icon className="h-5 w-5" />
                   <Text as="span" content={item.label} />
@@ -94,11 +93,10 @@ function MobileNavbar({
                 setCurrentPage("notifications");
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
-                currentPage === "notifications"
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${currentPage === "notifications"
                   ? "bg-[#0F7B8A] text-white"
                   : "text-gray-700 hover:bg-[#E0F4F6]"
-              }`}
+                }`}
             >
               <Bell className="h-5 w-5" />
               <Text
@@ -113,9 +111,8 @@ function MobileNavbar({
                 setCurrentPage("profile");
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
-                currentPage === "profile" ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${currentPage === "profile" ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
+                }`}
             >
               <User className="h-5 w-5" /> Profile
             </Link>
@@ -133,5 +130,3 @@ function MobileNavbar({
     </AnimatePresence>
   );
 }
-
-export default MobileNavbar;

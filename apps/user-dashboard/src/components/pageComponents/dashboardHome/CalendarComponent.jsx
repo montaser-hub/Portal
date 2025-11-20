@@ -23,7 +23,7 @@ import Card from '../../common/Card';
 import Text from '../../common/Text';
 import Button from '../../common/Button';
 
-export function CalendarComponent({ schedulesDates = [] }) {
+export default function CalendarComponent({ schedulesDates = [] }) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Normalize all schedule dates to yyyy-MM-dd format
@@ -225,4 +225,3 @@ export function CalendarComponent({ schedulesDates = [] }) {
   );
 }
 
-export default CalendarComponent;

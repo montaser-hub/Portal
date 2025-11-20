@@ -10,7 +10,7 @@ import { updateUserPhoto } from "../../../features/user/userThunks";
 export default function ProfileCard() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user) || {};
-  const profileImage = user.photo;
+  const profileImage = user?.photo;
   const fileInputRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -105,26 +105,26 @@ export default function ProfileCard() {
           )}
         </div>
 
-        <Text as="h3" content={`${user.firstName} ${user.lastName}`} MyClass="text-lg font-medium text-teal-700" />
-        <Badge variant="outline">{user.role || "N/A"}</Badge>
+        <Text as="h3" content={`${user?.firstName} ${user?.lastName}`} MyClass="text-lg font-medium text-teal-700" />
+        <Badge variant="outline">{user?.role || "N/A"}</Badge>
 
         <div className="flex gap-2">
-          <Badge variant="outline">{user.level?.name || "N/A"}</Badge>
-          <Badge variant="secondary">{user.department?.name || "N/A"}</Badge>
+          <Badge variant="outline">{user?.level?.name || "N/A"}</Badge>
+          <Badge variant="secondary">{user?.department?.name || "N/A"}</Badge>
         </div>
 
         <div className="space-y-3 mt-4">
           <div className="flex items-center gap-3 text-sm">
             <Mail className="h-4 w-4 text-gray-400" />
-            <Text as="span" content={user.email} MyClass="text-gray-700" />
+            <Text as="span" content={user?.email} MyClass="text-gray-700" />
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Phone className="h-4 w-4 text-gray-400" />
-            <Text as="span" content={user.contactNumber || "N/A"} MyClass="text-gray-700" />
+            <Text as="span" content={user?.contactNumber || "N/A"} MyClass="text-gray-700" />
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Calendar className="h-4 w-4 text-gray-400" />
-            <Text as="span" content={`Start Date: ${user.createdAt ?  formatDate(user.createdAt) : "N/A"}`} MyClass="text-gray-700"/>
+            <Text as="span" content={`Start Date: ${user?.createdAt ?  formatDate(user?.createdAt) : "N/A"}`} MyClass="text-gray-700"/>
           </div>
         </div>
       </div>
