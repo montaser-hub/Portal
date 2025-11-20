@@ -9,8 +9,9 @@ import {
   Building2,
   Sun,
   Moon,
-  AlertCircle,
-  Heart,
+  CalendarCheck,
+  Timer,
+  X,
 } from 'lucide-react';
 import ScheduleModal from '../modals/ScheduleModal';
 import { STATUSES } from '../components/common/constants';
@@ -18,11 +19,13 @@ import {
   fetchSchedules,
   addSchedule,
   editSchedule,
+  removeSchedule,
 } from '../features/schedule/scheduleThunks';
 import { fetchShifts } from '../features/Shift/shiftThunks';
 import { fetchSubDepartments } from '../features/subDepartment/subDepartmentThunks';
 import { toast } from 'react-hot-toast';
 import HeartbeatSpinner from '../components/common/Spinner2';
+import CancelConfirmationModal from '../modals/Cancel';
 
 // Helper function to check if shift has started
 const hasShiftStarted = (date, startTime) => {
@@ -115,6 +118,9 @@ export default function Schedules() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [currentData, setCurrentData] = useState({});
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [scheduleToCancel, setScheduleToCancel] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const initialData = {
     department: { name: user?.department?.name || 'Heart' },
@@ -196,8 +202,10 @@ export default function Schedules() {
             data: scheduleData,
           })
         ).unwrap();
+        toast.success('Schedule updated successfully!');
       } else {
         await dispatch(addSchedule(scheduleData)).unwrap();
+        toast.success('Schedule created successfully!');
       }
 
       setIsModalOpen(false);
@@ -213,6 +221,31 @@ export default function Schedules() {
     return <HeartbeatSpinner />;
   }
 
+  const handleCancelClick = (schedule) => {
+    if (hasShiftStarted(schedule.date, schedule.shift?.startTime)) {
+      toast.error('⚠️ Cannot cancel - This shift has already started!');
+      return;
+    }
+    setScheduleToCancel(schedule);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!scheduleToCancel) return;
+    setIsCancelling(true);
+    try {
+      await dispatch(removeSchedule(scheduleToCancel.id)).unwrap();
+      toast.success('Schedule cancelled successfully!');
+      setIsCancelModalOpen(false);
+      setScheduleToCancel(null);
+      dispatch(fetchSchedules({}));
+    } catch (error) {
+      const msg = error?.response?.data?.message || 'Failed to cancel schedule';
+      toast.error(msg);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return '-';
@@ -230,7 +263,7 @@ export default function Schedules() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800">My Schedules</h1>
+          <h1 className="text-2xl font-semibold text-gray-600">My Schedules</h1>
           <p className="text-gray-500 mt-1">Manage your work schedules</p>
         </div>
         <button
@@ -245,45 +278,61 @@ export default function Schedules() {
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-            <Building2 size={16} />
-            Sub Department
-          </label>
-          <select
-            value={selectedSubDept}
-            onChange={(e) => setSelectedSubDept(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
-            disabled={subDepartmentsStatus === 'loading'}
-          >
-            <option value="">All Sub Departments</option>
-            {subDepartmentOptions.map((sd) => (
-              <option key={sd.id} value={sd.name}>
-                {sd.name}
-              </option>
-            ))}
-          </select>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Filter size={20} className="text-gray-600" />
+          <h3 className="text-sm font-semibold text-gray-700">
+            Filter Schedules
+          </h3>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-            <Clock size={16} />
-            Shift
-          </label>
-          <select
-            value={selectedShift}
-            onChange={(e) => setSelectedShift(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
-            disabled={shiftsStatus === 'loading'}
-          >
-            <option value="">All Shifts</option>
-            {shiftOptions.map((shift) => (
-              <option key={shift.id} value={shift.name}>
-                {shift.name}
-              </option>
-            ))}
-          </select>
+        {/* Two Selects in One Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 ml-8">
+          {/* Sub Department */}
+          <div className="flex flex-col gap-1">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Building2 size={16} className="text-gray-400" />
+              Sub Department
+            </label>
+
+            <select
+              value={selectedSubDept}
+              onChange={(e) => setSelectedSubDept(e.target.value)}
+              disabled={subDepartmentsStatus === 'loading'}
+              className="w-40 border border-gray-300 rounded-md px-2 py-1.5 text-sm
+                   text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="">All Sub Departments</option>
+              {subDepartmentOptions.map((sd) => (
+                <option key={sd.id} value={sd.name}>
+                  {sd.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Shift */}
+          <div className="flex flex-col gap-1">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CalendarCheck size={16} className="text-gray-400" />
+              Shift
+            </label>
+
+            <select
+              value={selectedShift}
+              onChange={(e) => setSelectedShift(e.target.value)}
+              disabled={shiftsStatus === 'loading'}
+              className="w-40 border border-gray-300 rounded-md px-2 py-1.5 text-sm
+                   text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="">All Shifts</option>
+              {shiftOptions.map((shift) => (
+                <option key={shift.id} value={shift.name}>
+                  {shift.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -291,25 +340,22 @@ export default function Schedules() {
       {filteredSchedules.length === 0 ? (
         <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
           <div className="flex flex-col items-center gap-3">
-            <Calendar size={48} className="text-gray-300" />
-            <div className="flex flex-col items-center gap-3">
-              <div className="bg-gray-100 p-4 rounded-full">
-                <Calendar size={48} className="text-gray-400" />
-              </div>
-              <p className="text-gray-500 text-lg">
-                {allSchedulesStatus === 'loading'
-                  ? 'Loading schedules...'
-                  : 'No schedules found'}
-              </p>
-              {allSchedulesStatus !== 'loading' && (
-                <button
-                  onClick={() => openModal()}
-                  className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
-                >
-                  Create your first schedule
-                </button>
-              )}
+            <div className="bg-gray-100 p-4 rounded-full">
+              <Calendar size={48} className="text-gray-400" />
             </div>
+            <p className="text-gray-500 text-lg">
+              {allSchedulesStatus === 'loading'
+                ? 'Loading schedules...'
+                : 'No schedules found'}
+            </p>
+            {allSchedulesStatus !== 'loading' && (
+              <button
+                onClick={() => openModal()}
+                className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
+              >
+                Create your first schedule
+              </button>
+            )}
           </div>
         </div>
       ) : (
@@ -326,7 +372,7 @@ export default function Schedules() {
                 key={schedule.id}
                 className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-teal-300"
               >
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-300">
                   <div className="flex items-center gap-2 text-teal-600">
                     <Calendar size={18} />
                     <span className="font-semibold text-sm">
@@ -334,13 +380,22 @@ export default function Schedules() {
                     </span>
                   </div>
                   {!shiftStarted && (
-                    <button
-                      onClick={() => openModal(schedule)}
-                      className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
-                      title="Edit Schedule"
-                    >
-                      <Pencil size={18} className="text-teal-600" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openModal(schedule)}
+                        className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
+                        title="Edit Schedule"
+                      >
+                        <Pencil size={18} className="text-teal-600" />
+                      </button>
+                      <button
+                        onClick={() => handleCancelClick(schedule)}
+                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Cancel Schedule"
+                      >
+                        <X size={18} className="text-red-400" />
+                      </button>
+                    </div>
                   )}
                 </div>
                 {/* Schedule Details */}
@@ -355,42 +410,45 @@ export default function Schedules() {
                       <p className="text-xs text-gray-500 mb-0.5">
                         Sub Department
                       </p>
-                      <p className="text-sm font-medium text-gray-800">
+                      <p className="text-sm font-medium text-gray-600">
                         {schedule.subDepartment?.name || '-'}
                       </p>
                     </div>
                   </div>
                   {/* Shift Name & Type Badge */}
-                  <div>
-                    <p className="text-xs text-gray-500 mb-0.5">Shift</p>
-                    <p className="text-sm font-medium text-gray-800">
-                      {schedule.shift?.shiftName || '-'}
-                    </p>
-                    <span
-                      className={`${badgeStyle.bg} ${
-                        badgeStyle.text
-                      } px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${badgeStyle.bg.replace(
-                        'bg-',
-                        'border-'
-                      )}${badgeStyle.text.replace('text-', '/20')}`}
-                    >
-                      <BadgeIcon size={12} />
-                      {schedule.shift?.shiftType || 'Regular'}
-                    </span>
+                  <div className="flex items-start gap-3">
+                    <CalendarCheck
+                      size={18}
+                      className="text-gray-400 mt-0.5 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-500 mb-0.5">Shift</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-gray-800">
+                          {schedule.shift?.shiftName || '-'}
+                        </p>
+                        <span
+                          className={`inline-flex items-center gap-1 ${badgeStyle.bg} ${badgeStyle.text} px-2 py-1 rounded-full text-xs font-semibold`}
+                        >
+                          <BadgeIcon size={12} />
+                          {schedule.shift?.shiftType || 'Regular'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   {/* Time */}
-                  <div className="flex items-start gap-3 bg-teal-50 p-3 rounded-xl border border-teal-200">
-                    <div className="bg-teal-100 p-2 rounded-lg border border-teal-200">
-                      <Clock size={16} className="text-teal-600" />
+                  <div className="flex items-start gap-3 bg-teal-50 p-3 rounded-xl border border-teal-100">
+                    <div className="bg-slate-100 p-2 rounded-lg border border-teal-200">
+                      <Timer size={16} className="text-teal-600" />
                     </div>
                     <div className="flex-1">
                       <p className="text-xs text-gray-500 mb-1">Shift Times</p>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-600">
                           {schedule.shift?.startTimeFormatted}
                         </span>
                         <span className="text-gray-400">→</span>
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-600">
                           {schedule.shift?.endTimeFormatted}
                         </span>
                       </div>
@@ -420,6 +478,17 @@ export default function Schedules() {
         loading={
           shiftsStatus === 'loading' || subDepartmentsStatus === 'loading'
         }
+      />
+      {/* Cancel Confirmation Modal */}
+      <CancelConfirmationModal
+        isOpen={isCancelModalOpen}
+        onClose={() => {
+          setIsCancelModalOpen(false);
+          setScheduleToCancel(null);
+        }}
+        onConfirm={handleConfirmCancel}
+        schedule={scheduleToCancel}
+        loading={isCancelling}
       />
     </div>
   );
