@@ -8,8 +8,14 @@ export const create = async (data) => {
 // Find SwapRequest
 export const findOne = async (query) => {
   return await SwapRequest.findOne(query)
-  .populate('fromSchedule')
-  .populate('toSchedule')
+  .populate({
+    path: 'fromSchedule',
+    populate: scheduleNestedPopulate
+  })
+  .populate( {
+    path: 'toSchedule',
+    populate: scheduleNestedPopulate
+  })
   .populate('fromUser', 'firstName lastName role')
   .populate('toUser', 'firstName lastName role')
 }
@@ -22,8 +28,14 @@ export const findById = async (id) => {
 // Get All SwapRequests
 export const findAll = () => {
   return SwapRequest.find()
-  .populate('fromSchedule')
-  .populate('toSchedule')
+  .populate({
+    path: 'fromSchedule',
+    populate: scheduleNestedPopulate
+  })
+  .populate( {
+    path: 'toSchedule',
+    populate: scheduleNestedPopulate
+  })
   .populate('fromUser', 'firstName lastName role')
   .populate('toUser', 'firstName lastName role')
 }
@@ -41,3 +53,8 @@ export const removeById = async (id) => {
 export const countAll = () => SwapRequest.countDocuments();
 
 export const countFiltered = (filter) => SwapRequest.countDocuments(filter);
+
+const scheduleNestedPopulate = [
+  { path: 'shiftId', model: 'Shift' },
+  { path: 'subDepartmentId', model: 'SubDepartment' }
+];

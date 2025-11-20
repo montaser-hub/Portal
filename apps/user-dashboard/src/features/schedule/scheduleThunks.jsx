@@ -4,28 +4,35 @@ import * as scheduleService from './scheduleService';
 // Upcoming schedules for current user
 export const fetchUpcomingSchedules = createAsyncThunk(
   'schedule/fetchUpcomingSchedules',
-  async ({ userId, startDate } = {}) => {
-    const now = new Date();
-    const filters = {
-      userId,
-      startDate: startDate || now.toISOString(),
-    };
-
-    return await scheduleService.fetchSchedules(filters);
+  async ({ userId, startDate } = {}, { rejectWithValue }) => {
+    try {
+      const now = new Date();
+      const filters = {
+        userId,
+        startDate: startDate || now.toISOString(),
+      };
+      return await scheduleService.fetchSchedules(filters);
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to fetch upcoming schedules');
+    }
   }
 );
 
+// Fetch all schedules
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
-  async ({ departmentId, excludeUserId, startDate } = {}) => {
-    const now = new Date();
-    const filters = {
-      departmentId,
-      'userId[ne]': excludeUserId,
-      startDate: startDate || now.toISOString(),
-    };
-
-    return await scheduleService.fetchSchedules(filters);
+  async ({ departmentId, excludeUserId, startDate } = {}, { rejectWithValue }) => {
+    try {
+      const now = new Date();
+      const filters = {
+        departmentId,
+        'userId[ne]': excludeUserId,
+        startDate: startDate || now.toISOString(),
+      };
+      return await scheduleService.fetchSchedules(filters);
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to fetch schedules');
+    }
   }
 );
 

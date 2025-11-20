@@ -5,6 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function ScheduleModal({ isOpen, editing, data, setData, onClose, onSave, shifts = [], subDepartments = [], loading = false }) {
   if (!isOpen) return null;
 
+export default function ScheduleModal({
+  isOpen,
+  editing,
+  data,
+  setData,
+  onClose,
+  onSave,
+  shifts = [],
+  subDepartments = [],
+  loading = false
+}) {
+  // يجب أن تكون جميع الـ functions في الأعلى قبل أي return
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData(prev => ({ ...prev, [name]: value }));
@@ -47,6 +59,39 @@ export default function ScheduleModal({ isOpen, editing, data, setData, onClose,
 
    // يجب أن يكون الـ return الأخير فقط
    if (!isOpen) return null;
+
+  const handleShiftChange = (e) => {
+    const selectedShiftId = e.target.value;
+    const selectedShift = shifts.find(s => s.id === selectedShiftId);
+
+    setData(prev => ({
+      ...prev,
+      shift: selectedShift ? { id: selectedShift.id, name: selectedShift.name } : { id: "", name: "" },
+      shiftId: selectedShiftId,
+      shiftName: selectedShift?.name || ""
+    }));
+  };
+
+  const handleSubDepartmentChange = (e) => {
+    const selectedSubDeptId = e.target.value;
+    const selectedSubDept = subDepartments.find(sd => sd.id === selectedSubDeptId);
+
+    setData(prev => ({
+      ...prev,
+      subDepartment: selectedSubDept ? { id: selectedSubDept.id, name: selectedSubDept.name } : { id: "", name: "" },
+      subDepartmentId: selectedSubDeptId,
+      subDepartmentName: selectedSubDept?.name || ""
+    }));
+  };
+
+  // Get current values
+  const currentShiftId = data.shift?.id || data.shiftId || "";
+  const currentSubDeptId = data.subDepartment?.id || data.subDepartmentId || "";
+  const isFormValid = currentShiftId && currentSubDeptId && data.date;
+
+  // يجب أن يكون الـ return الأخير فقط
+  if (!isOpen) return null;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -56,17 +101,17 @@ export default function ScheduleModal({ isOpen, editing, data, setData, onClose,
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="bg-white rounded-2xl shadow-xl w-[90%] max-w-lg p-6 relative"
+            className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative"
           >
             <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
               <X size={20} />
             </button>
 
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">
               {editing ? "Edit Schedule" : "Create Schedule"}
             </h2>
 
-                     <div className="space-y-4">
+            <div className="space-y-4">
               {/* Sub-Department - مطلوب */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-gray-700">Sub Department *</label>
