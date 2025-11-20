@@ -74,35 +74,35 @@ export default function ProfileOverviewCard() {
           <Input
             label="Nick Name"
             name="nickname"
-            value={pendingData.nickname ?? user.nickname ?? ""}
+            value={pendingData?.nickname ?? user?.nickname ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
           <Input
             label="First Name"
             name="firstName"
-            value={pendingData.firstName ?? user.firstName ?? ""}
+            value={pendingData?.firstName ?? user?.firstName ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
           <Input
             label="Last Name"
             name="lastName"
-            value={pendingData.lastName ?? user.lastName ?? ""}
+            value={pendingData?.lastName ?? user?.lastName ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
           <Input
             label="Email"
             name="email"
-            value={pendingData.email ?? user.email ?? ""}
+            value={pendingData?.email ?? user?.email ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
           <Input
             label="Phone Number"
             name="contactNumber"
-            value={pendingData.contactNumber ?? user.contactNumber ?? ""}
+            value={pendingData?.contactNumber ?? user?.contactNumber ?? ""}
             onChange={handleChange}
             disabled={!isEditing}
           />
@@ -123,7 +123,7 @@ export default function ProfileOverviewCard() {
           <Input label="Position" value={user?.position?.name || "N/A"} disabled />
           <Input label="Role" value={user?.role || "N/A"} disabled />
           <Input label="Level" value={user?.level?.name || "N/A"} disabled />
-          <Input label="Start Date" name="createdAt" value={formatDate(user.createdAt)} disabled />
+          <Input label="Start Date" name="createdAt" value={formatDate(user?.createdAt)} disabled />
         </div>
       </Card>}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>

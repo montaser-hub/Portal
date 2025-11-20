@@ -1,5 +1,5 @@
 
-export function Button({
+export default function Button({
   children,
   className = "",
   onClick,
@@ -32,4 +32,3 @@ export function Button({
   );
 }
 
-export default Button;
