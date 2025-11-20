@@ -4,7 +4,7 @@ import {
   fetchUpcomingSchedules,
   addSchedule,
   editSchedule,
-  removeSchedule
+  removeSchedule,
 } from './scheduleThunks';
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
@@ -13,8 +13,10 @@ const initialState = {
   allSchedulesMeta: {},
   upcomingSchedules: [],
   upcomingSchedulesMeta: {},
+
   allSchedulesStatus: 'idle',
   upcomingSchedulesStatus: 'idle',
+
   allSchedulesError: null,
   upcomingSchedulesError: null,
 };
@@ -26,10 +28,9 @@ const scheduleSlice = createSlice({
     clearScheduleError: (state) => {
       state.allSchedulesError = null;
       state.upcomingSchedulesError = null;
-    }
+    },
   },
   extraReducers: (builder) => {
-    // Handle existing thunks with the helper
     handleAsyncThunk(
       builder,
       fetchSchedules,
@@ -38,7 +39,6 @@ const scheduleSlice = createSlice({
       'allSchedulesError',
       'allSchedulesMeta'
     );
-    
     handleAsyncThunk(
       builder,
       fetchUpcomingSchedules,
@@ -47,8 +47,7 @@ const scheduleSlice = createSlice({
       'upcomingSchedulesError',
       'upcomingSchedulesMeta'
     );
-
-    // Add Schedule
+   // Add Schedule
     builder
       .addCase(addSchedule.pending, (state) => {
         state.allSchedulesStatus = 'loading';

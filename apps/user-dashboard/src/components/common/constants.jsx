@@ -4,28 +4,28 @@ export const STATUSES = ["scheduled", "completed", "cancelled"];
 // أعمدة الجدول - بدون Department و Status
 export const TABLE_COLUMNS = [
   {
-    key: "subDepartment", 
+    key: "subDepartment",
     header: "Sub Department",
     render: (item) => <span>{item.subDepartment?.name || "-"}</span>,
   },
-  { 
-    key: "shift", 
+  {
+    key: "shift",
     header: "Shift",
-    render: (item) => <span>{item.shift?.name || item.shift || "-"}</span>,
+    render: ( item ) => <span>{ item.shift?.name || item.shift || "-" }</span>
   },
-  { 
-    key: "date", 
+  {
+    key: "date",
     header: "Date",
     render: (item) => {
       if (!item.date) return "-";
       const date = new Date(item.date);
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
       });
     }
-  },
+    },
   {
     key: "actions",
     header: "Actions",
@@ -37,7 +37,7 @@ export const TABLE_COLUMNS = [
 export const BACKUP_SHIFTS = ["Morning", "Afternoon", "Night"];
 export const BACKUP_SUBDEPARTMENTS = [
   "Central Health Care",
-  "Cardiac ICU", 
+  "Cardiac ICU",
   "Heart Imaging Unit",
   "Rehabilitation Center"
 ];
