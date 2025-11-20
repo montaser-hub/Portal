@@ -1,6 +1,4 @@
 
-import React from "react";
-
 export default function HeartbeatSpinner() {
   const animationDuration = 1.5;
   return (

@@ -3,9 +3,9 @@ import * as crudService from '../../services/crudService';
 const endpoint = '/swapRequests';
 
 export const fetchSwapRequests = async (filters = {}) => {
-  const schedules = await crudService.getAll(endpoint, filters);
+  const swaprequests = await crudService.getAll(endpoint, filters);
 
-  return schedules
+  return swaprequests;
 };
 
 export const addSwapRequest = async (data) => crudService.create(endpoint, data);
