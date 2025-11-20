@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  fetchSubDepartments,
-} from './subDepartmentThunks.jsx';
+import { fetchSubDepartments } from './subDepartmentThunks.jsx';
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
 const initialState = {

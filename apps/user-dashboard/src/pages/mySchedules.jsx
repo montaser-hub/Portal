@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Filter, Pencil, Plus, Calendar, Clock, Building2 } from 'lucide-react';
+import {
+  Filter,
+  Pencil,
+  Plus,
+  Calendar,
+  Clock,
+  Building2,
+  Sun,
+  Moon,
+  AlertCircle,
+  Heart,
+} from 'lucide-react';
 import ScheduleModal from '../modals/ScheduleModal';
 import { STATUSES } from '../components/common/constants';
 import {
@@ -11,12 +22,54 @@ import {
 import { fetchShifts } from '../features/Shift/shiftThunks';
 import { fetchSubDepartments } from '../features/subDepartment/subDepartmentThunks';
 import { toast } from 'react-hot-toast';
+import HeartbeatSpinner from '../components/common/Spinner2';
+
+// Helper function to check if shift has started
+const hasShiftStarted = (date, startTime) => {
+  if (!date || startTime === undefined) return false;
+
+  const scheduleDate = new Date(date);
+  const now = new Date();
+
+  const shiftStart = new Date(scheduleDate);
+  shiftStart.setHours(Math.floor(startTime / 60), startTime % 60, 0, 0);
+
+  return now >= shiftStart;
+};
+
+// Helper function to format time
+const formatTime = (minutes) => {
+  if (minutes === undefined || minutes === null) return '-';
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  return `${displayHours}:${mins.toString().padStart(2, '0')} ${period}`;
+};
+
+// Helper function to get shift type badge styling
+const getShiftTypeBadge = (shiftType) => {
+  const badges = {
+    Morning: { bg: 'bg-amber-100', text: 'text-amber-700', icon: Sun },
+    Evening: { bg: 'bg-indigo-100', text: 'text-indigo-700', icon: Moon },
+    Night: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Moon },
+    Weekend: { bg: 'bg-pink-100', text: 'text-pink-700', icon: Calendar },
+  };
+  return (
+    badges[shiftType] || {
+      bg: 'bg-gray-100',
+      text: 'text-gray-700',
+      icon: Clock,
+    }
+  );
+};
 
 // دالة مساعدة لتحويل بيانات الAPI
 const mapScheduleDataFromAPI = (apiData) => {
   return {
     id: apiData.id || apiData._id,
     department: {
+      id: apiData.department?.id || apiData.department?._id,
       name: apiData.department?.name || 'Unknown',
     },
     subDepartment: {
@@ -26,25 +79,39 @@ const mapScheduleDataFromAPI = (apiData) => {
     shift: {
       id: apiData.shift?.id || apiData.shift?._id,
       name: apiData.shift?.shiftName || 'Unknown',
+      shiftName: apiData.shift?.shiftName || 'Unknown',
+      shiftType: apiData.shift?.shiftType || 'Regular',
+      startTime: apiData.shift?.startTime,
+      endTime: apiData.shift?.endTime,
+      startTimeFormatted:
+        apiData.shift?.startTimeFormatted ||
+        formatTime(apiData.shift?.startTime),
+      endTimeFormatted:
+        apiData.shift?.endTimeFormatted || formatTime(apiData.shift?.endTime),
+      durationFormatted: apiData.shift?.durationFormatted || '-',
     },
     date: apiData.date,
     status: apiData.status || STATUSES[0],
-    shiftId: apiData.shiftId,
-    subDepartmentId: apiData.subDepartmentId,
+    shiftId: apiData.shiftId || apiData.shift?.id || apiData.shift?._id,
+    subDepartmentId:
+      apiData.subDepartmentId ||
+      apiData.subDepartment?.id ||
+      apiData.subDepartment?._id,
   };
 };
 
 export default function Schedules() {
   const dispatch = useDispatch();
-  const {allSchedules,allSchedulesStatus} = useSelector((state) => state.schedule);
+  const { allSchedules, allSchedulesStatus } = useSelector(
+    (state) => state.schedule
+  );
   const { shifts, status: shiftsStatus } = useSelector((state) => state.shift);
-  const { subDepartments, status: subDepartmentsStatus } = useSelector((state) => state.subDepartment);
+  const { subDepartments, status: subDepartmentsStatus } = useSelector(
+    (state) => state.subDepartment
+  );
   const { user } = useSelector((state) => state.user);
-
-
-
-  const [selectedShift, setSelectedShift] = useState("");
-  const [selectedSubDept, setSelectedSubDept] = useState("");
+  const [selectedShift, setSelectedShift] = useState('');
+  const [selectedSubDept, setSelectedSubDept] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [currentData, setCurrentData] = useState({});
@@ -66,9 +133,9 @@ export default function Schedules() {
     }
   }, [dispatch, user]);
 
-  const schedules = useMemo( () => {
-      return (allSchedules || []).map(mapScheduleDataFromAPI);
-    }, [allSchedules]);
+  const schedules = useMemo(() => {
+    return (allSchedules || []).map(mapScheduleDataFromAPI);
+  }, [allSchedules]);
   const filteredSchedules = useMemo(() => {
     return schedules.filter(
       (s) =>
@@ -76,24 +143,29 @@ export default function Schedules() {
         (!selectedSubDept || s.subDepartment?.name === selectedSubDept)
     );
   }, [schedules, selectedShift, selectedSubDept]);
-    const shiftOptions = useMemo(() => {
-      return (shifts || []).map((shift) => ({
-        id: shift.id || shift._id,
-        name: shift.shiftName,
-      }));
-    }, [shifts]);
+  const shiftOptions = useMemo(() => {
+    return (shifts || []).map((shift) => ({
+      id: shift.id || shift._id,
+      name: shift.shiftName,
+    }));
+  }, [shifts]);
 
-    const subDepartmentOptions = useMemo(() => {
-      return (subDepartments || []).map((sd) => ({
-        id: sd.id || sd._id,
-        name: sd.name,
-      }));
-    }, [subDepartments]);
+  const subDepartmentOptions = useMemo(() => {
+    return (subDepartments || []).map((sd) => ({
+      id: sd.id || sd._id,
+      name: sd.name,
+    }));
+  }, [subDepartments]);
   const openModal = (schedule = null) => {
+    if (schedule && hasShiftStarted(schedule.date, schedule.shift?.startTime)) {
+      alert('⚠️ Cannot edit - This shift has already started!');
+      return;
+    }
+
     if (schedule) {
       setCurrentData({
         ...schedule,
-        shiftName: schedule.shift?.name || '',
+        shiftName: schedule.shift?.shiftName || '',
         subDepartmentName: schedule.subDepartment?.name || '',
       });
       setEditing(true);
@@ -138,14 +210,7 @@ export default function Schedules() {
 
   // Loading state
   if (allSchedulesStatus === 'loading' && schedules.length === 0) {
-    return (
-      <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700 mx-auto"></div>
-          <p className="text-gray-600 mt-4">Loading schedules...</p>
-        </div>
-      </div>
-    );
+    return <HeartbeatSpinner />;
   }
 
   // Format date
@@ -161,7 +226,7 @@ export default function Schedules() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -227,79 +292,117 @@ export default function Schedules() {
         <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
           <div className="flex flex-col items-center gap-3">
             <Calendar size={48} className="text-gray-300" />
-            <p className="text-gray-500 text-lg">
-              {allSchedulesStatus === 'loading'
-                ? 'Loading schedules...'
-                : 'No schedules found'}
-            </p>
-            {allSchedulesStatus !== 'loading' && (
-              <button
-                onClick={() => openModal()}
-                className="mt-2 text-teal-600 hover:text-teal-700 font-medium"
-              >
-                Create your first schedule
-              </button>
-            )}
+            <div className="flex flex-col items-center gap-3">
+              <div className="bg-gray-100 p-4 rounded-full">
+                <Calendar size={48} className="text-gray-400" />
+              </div>
+              <p className="text-gray-500 text-lg">
+                {allSchedulesStatus === 'loading'
+                  ? 'Loading schedules...'
+                  : 'No schedules found'}
+              </p>
+              {allSchedulesStatus !== 'loading' && (
+                <button
+                  onClick={() => openModal()}
+                  className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
+                >
+                  Create your first schedule
+                </button>
+              )}
+            </div>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSchedules.map((schedule) => (
-            <div
-              key={schedule.id}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-teal-300"
-            >
-              {/* Date Header */}
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-                <div className="flex items-center gap-2 text-teal-600">
-                  <Calendar size={18} />
-                  <span className="font-semibold text-sm">
-                    {formatDate(schedule.date)}
-                  </span>
-                </div>
-                <button
-                  onClick={() => openModal(schedule)}
-                  className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
-                  title="Edit Schedule"
-                >
-                  <Pencil size={18} className="text-teal-600" />
-                </button>
-              </div>
-
-              {/* Schedule Details */}
-              <div className="space-y-3">
-                {/* Sub Department */}
-                <div className="flex items-start gap-3">
-                  <Building2
-                    size={18}
-                    className="text-gray-400 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="text-xs text-gray-500 mb-0.5">
-                      Sub Department
-                    </p>
-                    <p className="text-sm font-medium text-gray-800">
-                      {schedule.subDepartment?.name || '-'}
-                    </p>
+          {filteredSchedules.map((schedule, index) => {
+            const shiftStarted = hasShiftStarted(
+              schedule.date,
+              schedule.shift?.startTime
+            );
+            const badgeStyle = getShiftTypeBadge(schedule.shift?.shiftType);
+            const BadgeIcon = badgeStyle.icon;
+            return (
+              <div
+                key={schedule.id}
+                className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-teal-300"
+              >
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2 text-teal-600">
+                    <Calendar size={18} />
+                    <span className="font-semibold text-sm">
+                      {formatDate(schedule.date)}
+                    </span>
                   </div>
+                  {!shiftStarted && (
+                    <button
+                      onClick={() => openModal(schedule)}
+                      className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
+                      title="Edit Schedule"
+                    >
+                      <Pencil size={18} className="text-teal-600" />
+                    </button>
+                  )}
                 </div>
-
-                {/* Shift */}
-                <div className="flex items-start gap-3">
-                  <Clock
-                    size={18}
-                    className="text-gray-400 mt-0.5 flex-shrink-0"
-                  />
+                {/* Schedule Details */}
+                <div className="space-y-3">
+                  {/* Sub Department */}
+                  <div className="flex items-start gap-3">
+                    <Building2
+                      size={18}
+                      className="text-gray-400 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <p className="text-xs text-gray-500 mb-0.5">
+                        Sub Department
+                      </p>
+                      <p className="text-sm font-medium text-gray-800">
+                        {schedule.subDepartment?.name || '-'}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Shift Name & Type Badge */}
                   <div>
                     <p className="text-xs text-gray-500 mb-0.5">Shift</p>
                     <p className="text-sm font-medium text-gray-800">
-                      {schedule.shift?.name || '-'}
+                      {schedule.shift?.shiftName || '-'}
                     </p>
+                    <span
+                      className={`${badgeStyle.bg} ${
+                        badgeStyle.text
+                      } px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${badgeStyle.bg.replace(
+                        'bg-',
+                        'border-'
+                      )}${badgeStyle.text.replace('text-', '/20')}`}
+                    >
+                      <BadgeIcon size={12} />
+                      {schedule.shift?.shiftType || 'Regular'}
+                    </span>
+                  </div>
+                  {/* Time */}
+                  <div className="flex items-start gap-3 bg-teal-50 p-3 rounded-xl border border-teal-200">
+                    <div className="bg-teal-100 p-2 rounded-lg border border-teal-200">
+                      <Clock size={16} className="text-teal-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-500 mb-1">Shift Times</p>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold text-gray-800">
+                          {schedule.shift?.startTimeFormatted}
+                        </span>
+                        <span className="text-gray-400">→</span>
+                        <span className="font-semibold text-gray-800">
+                          {schedule.shift?.endTimeFormatted}
+                        </span>
+                      </div>
+                      <p className="text-xs text-teal-600 mt-1 font-medium">
+                        Duration: {schedule.shift?.durationFormatted}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

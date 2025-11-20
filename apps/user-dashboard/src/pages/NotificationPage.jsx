@@ -9,6 +9,7 @@ import {
   Circle,
 } from "lucide-react";
 import { mockNotifications } from "../components/common/mockData";
+import Text from "../components/common/Text";
 
 export default function NotificationsPage() {
   const unreadCount = mockNotifications.filter((n) => !n.read).length;
@@ -62,12 +63,10 @@ export default function NotificationsPage() {
       {/* -------- Header -------- */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Notifications</h1>
-          <p className="text-gray-500 mt-1">
-            {unreadCount > 0
-              ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
-              : "All caught up!"}
-          </p>
+          <Text as="h1" content="Notifications" MyClass="text-2xl font-semibold text-gray-900" />
+          <Text as="p" content="You have" MyClass="text-gray-500" />
+          <Text as="p"  MyClass="text-gray-500 mt-1"
+          content={unreadCount > 0? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`: "All caught up!"} />
         </div>
 
         <button
@@ -104,34 +103,23 @@ export default function NotificationsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-gray-900 truncate">
-                      {notification.title}
-                    </h4>
+                    <Text as="h4" content={notification.title} MyClass="font-medium text-gray-600 " />
                     {!notification.read && (
                       <Circle className="h-2 w-2 fill-[#0F7B8A] text-[#0F7B8A]" />
                     )}
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full border ${getPriorityColor(
-                        notification.priority
-                      )}`}
-                    >
-                      {notification.priority}
-                    </span>
-                    <span className="text-sm text-gray-500 whitespace-nowrap">
-                      {formatTimestamp(notification.timestamp)}
-                    </span>
+                    <Text as="span" content={notification.priority}
+                    MyClass={`text-xs font-medium px-2 py-0.5 rounded-full border ${getPriorityColor(notification.priority)}`} />
+                    <Text as="span" content={formatTimestamp(notification.timestamp)}
+                    MyClass="text-sm text-gray-500 whitespace-nowrap" />
                   </div>
                 </div>
-
-                <p className="text-gray-600 text-sm">{notification.message}</p>
-
+                <Text as="p" content={notification.message} MyClass="text-gray-600 text-sm" />
                 <div className="flex items-center gap-2 mt-3">
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200">
-                    {notification.type}
-                  </span>
+                  <Text as="span" content={notification.type}
+                  MyClass="text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200" />
                 </div>
               </div>
             </div>
@@ -143,7 +131,7 @@ export default function NotificationsPage() {
       {mockNotifications.length === 0 && (
         <div className="p-12 text-center border border-gray-200 rounded-2xl shadow-sm">
           <Bell className="h-12 w-12 mx-auto mb-3 text-gray-400 opacity-50" />
-          <p className="text-gray-500 text-sm">No notifications yet</p>
+          <Text as="p" content="No notifications yet" MyClass="text-gray-500 text-sm" />
         </div>
       )}
     </div>

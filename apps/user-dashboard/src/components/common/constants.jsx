@@ -1,13 +1,8 @@
-
+// ثوابت الـStatus - للاستخدام الداخلي فقط
 export const STATUSES = ["scheduled", "completed", "cancelled"];
-export const SHIFTS = ["Morning", "Afternoon", "Night"];
 
+// أعمدة الجدول - بدون Department و Status
 export const TABLE_COLUMNS = [
-  {
-    key: "department",
-    header: "Department",
-    render: (item) => <span>{item.department?.name || "-"}</span>,
-  },
   {
     key: "subDepartment",
     header: "Sub Department",
@@ -36,4 +31,13 @@ export const TABLE_COLUMNS = [
     header: "Actions",
     className: "text-center"
   },
+];
+
+// Backup constants (استخدمهم لو الـAPI مش راجع بيانات)
+export const BACKUP_SHIFTS = ["Morning", "Afternoon", "Night"];
+export const BACKUP_SUBDEPARTMENTS = [
+  "Central Health Care",
+  "Cardiac ICU",
+  "Heart Imaging Unit",
+  "Rehabilitation Center"
 ];

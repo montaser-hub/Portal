@@ -54,7 +54,10 @@ export default function NotificationDropdown({ isOpen, onClose }) {
         >
           <div className="px-4 pb-2 border-b flex items-center gap-2">
             <Bell className="h-5 w-5 text-[#0F7B8A]" />
-            <Text as="h4" content="Notifications" MyClass="font-semibold text-gray-700" />
+            <Text
+            as="h4"
+            content="Notifications"
+            MyClass="font-semibold text-gray-700" />
           </div>
 
           <div className="max-h-64 overflow-y-auto">
@@ -66,9 +69,18 @@ export default function NotificationDropdown({ isOpen, onClose }) {
               >
                 <div className="mt-1">{n.icon}</div>
                 <div className="flex-1">
-                  <Text as="p" content={n.title} MyClass="text-sm font-semibold text-gray-800" />
-                  <Text as="p" content={n.message} MyClass="text-xs text-gray-500 mt-1" />
-                  <Text as="span" content={n.time} MyClass="text-[11px] text-gray-400 mt-1 block" />
+                  <Text
+                  as="p"
+                  content={n.title}
+                  MyClass="text-sm font-semibold text-gray-800" />
+                  <Text
+                  as="p"
+                  content={n.message}
+                  MyClass="text-xs text-gray-500 mt-1" />
+                  <Text
+                  as="span"
+                  content={n.time}
+                  MyClass="text-[11px] text-gray-400 mt-1 block" />
                 </div>
               </div>
             ))}

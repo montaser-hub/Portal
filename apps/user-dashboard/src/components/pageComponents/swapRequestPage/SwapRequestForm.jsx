@@ -27,16 +27,8 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
   return (
     <div className="space-y-4">
       <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 shadow-sm">
-        <Text
-          as="h2"
-          content="Step 1: Create Swap Request"
-          MyClass="text-lg font-medium text-[#0F7B8A] mb-2"
-        />
-        <Text
-          as="p"
-          content="Fill in the details below to initiate a swap."
-          MyClass="text-sm text-gray-600 mb-4"
-        />
+        <Text as="h2" content="Step 1: Create Swap Request" MyClass="text-lg font-medium text-[#0F7B8A] mb-2" />
+        <Text as="p" content="Fill in the details below to initiate a swap." MyClass="text-sm text-gray-600 mb-4"  />
         <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           {/* Current User Shift */}
           <div>
@@ -53,11 +45,17 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
               {loading ? (
                 <option>Loading schedules...</option>
               ) : (
-                upcomingSchedules.map((sched) => (
-                  <option key={sched._id} value={sched._id}>
-                    {formatScheduleOption(sched)}
-                  </option>
-                ))
+                upcomingSchedules.map((sched) => {
+                  const userId = sched.user?._id || '';
+                  const fromScheduleId = sched._id || '';
+                  // Combine scheduleId + userId with a separator
+                  const optionValue = `${fromScheduleId}___${userId}`;
+                  return (
+                    <option key={sched._id} value={optionValue}>
+                      {formatScheduleOption(sched)}
+                    </option>
+                  );
+                })
               )}
             </select>
           </div>
@@ -77,17 +75,11 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
               {loading ? (
                 <option>Loading schedules...</option>
               ) : (
-                allSchedules.map((sched) => {
-                  const userId = sched.user?._id || '';
-                  const toScheduleId = sched._id || '';
-                  // Combine scheduleId + userId with a separator
-                  const optionValue = `${toScheduleId}___${userId}`;
-                  return (
-                    <option key={sched._id} value={optionValue}>
-                      {formatScheduleOption(sched)}
-                    </option>
-                  );
-                })
+                allSchedules.map((sched) => (
+                  <option key={sched._id} value={sched._id}>
+                    {formatScheduleOption(sched)}
+                  </option>
+                ))
               )}
             </select>
           </div>
