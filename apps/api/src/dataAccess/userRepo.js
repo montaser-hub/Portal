@@ -54,7 +54,7 @@ export const findByToken = async (hashedToken) => {
   return await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() }
-  })
+  }).populate('position', 'name').populate('level', 'name').populate('department', 'name');
 }
 
 export const countAll = () => User.countDocuments();
