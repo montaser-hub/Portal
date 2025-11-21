@@ -1,9 +1,10 @@
+// api.js
 import axios from 'axios';
 import store from '../app/store';
 import { showLoader, hideLoader } from '../app/store';
 import { logoutUser } from '../features/user/userSlice';
 
-const baseURL = 'https://smartshift-c240077eea3a.herokuapp.com/api/v1';
+const baseURL = 'http://localhost:3000/api/v1';
 
 const api = axios.create({
   baseURL,
@@ -11,9 +12,47 @@ const api = axios.create({
   withCredentials: true,
 });
 
-//  Request Interceptor
+// List of routes that are ALLOWED even when logged out
+const PUBLIC_ROUTES = [
+  '/users/login',
+  '/users/logout',
+  '/users/forgotPassword',
+  '/users/resetPassword',
+  '/users/verify',
+  // Add any other public endpoints
+];
+
 api.interceptors.request.use(
   (config) => {
+    const state = store.getState();
+    const currentStatus = state.user.status;
+    const url = config.url;
+
+    console.log('API Request:', {
+      method: config.method?.toUpperCase(),
+      url,
+      userStatus: currentStatus,
+    });
+
+    // Check if this is a public route (allowed even when logged out)
+    const isPublicRoute = PUBLIC_ROUTES.some((route) => url?.includes(route));
+
+    // Allow public routes OR if user is authenticated
+    if (isPublicRoute || currentStatus === 'succeeded') {
+      store.dispatch(showLoader());
+      return config;
+    }
+
+    // Block everything else when logged out or in invalid state
+    if (currentStatus === 'loggedOut' || currentStatus === 'failed') {
+      console.log('Blocking request - user not authenticated');
+      return Promise.reject({
+        message: 'Authentication required',
+        isAuthError: true,
+        config,
+      });
+    }
+
     store.dispatch(showLoader());
     return config;
   },
@@ -23,7 +62,6 @@ api.interceptors.request.use(
   }
 );
 
-//  Response Interceptor
 api.interceptors.response.use(
   (response) => {
     store.dispatch(hideLoader());
@@ -31,13 +69,34 @@ api.interceptors.response.use(
   },
   (error) => {
     store.dispatch(hideLoader());
-    if (!error.response) return Promise.reject({ message: 'Network error.' });
 
-    const status = error.response.status;
-    if (status === 401) {
-      store.dispatch(logoutUser());
-      if (window.location.pathname !== '/Login') {
-        window.location.href = '/Login';
+    // Don't double-handle our own auth blocks
+    if (error.isAuthError) {
+      return Promise.reject(error);
+    }
+
+    if (!error.response) {
+      return Promise.reject({ message: 'Network error. Please try again.' });
+    }
+
+    const { status, data } = error.response;
+
+    // Handle 401 or JWT expired
+    if (
+      status === 401 ||
+      (status === 500 && /jwt|token|expired|invalid/i.test(data?.message))
+    ) {
+      const state = store.getState();
+      if (state.user.status !== 'loggedOut') {
+        console.log('Session expired - logging out');
+        store.dispatch(logoutUser());
+
+        // redirect to login (non-breaking)
+        setTimeout(() => {
+          if (window.location.pathname !== '/Login') {
+            window.location.href = '/Login';
+          }
+        }, 100);
       }
     }
 

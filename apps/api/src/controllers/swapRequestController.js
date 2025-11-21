@@ -4,7 +4,7 @@ import catchAsync from "../utils/catchAsync.js";
 // Add swapRequest
 export const addSwapRequest = catchAsync( async ( req, res, next ) => {
   const data = { ...req.body }
-  const user = req.user
+  const user = req?.user
   data.fromUserId = user._id
   const swapRequestData = await swapRequestService.addSwapRequest(data)
   res.status(200).json({ message: "swapRequest added successfully", data: swapRequestData });

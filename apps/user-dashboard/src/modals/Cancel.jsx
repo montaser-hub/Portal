@@ -14,7 +14,7 @@ export default function CancelConfirmationModal({
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
         <div className="flex items-center gap-3 mb-4">
           <div className="bg-red-100 p-3 rounded-full">
-            <X size={24} className="text-red-600" />
+            <X size={24} className="text-red-300" />
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
             Cancel Schedule
@@ -54,7 +54,7 @@ export default function CancelConfirmationModal({
             </div>
           </div>
 
-          <p className="text-sm text-red-600 font-medium">
+          <p className="text-sm text-red-500 font-medium">
             ⚠️ This action cannot be undone.
           </p>
         </div>
