@@ -23,7 +23,7 @@ function getUserInitials(name = "") {
     .substring(0, 2);
 }
 
-function Navbar() {
+export default function Navbar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.user);
@@ -121,4 +121,3 @@ function Navbar() {
   );
 }
 
-export default Navbar;
