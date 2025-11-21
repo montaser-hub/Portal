@@ -1,4 +1,5 @@
 import * as locationRepo from '../dataAccess/locationRepo.js'
+import * as departmentRepo from '../dataAccess/departmentRepo.js'
 import AppError from '../utils/AppError.js'
 import { getAllDocuments } from "./queryService.js"
 
@@ -38,6 +39,8 @@ export const updateLocation = async (id, data) => {
 
 // Delete Location
 export const deleteLocation = async (id) => {
+  const departmentCountCheck = await departmentRepo.countFiltered({ locationId: id });
+  if (departmentCountCheck > 0) throw new AppError("Location has assigned departments, cannot delete", 400);
   const location = await locationRepo.findById(id)
   if (!location) throw new AppError("Location not found.", 404)
   return await locationRepo.removeById(id)
