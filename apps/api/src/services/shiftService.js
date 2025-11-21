@@ -1,4 +1,5 @@
 import * as shiftRepo from '../dataAccess/shiftRepo.js'
+import * as scheduleRepo from '../dataAccess/scheduleRepo.js'
 import AppError from '../utils/AppError.js'
 import { getAllDocuments } from './queryService.js'
 
@@ -24,5 +25,7 @@ export const updateShift = async (id, data) => {
 }
 
 export const deleteShift = async (id) => {
+  const scheduleCountCheck = await scheduleRepo.countFiltered({ shiftId: id });
+  if (scheduleCountCheck > 0) throw new AppError('shift has assigned schedules, cannot delete', 400);
   return await shiftRepo.deleteShift(id)
 }
