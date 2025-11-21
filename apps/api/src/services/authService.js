@@ -15,9 +15,13 @@ export const signToken = id => {
 export const createTokenPayload = (user) => {
   const token = signToken(user?._id);
   // Remove sensitive fields
-  // The _doc property is a shortcut for creating a plain JavaScript object that only includes the document data — no Mongoose methods or hidden fields.
-  const cleanUser = { ...user._doc };
+  // Convert Mongoose document → plain object AND remove sensitive fields.
+  const cleanUser = user.toObject({ getters: true });;
   delete cleanUser.password;
+  delete cleanUser.passwordChangedAt;
+  delete cleanUser.passwordResetToken;
+  delete cleanUser.passwordResetExpires;
+
   return { token, user: cleanUser };
 };
 
