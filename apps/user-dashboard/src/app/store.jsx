@@ -29,6 +29,11 @@ const store = configureStore({
     shift: shiftReducer,
     subDepartment: subDepartmentReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+  devTools: true,
 });
 
 export default store;

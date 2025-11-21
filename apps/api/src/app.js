@@ -17,12 +17,19 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-app.use( cors(
-  {
-    origin: ['http://localhost:4200', 'http://localhost:3001'],
-    credentials: true,
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200'];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
-) );
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(cookieParser());
 
 app.use(express.json());

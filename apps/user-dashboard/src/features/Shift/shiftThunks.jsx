@@ -3,5 +3,5 @@ import * as shiftService from './shiftService';
 
 export const fetchShifts = createAsyncThunk(
   'shift/fetchShifts',
-  async () => await shiftService.fetchShifts()
+  async (filter = {}) => await shiftService.fetchShifts(filter)
 );

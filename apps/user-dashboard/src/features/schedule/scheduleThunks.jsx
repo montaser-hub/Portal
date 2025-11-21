@@ -4,12 +4,12 @@ import * as scheduleService from './scheduleService';
 // Upcoming schedules for current user
 export const fetchUpcomingSchedules = createAsyncThunk(
   'schedule/fetchUpcomingSchedules',
-  async ({ userId, startDate } = {}, { rejectWithValue }) => {
+  async (filter = {}, { rejectWithValue }) => {
     try {
       const now = new Date();
       const filters = {
-        userId,
-        startDate: startDate || now.toISOString(),
+        ...filter,
+        // startDate: filter.startDate || now.toISOString().split('T')[0],
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
@@ -21,13 +21,11 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 // Fetch all schedules
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
-  async ({ departmentId, excludeUserId, startDate } = {}, { rejectWithValue }) => {
+  async (filter = {}, { rejectWithValue }) => {
     try {
-      const now = new Date();
       const filters = {
-        departmentId,
-        'userId[ne]': excludeUserId,
-        startDate: startDate || now.toISOString(),
+        ...filter,
+        'userId[ne]': filter.excludeUserId,
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {

@@ -17,7 +17,8 @@ export const login = catchAsync( async ( req, res, next ) => {
     ),
     // secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // only set secure cookie if the request is HTTPS
     httpOnly: true, // recive the cookie and store it, send it automatically in each request
-    sameSite: 'none'
+    sameSite: 'Lax',
+    path: '/',
   };
   if (config.nodeEnv === 'production') cookieOptions.secure = true;
 
@@ -27,11 +28,15 @@ export const login = catchAsync( async ( req, res, next ) => {
 });
 
 export const logout = (req, res) => {
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000),
-    httpOnly: true
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: true,
+    path: '/'
   });
-  res.status(200).json({ status: 'success', message: 'Logged out!' });
+  res.status(200).json({
+    status: 'success',
+    message: 'You have been logged out!'
+  });
 };
 
 // protect routes that require authentication
