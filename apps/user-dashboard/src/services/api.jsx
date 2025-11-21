@@ -4,7 +4,7 @@ import store from '../app/store';
 import { showLoader, hideLoader } from '../app/store';
 import { logoutUser } from '../features/user/userSlice';
 
-const baseURL = 'http://localhost:3000/api/v1';
+const baseURL = 'https://smartshift-c240077eea3a.herokuapp.com/api/v1';
 
 const api = axios.create({
   baseURL,
