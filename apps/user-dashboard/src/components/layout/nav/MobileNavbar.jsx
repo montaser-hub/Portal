@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Bell, User, LogOut, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { logout } from '../../../services/API-Services/AuthService';
+import { useAuth } from '../../../hooks/useAuth';
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 
@@ -16,6 +16,7 @@ function MobileNavbar({
   currentUser,
   profileImage,
 }) {
+  const { logout } = useAuth();
   React.useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {

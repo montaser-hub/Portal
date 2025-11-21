@@ -3,7 +3,8 @@ import AppError from '../utils/AppError.js'
 import { getAllDocuments } from './queryService.js'
 
 
-export const createSchedule = async (data) => {
+export const createSchedule = async (data, user) => {console.log(user)
+  if(user?.role.includes('user')) data.userId = user._id
   return await scheduleRepo.create(data)
 }
 

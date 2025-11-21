@@ -22,6 +22,19 @@ class APIFeatures {
       }
     }
 
+    Object.keys(queryObj).forEach(key => {
+      const value = queryObj[key];
+
+      if (
+        value === undefined ||
+        value === null ||
+        value === '' ||
+        (typeof value === 'object' && Object.keys(value).length === 0)
+      ) {
+        delete queryObj[key];
+      }
+    });
+
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lt|lte|in|ne)\b/g, m => `$${m}`);
 
