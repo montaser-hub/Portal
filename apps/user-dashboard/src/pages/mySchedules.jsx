@@ -16,7 +16,7 @@ import {
 import ScheduleModal from '../modals/ScheduleModal';
 import { STATUSES } from '../components/common/constants';
 import {
-  fetchSchedules,
+  fetchUpcomingSchedules,
   addSchedule,
   editSchedule,
   removeSchedule,
@@ -26,37 +26,19 @@ import { fetchSubDepartments } from '../features/subDepartment/subDepartmentThun
 import { toast } from 'react-hot-toast';
 import HeartbeatSpinner from '../components/common/Spinner2';
 import CancelConfirmationModal from '../modals/Cancel';
+import Pagination from '../components/common/paginaton';
+import {
+  hasShiftStarted,
+  formatDate,
+  formatTime,
+} from '../components/common/dateHelpers';
 
-// Helper function to check if shift has started
-const hasShiftStarted = (date, startTime) => {
-  if (!date || startTime === undefined) return false;
-
-  const scheduleDate = new Date(date);
-  const now = new Date();
-
-  const shiftStart = new Date(scheduleDate);
-  shiftStart.setHours(Math.floor(startTime / 60), startTime % 60, 0, 0);
-
-  return now >= shiftStart;
-};
-
-// Helper function to format time
-const formatTime = (minutes) => {
-  if (minutes === undefined || minutes === null) return '-';
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  const period = hours >= 12 ? 'PM' : 'AM';
-  const displayHours = hours % 12 || 12;
-  return `${displayHours}:${mins.toString().padStart(2, '0')} ${period}`;
-};
-
-// Helper function to get shift type badge styling
 const getShiftTypeBadge = (shiftType) => {
   const badges = {
     Morning: { bg: 'bg-amber-100', text: 'text-amber-700', icon: Sun },
-    Evening: { bg: 'bg-indigo-100', text: 'text-indigo-700', icon: Moon },
-    Night: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Moon },
-    Weekend: { bg: 'bg-pink-100', text: 'text-pink-700', icon: Calendar },
+    Evening: { bg: 'bg-indigo-100', text: 'text-indigo-500', icon: Moon },
+    Night: { bg: 'bg-purple-100', text: 'text-purple-500', icon: Moon },
+    Weekend: { bg: 'bg-red-100', text: 'text-red-400', icon: Calendar },
   };
   return (
     badges[shiftType] || {
@@ -67,60 +49,38 @@ const getShiftTypeBadge = (shiftType) => {
   );
 };
 
-// دالة مساعدة لتحويل بيانات الAPI
-const mapScheduleDataFromAPI = (apiData) => {
-  return {
-    id: apiData.id || apiData._id,
-    department: {
-      id: apiData.department?.id || apiData.department?._id,
-      name: apiData.department?.name || 'Unknown',
-    },
-    subDepartment: {
-      id: apiData.subDepartment?.id || apiData.subDepartment?._id,
-      name: apiData.subDepartment?.name || 'Unknown',
-    },
-    shift: {
-      id: apiData.shift?.id || apiData.shift?._id,
-      name: apiData.shift?.shiftName || 'Unknown',
-      shiftName: apiData.shift?.shiftName || 'Unknown',
-      shiftType: apiData.shift?.shiftType || 'Regular',
-      startTime: apiData.shift?.startTime,
-      endTime: apiData.shift?.endTime,
-      startTimeFormatted:
-        apiData.shift?.startTimeFormatted ||
-        formatTime(apiData.shift?.startTime),
-      endTimeFormatted:
-        apiData.shift?.endTimeFormatted || formatTime(apiData.shift?.endTime),
-      durationFormatted: apiData.shift?.durationFormatted || '-',
-    },
-    date: apiData.date,
-    status: apiData.status || STATUSES[0],
-    shiftId: apiData.shiftId || apiData.shift?.id || apiData.shift?._id,
-    subDepartmentId:
-      apiData.subDepartmentId ||
-      apiData.subDepartment?.id ||
-      apiData.subDepartment?._id,
-  };
-};
-
 export default function Schedules() {
   const dispatch = useDispatch();
-  const { allSchedules, allSchedulesStatus } = useSelector(
-    (state) => state.schedule
-  );
-  const { shifts, status: shiftsStatus } = useSelector((state) => state.shift);
-  const { subDepartments, status: subDepartmentsStatus } = useSelector(
+
+  // Redux state selectors
+  const { upcomingSchedules, upcomingSchedulesMeta, upcomingSchedulesStatus } =
+    useSelector((state) => state.schedule);
+  const { shifts, shiftsStatus } = useSelector((state) => state.shift);
+  const { subDepartments, subDepartmentsStatus } = useSelector(
     (state) => state.subDepartment
   );
   const { user } = useSelector((state) => state.user);
-  const [selectedShift, setSelectedShift] = useState('');
-  const [selectedSubDept, setSelectedSubDept] = useState('');
+
+  // Filter states
+  const [selectedShiftId, setSelectedShiftId] = useState('');
+  const [selectedSubDeptId, setSelectedSubDeptId] = useState('');
+
+  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [currentData, setCurrentData] = useState({});
+
+  // Cancel modal states
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [scheduleToCancel, setScheduleToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const totalItems = upcomingSchedulesMeta?.totalFiltered || 0;
+  const totalPages = itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 1;
 
   const initialData = {
     department: { name: user?.department?.name || 'Heart' },
@@ -130,41 +90,103 @@ export default function Schedules() {
     status: STATUSES[0],
   };
 
+  // Fetch reference data ONCE on mount with proper error handling
   useEffect(() => {
-    dispatch(fetchSchedules({}));
-    dispatch(fetchShifts());
+    if (user?.departmentId) {
+      dispatch(fetchShifts({ departmentId: user.departmentId }))
+        .unwrap()
+        .catch((error) => {
+          console.error('Failed to fetch shifts:', error);
+          toast.error('Failed to load shifts');
+        });
 
-    if (user?.department?.id || user?.department?._id) {
-      dispatch(fetchSubDepartments(user.department.id || user.department._id));
+      dispatch(fetchSubDepartments({ departmentId: user.departmentId }))
+        .unwrap()
+        .catch((error) => {
+          console.error('Failed to fetch sub-departments:', error);
+          toast.error('Failed to load sub-departments');
+        });
     }
   }, [dispatch, user]);
 
-  const schedules = useMemo(() => {
-    return (allSchedules || []).map(mapScheduleDataFromAPI);
-  }, [allSchedules]);
-  const filteredSchedules = useMemo(() => {
-    return schedules.filter(
-      (s) =>
-        (!selectedShift || s.shift?.name === selectedShift) &&
-        (!selectedSubDept || s.subDepartment?.name === selectedSubDept)
-    );
-  }, [schedules, selectedShift, selectedSubDept]);
+  // Fetch schedules with filters
+  useEffect(() => {
+    if (!user?._id) return;
+
+      const filters = {
+        userId: user._id,
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
+      if (selectedShiftId) filters.shiftId = selectedShiftId;
+      if (selectedSubDeptId) filters.subDepartmentId = selectedSubDeptId;
+
+      dispatch(fetchUpcomingSchedules(filters))
+        .unwrap()
+        .catch((error) => {
+          console.error('Failed to fetch schedules:', error);
+        });
+  }, [
+    dispatch,
+    user?._id,
+    currentPage,
+    itemsPerPage,
+    selectedShiftId,
+    selectedSubDeptId,
+  ]);
+
+  // Memoized options
   const shiftOptions = useMemo(() => {
-    return (shifts || []).map((shift) => ({
-      id: shift.id || shift._id,
-      name: shift.shiftName,
+    if (!shifts || shifts.length === 0) return [];
+    return shifts.map((shift) => ({
+      id: shift?.id || shift?._id,
+      shiftName: shift?.shiftName || '-',
+      shiftType: shift?.shiftType || '-',
+      startTime: shift?.startTime,
+      endTime: shift?.endTime,
     }));
   }, [shifts]);
 
   const subDepartmentOptions = useMemo(() => {
-    return (subDepartments || []).map((sd) => ({
+    if (!subDepartments || subDepartments.length === 0) return [];
+    return subDepartments.map((sd) => ({
       id: sd.id || sd._id,
       name: sd.name,
     }));
   }, [subDepartments]);
+
+  const schedules = useMemo(() => {
+    if (!upcomingSchedules || upcomingSchedules.length === 0) return [];
+    return upcomingSchedules.map((schedule) => ({
+      ...schedule,
+      id: schedule.id || schedule._id,
+    }));
+  }, [upcomingSchedules]);
+
+  // display info
+  const displayInfo = useMemo(() => {
+    const start = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+    const end = Math.min(start + schedules.length - 1, totalItems);
+
+    return {
+      start,
+      end,
+      totalFiltered: totalItems,
+      currentItems:schedules.length,
+    };
+  }, [
+    upcomingSchedulesMeta?.totalFiltered,
+    currentPage,
+    itemsPerPage,
+    schedules.length,
+  ]);
+
+  // ============= HANDLERS =============
+
   const openModal = (schedule = null) => {
     if (schedule && hasShiftStarted(schedule.date, schedule.shift?.startTime)) {
-      alert('⚠️ Cannot edit - This shift has already started!');
+      toast.error('⚠️ Cannot edit - This shift has already started!');
       return;
     }
 
@@ -186,6 +208,18 @@ export default function Schedules() {
     setIsModalOpen(true);
   };
 
+  const refreshSchedules = () => {
+    const filters = {
+      userId: user._id,
+      page: currentPage,
+      limit: itemsPerPage,
+    };
+    if (selectedShiftId) filters.shiftId = selectedShiftId;
+    if (selectedSubDeptId) filters.subDepartmentId = selectedSubDeptId;
+
+    dispatch(fetchUpcomingSchedules(filters));
+  };
+
   const saveSchedule = async () => {
     try {
       const scheduleData = {
@@ -197,10 +231,7 @@ export default function Schedules() {
 
       if (editing) {
         await dispatch(
-          editSchedule({
-            id: currentData.id,
-            data: scheduleData,
-          })
+          editSchedule({ id: currentData.id, data: scheduleData })
         ).unwrap();
         toast.success('Schedule updated successfully!');
       } else {
@@ -209,17 +240,15 @@ export default function Schedules() {
       }
 
       setIsModalOpen(false);
-      dispatch(fetchSchedules({}));
+      refreshSchedules();
     } catch (error) {
-      const msg = error.response.data.message || 'Failed to save schedule';
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to save schedule';
       toast.error(msg);
     }
   };
-
-  // Loading state
-  if (allSchedulesStatus === 'loading' && schedules.length === 0) {
-    return <HeartbeatSpinner />;
-  }
 
   const handleCancelClick = (schedule) => {
     if (hasShiftStarted(schedule.date, schedule.shift?.startTime)) {
@@ -233,30 +262,29 @@ export default function Schedules() {
   const handleConfirmCancel = async () => {
     if (!scheduleToCancel) return;
     setIsCancelling(true);
+
     try {
       await dispatch(removeSchedule(scheduleToCancel.id)).unwrap();
       toast.success('Schedule cancelled successfully!');
       setIsCancelModalOpen(false);
       setScheduleToCancel(null);
-      dispatch(fetchSchedules({}));
+      refreshSchedules();
     } catch (error) {
-      const msg = error?.response?.data?.message || 'Failed to cancel schedule';
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to cancel schedule';
       toast.error(msg);
     } finally {
       setIsCancelling(false);
     }
   };
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+
+  // ============= RENDER =============
+
+  if (upcomingSchedulesStatus === 'loading' && schedules.length === 0) {
+    return <HeartbeatSpinner />;
+  }
 
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen">
@@ -268,7 +296,7 @@ export default function Schedules() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-lg hover:bg-teal-700 transition shadow-sm"
+          className="flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-lg hover:bg-teal-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={
             shiftsStatus === 'loading' || subDepartmentsStatus === 'loading'
           }
@@ -286,49 +314,50 @@ export default function Schedules() {
           </h3>
         </div>
 
-        {/* Two Selects in One Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 ml-8">
-          {/* Sub Department */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-5 ml-8">
+          {/* Sub Department Filter */}
           <div className="flex flex-col gap-1">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Building2 size={16} className="text-gray-400" />
               Sub Department
             </label>
-
             <select
-              value={selectedSubDept}
-              onChange={(e) => setSelectedSubDept(e.target.value)}
+              value={selectedSubDeptId}
+              onChange={(e) => {
+                setSelectedSubDeptId(e.target.value);
+                setCurrentPage(1);
+              }}
               disabled={subDepartmentsStatus === 'loading'}
-              className="w-40 border border-gray-300 rounded-md px-2 py-1.5 text-sm
-                   text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-50 border border-gray-300 rounded-md px-2 py-1.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">All Sub Departments</option>
               {subDepartmentOptions.map((sd) => (
-                <option key={sd.id} value={sd.name}>
+                <option key={sd.id} value={sd.id}>
                   {sd.name}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Shift */}
+          {/* Shift Filter */}
           <div className="flex flex-col gap-1">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <CalendarCheck size={16} className="text-gray-400" />
               Shift
             </label>
-
             <select
-              value={selectedShift}
-              onChange={(e) => setSelectedShift(e.target.value)}
+              value={selectedShiftId}
+              onChange={(e) => {
+                setSelectedShiftId(e.target.value);
+                setCurrentPage(1);
+              }}
               disabled={shiftsStatus === 'loading'}
-              className="w-40 border border-gray-300 rounded-md px-2 py-1.5 text-sm
-                   text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-50 border border-gray-300 rounded-md px-2 py-1.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">All Shifts</option>
               {shiftOptions.map((shift) => (
-                <option key={shift.id} value={shift.name}>
-                  {shift.name}
+                <option key={shift.id} value={shift.id}>
+                  {shift.shiftType} - {shift.shiftName}
                 </option>
               ))}
             </select>
@@ -336,135 +365,155 @@ export default function Schedules() {
         </div>
       </div>
 
-      {/* Schedules Cards */}
-      {filteredSchedules.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <div className="flex flex-col items-center gap-3">
-            <div className="bg-gray-100 p-4 rounded-full">
-              <Calendar size={48} className="text-gray-400" />
-            </div>
-            <p className="text-gray-500 text-lg">
-              {allSchedulesStatus === 'loading'
-                ? 'Loading schedules...'
-                : 'No schedules found'}
-            </p>
-            {allSchedulesStatus !== 'loading' && (
-              <button
-                onClick={() => openModal()}
-                className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
-              >
-                Create your first schedule
-              </button>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSchedules.map((schedule, index) => {
-            const shiftStarted = hasShiftStarted(
-              schedule.date,
-              schedule.shift?.startTime
-            );
-            const badgeStyle = getShiftTypeBadge(schedule.shift?.shiftType);
-            const BadgeIcon = badgeStyle.icon;
-            return (
-              <div
-                key={schedule.id}
-                className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-teal-300"
-              >
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-300">
-                  <div className="flex items-center gap-2 text-teal-600">
-                    <Calendar size={18} />
-                    <span className="font-semibold text-sm">
-                      {formatDate(schedule.date)}
-                    </span>
-                  </div>
-                  {!shiftStarted && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => openModal(schedule)}
-                        className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
-                        title="Edit Schedule"
-                      >
-                        <Pencil size={18} className="text-teal-600" />
-                      </button>
-                      <button
-                        onClick={() => handleCancelClick(schedule)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Cancel Schedule"
-                      >
-                        <X size={18} className="text-red-400" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                {/* Schedule Details */}
-                <div className="space-y-3">
-                  {/* Sub Department */}
-                  <div className="flex items-start gap-3">
-                    <Building2
-                      size={18}
-                      className="text-gray-400 mt-0.5 flex-shrink-0"
-                    />
-                    <div>
-                      <p className="text-xs text-gray-500 mb-0.5">
-                        Sub Department
-                      </p>
-                      <p className="text-sm font-medium text-gray-600">
-                        {schedule.subDepartment?.name || '-'}
-                      </p>
-                    </div>
-                  </div>
-                  {/* Shift Name & Type Badge */}
-                  <div className="flex items-start gap-3">
-                    <CalendarCheck
-                      size={18}
-                      className="text-gray-400 mt-0.5 flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-0.5">Shift</p>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-gray-800">
-                          {schedule.shift?.shiftName || '-'}
-                        </p>
-                        <span
-                          className={`inline-flex items-center gap-1 ${badgeStyle.bg} ${badgeStyle.text} px-2 py-1 rounded-full text-xs font-semibold`}
-                        >
-                          <BadgeIcon size={12} />
-                          {schedule.shift?.shiftType || 'Regular'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Time */}
-                  <div className="flex items-start gap-3 bg-teal-50 p-3 rounded-xl border border-teal-100">
-                    <div className="bg-slate-100 p-2 rounded-lg border border-teal-200">
-                      <Timer size={16} className="text-teal-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1">Shift Times</p>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold text-gray-600">
-                          {schedule.shift?.startTimeFormatted}
-                        </span>
-                        <span className="text-gray-400">→</span>
-                        <span className="font-semibold text-gray-600">
-                          {schedule.shift?.endTimeFormatted}
-                        </span>
-                      </div>
-                      <p className="text-xs text-teal-600 mt-1 font-medium">
-                        Duration: {schedule.shift?.durationFormatted}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      {/* Schedules Grid */}
+      <div className="max-h-[600px] overflow-y-auto pr-2">
+        {schedules.length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="bg-gray-100 p-4 rounded-full">
+                <Calendar size={48} className="text-gray-400" />
               </div>
-            );
-          })}
-        </div>
-      )}
+              <p className="text-gray-500 text-lg">
+                {upcomingSchedulesStatus === 'loading'
+                  ? 'Loading schedules...'
+                  : 'No schedules found'}
+              </p>
+              {upcomingSchedulesStatus !== 'loading' && (
+                <button
+                  onClick={() => openModal()}
+                  className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
+                >
+                  Create your first schedule
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {schedules.map((schedule) => {
+              const shiftStarted = hasShiftStarted(
+                schedule.date,
+                schedule.shift?.startTime
+              );
+              const badgeStyle = getShiftTypeBadge(schedule.shift?.shiftType);
+              const BadgeIcon = badgeStyle.icon;
 
-      {/* Modal */}
+              return (
+                <div
+                  key={schedule.id}
+                  className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-teal-300"
+                >
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-300">
+                    <div className="flex items-center gap-2 text-teal-600">
+                      <Calendar size={18} />
+                      <span className="font-semibold text-sm">
+                        {formatDate(schedule.date)}
+                      </span>
+                    </div>
+                    {!shiftStarted && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openModal(schedule)}
+                          className="p-2 hover:bg-teal-50 rounded-lg transition-colors"
+                          title="Edit Schedule"
+                        >
+                          <Pencil size={18} className="text-teal-600" />
+                        </button>
+                        <button
+                          onClick={() => handleCancelClick(schedule)}
+                          className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Cancel Schedule"
+                        >
+                          <X size={18} className="text-red-400" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Sub Department */}
+                    <div className="flex items-start gap-3">
+                      <Building2
+                        size={18}
+                        className="text-gray-400 mt-0.5 flex-shrink-0"
+                      />
+                      <div>
+                        <p className="text-xs text-gray-500 mb-0.5">
+                          Sub Department
+                        </p>
+                        <p className="text-sm font-medium text-gray-600">
+                          {schedule.subDepartment?.name || '-'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Shift */}
+                    <div className="flex items-start gap-3">
+                      <CalendarCheck
+                        size={18}
+                        className="text-gray-400 mt-0.5 flex-shrink-0"
+                      />
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-500 mb-0.5">Shift</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-gray-800">
+                            {schedule.shift?.shiftType || '-'}
+                          </p>
+                          <span
+                            className={`inline-flex items-center gap-1 ${badgeStyle.bg} ${badgeStyle.text} px-2 py-1 rounded-full text-xs font-semibold`}
+                          >
+                            <BadgeIcon size={12} />
+                            {schedule.shift?.shiftName || 'Regular'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Time */}
+                    <div className="flex items-start gap-3 bg-teal-50 p-3 rounded-xl border border-teal-100">
+                      <div className="bg-slate-100 p-2 rounded-lg border border-teal-200">
+                        <Timer size={16} className="text-teal-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-500 mb-1">
+                          Shift Times
+                        </p>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-semibold text-gray-600">
+                            {formatTime(schedule.shift?.startTime)}
+                          </span>
+                          <span className="text-gray-400">→</span>
+                          <span className="font-semibold text-gray-600">
+                            {formatTime(schedule.shift?.endTime)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-teal-600 mt-1 font-medium">
+                          Duration: {schedule.shift?.durationFormatted || '-'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <Pagination
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+        limit={itemsPerPage}
+        onLimitChange={(newLimit) => {
+          setItemsPerPage(newLimit);
+          setCurrentPage(1);
+        }}
+        totalItems={displayInfo.totalFiltered}
+        filteredItems={displayInfo.currentItems}
+      />
+
+      {/* Modals */}
       <ScheduleModal
         isOpen={isModalOpen}
         editing={editing}
@@ -479,7 +528,7 @@ export default function Schedules() {
           shiftsStatus === 'loading' || subDepartmentsStatus === 'loading'
         }
       />
-      {/* Cancel Confirmation Modal */}
+
       <CancelConfirmationModal
         isOpen={isCancelModalOpen}
         onClose={() => {

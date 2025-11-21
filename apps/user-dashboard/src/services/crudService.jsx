@@ -26,8 +26,7 @@ export const getById = (endpoint, id) => handleRequest(api.get(`${endpoint}/${id
 
 export const create = (endpoint, data) => handleRequest(api.post(endpoint, data));
 
-export const update = (endpoint, id, data) => handleRequest(api.put(`${endpoint}/${id}`, data));
+export const update = (endpoint, id, data) => handleRequest(api.patch(`${endpoint}/${id}`, data));
 
-export const updatePartial = (endpoint, id, data) => handleRequest(api.patch(`${endpoint}/${id}`, data));
 
 export const remove = (endpoint, id) => handleRequest(api.delete(`${endpoint}/${id}`));

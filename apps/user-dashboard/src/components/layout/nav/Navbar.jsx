@@ -26,8 +26,7 @@ function getUserInitials(name = "") {
 function Navbar() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.user);
-  const userStatus = useSelector((state) => state.user.status);
+  const { user: currentUser } = useSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -44,11 +43,6 @@ function Navbar() {
     else if (path.includes("/profile")) setCurrentPage("profile");
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (userStatus === 'idle') {
-      dispatch(fetchMe());
-    }
-  }, [dispatch, userStatus]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
