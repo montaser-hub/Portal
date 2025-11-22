@@ -32,6 +32,7 @@ import {
   formatDate,
   formatTime,
 } from '../components/common/dateHelpers';
+import Text from '../components/common/Text';
 
 const getShiftTypeBadge = (shiftType) => {
   const badges = {
@@ -289,8 +290,8 @@ export default function Schedules() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-semibold text-[#0F7B8A] mb-2">My Schedules</h1>
-          <p className="text-gray-600 mt-1">Manage your work schedules</p>
+          <Text as='h1' MyClass="text-3xl font-semibold text-[#0F7B8A] mb-2" content="My Schedules" />
+          <Text as='p' MyClass="text-gray-600 mt-1" content="Manage your work schedules" />
         </div>
         <button
           onClick={() => openModal()}
@@ -306,17 +307,15 @@ export default function Schedules() {
       {/* Filters */}
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-3">
-          <Filter size={20} className="text-gray-600" />
-          <h3 className="text-sm font-semibold text-gray-700">
-            Filter Schedules
-          </h3>
+          <Filter size={20} className="text-teal-500" />
+          <Text as='h3' MyClass="text-sm font-semibold text-gray-600" content="Filter Schedules" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-5 ml-8">
           {/* Sub Department Filter */}
           <div className="flex flex-col gap-1">
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <Building2 size={16} className="text-gray-400" />
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-500">
+              <Building2 size={16} className="text-teal-500" />
               Sub Department
             </label>
             <select
@@ -339,8 +338,8 @@ export default function Schedules() {
 
           {/* Shift Filter */}
           <div className="flex flex-col gap-1">
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <CalendarCheck size={16} className="text-gray-400" />
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-500">
+              <CalendarCheck size={16} className="text-teal-500" />
               Shift
             </label>
             <select
@@ -371,19 +370,13 @@ export default function Schedules() {
               <div className="bg-gray-100 p-4 rounded-full">
                 <Calendar size={48} className="text-gray-400" />
               </div>
-              <p className="text-gray-500 text-lg">
-                {upcomingSchedulesStatus === 'loading'
-                  ? 'Loading schedules...'
-                  : 'No schedules found'}
-              </p>
-              {upcomingSchedulesStatus !== 'loading' && (
+              <Text as='p' MyClass="text-gray-500 text-lg" content='No schedules found' />
                 <button
                   onClick={() => openModal()}
                   className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
                 >
                   Create your first schedule
                 </button>
-              )}
             </div>
           </div>
         ) : (
@@ -404,9 +397,7 @@ export default function Schedules() {
                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-300">
                     <div className="flex items-center gap-2 text-teal-600">
                       <Calendar size={18} />
-                      <span className="font-semibold text-sm">
-                        {formatDate(schedule.date)}
-                      </span>
+                      <Text as='span' MyClass="font-semibold text-sm" content={`${formatDate(schedule.date)}`} />
                     </div>
                     {!shiftStarted && (
                       <div className="flex items-center gap-2">
@@ -433,15 +424,11 @@ export default function Schedules() {
                     <div className="flex items-start gap-3">
                       <Building2
                         size={18}
-                        className="text-gray-400 mt-0.5 flex-shrink-0"
+                        className="text-teal-500 mt-0.5 flex-shrink-0"
                       />
                       <div>
-                        <p className="text-xs text-gray-500 mb-0.5">
-                          Sub Department
-                        </p>
-                        <p className="text-sm font-medium text-gray-600">
-                          {schedule.subDepartment?.name || '-'}
-                        </p>
+                        <Text as='p' MyClass="text-xs text-gray-600 mb-0.5" content="Sub Department" />
+                        <Text as='p' MyClass="text-sm font-medium text-gray-500" content={schedule.subDepartment?.name || '-'} />
                       </div>
                     </div>
 
@@ -449,20 +436,15 @@ export default function Schedules() {
                     <div className="flex items-start gap-3">
                       <CalendarCheck
                         size={18}
-                        className="text-gray-400 mt-0.5 flex-shrink-0"
+                        className="text-teal-500 mt-0.5 flex-shrink-0"
                       />
                       <div className="flex-1">
-                        <p className="text-xs text-gray-500 mb-0.5">Shift</p>
+                        <Text as='p' MyClass="text-xs text-gray-600 mb-0.5" content="Shift" />
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-gray-800">
-                            {schedule.shift?.shiftType || '-'}
-                          </p>
-                          <span
-                            className={`inline-flex items-center gap-1 ${badgeStyle.bg} ${badgeStyle.text} px-2 py-1 rounded-full text-xs font-semibold`}
-                          >
-                            <BadgeIcon size={12} />
-                            {schedule.shift?.shiftName || 'Regular'}
-                          </span>
+                          <Text as='p' MyClass="text-sm font-medium text-gray-500" content={schedule.shift?.shiftType || '-'} />
+                          <Text as='span'
+                            MyClass={`inline-flex items-center gap-1 ${badgeStyle.bg} ${badgeStyle.text} px-2 py-1 rounded-full text-xs font-semibold`}
+                            content={<> <BadgeIcon size={12} /> {schedule.shift?.shiftName || 'Regular'}</>} />
                         </div>
                       </div>
                     </div>
@@ -473,21 +455,14 @@ export default function Schedules() {
                         <Timer size={16} className="text-teal-600" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs text-gray-500 mb-1">
-                          Shift Times
-                        </p>
+                        <Text as='p' MyClass="text-xs text-gray-600 mb-1" content="Shift Times" />
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="font-semibold text-gray-600">
-                            {formatTime(schedule.shift?.startTime)}
-                          </span>
-                          <span className="text-gray-400">→</span>
-                          <span className="font-semibold text-gray-600">
-                            {formatTime(schedule.shift?.endTime)}
-                          </span>
+                          <Text as='span' MyClass="font-semibold text-gray-500" content={formatTime(schedule.shift?.startTime)} />
+                          <Text as='span' MyClass="text-gray-400" content="→" />
+                          <Text as='span'  MyClass="font-semibold text-gray-500" content={formatTime(schedule.shift?.endTime)} />
                         </div>
-                        <p className="text-xs text-teal-600 mt-1 font-medium">
-                          Duration: {schedule.shift?.durationFormatted || '-'}
-                        </p>
+                          <Text as='p' MyClass="text-xs text-teal-600 mt-1 font-medium"
+                          content={`Duration: ${schedule.shift?.durationFormatted || '-'}`} />
                       </div>
                     </div>
                   </div>
