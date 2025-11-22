@@ -72,7 +72,7 @@ export default function ScheduleModal({
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-teal-300 hover:bg-teal-700"
+              className="absolute top-4 right-4 p-3 bg-gray-50 border rounded-full text-teal-300 hover:bg-gray-200 hover:text-teal-400"
             >
               <X size={20} />
             </button>
