@@ -282,17 +282,15 @@ export default function Schedules() {
 
   // ============= RENDER =============
 
-  if (upcomingSchedulesStatus === 'loading' && schedules.length === 0) {
-    return <HeartbeatSpinner />;
-  }
-
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen flex flex-col">
+      {upcomingSchedulesStatus === 'loading' && <HeartbeatSpinner />}
+        <div className="flex-1">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-600">My Schedules</h1>
-          <p className="text-gray-500 mt-1">Manage your work schedules</p>
+          <h1 className="text-3xl font-semibold text-[#0F7B8A] mb-2">My Schedules</h1>
+          <p className="text-gray-600 mt-1">Manage your work schedules</p>
         </div>
         <button
           onClick={() => openModal()}
@@ -499,7 +497,7 @@ export default function Schedules() {
           </div>
         )}
       </div>
-
+        </div>
       <Pagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

@@ -1,8 +1,22 @@
-
 export default function HeartbeatSpinner() {
   const animationDuration = 1.5;
   return (
-    <div className="flex items-center justify-center w-full h-screen ">
+<div
+  className="flex items-center justify-center w-full h-full pointer-events-none"
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+    backdropFilter: "blur(6px)",
+    background: "rgba(0,0,0,0)",
+  }}
+>
       <style>{`
         @keyframes moveDot {
           0% { offset-distance: 0%; }
@@ -16,6 +30,7 @@ export default function HeartbeatSpinner() {
           width: 400px;
           height: 150px;
           position: relative;
+          pointer-events: auto;
         }
         .ecg-dot {
           width: 14px;
