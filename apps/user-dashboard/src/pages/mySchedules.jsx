@@ -282,12 +282,10 @@ export default function Schedules() {
 
   // ============= RENDER =============
 
-  if (upcomingSchedulesStatus === 'loading' && schedules.length === 0) {
-    return <HeartbeatSpinner />;
-  }
-
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 to-blue-50/30 min-h-screen flex flex-col">
+      {upcomingSchedulesStatus === 'loading' && <HeartbeatSpinner />}
+        <div className="flex-1">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -499,7 +497,7 @@ export default function Schedules() {
           </div>
         )}
       </div>
-
+        </div>
       <Pagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
