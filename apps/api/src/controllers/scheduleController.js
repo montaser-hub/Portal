@@ -3,6 +3,12 @@ import catchAsync from "../utils/catchAsync";
 
 export const addSchedule = catchAsync( async ( req, res, next ) => {
   const data = { ...req.body }
+ 
+    data.userId = req.user._id;
+
+   
+
+  
   const scheduleData = await scheduleService.createSchedule(data)
   return res.status(200).json({ message: "Schedule added successfully", data: scheduleData });
 } )
