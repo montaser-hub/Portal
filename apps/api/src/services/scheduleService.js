@@ -16,7 +16,7 @@ export const createSchedule = async (data, user) => {
   const existingSchedule = await scheduleRepo.findDuplicate({
     date,
     shiftId,
-    subDepartmentId
+    subDepartmentId,
     departmentId,
     userId,
     isActive: true
