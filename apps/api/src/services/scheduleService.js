@@ -4,7 +4,37 @@ import { getAllDocuments } from './queryService.js'
 
 
 export const createSchedule = async (data) => {
-  return await scheduleRepo.create(data)
+  const { date, shiftId, subDepartmentId, userId } = data;
+
+  // 1. التحقق من عدم تكرار نفس الـ schedule
+  const existingSchedule = await scheduleRepo.findDuplicate({
+    date,
+    shiftId,
+    subDepartmentId,
+    userId,
+    isActive: true
+  });
+
+  if (existingSchedule) {
+    throw new AppError("Schedule already exists for this date, shift, and subdepartment", 409);
+  }
+
+  // 2. التحقق من عدم وجود تعارض في الشفتات
+  if (userId) {
+    const hasConflict = await scheduleRepo.checkShiftConflict({
+      date,
+      userId,
+      shiftId,
+      isActive: true
+    });
+
+    if (hasConflict) {
+      throw new AppError("Shift time conflict detected. User already has a schedule at this time", 409);
+    }
+  }
+
+  // بعد التحقق من كل حاجة، نضيف الـ schedule
+  return await scheduleRepo.create(data);
 }
 
 export const updateSchedule = async (id, data) => {

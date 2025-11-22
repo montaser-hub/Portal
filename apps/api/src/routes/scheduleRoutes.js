@@ -1,8 +1,8 @@
 import express from 'express';
 import * as scheduleController from '../controllers/scheduleController.js';
-
+import * as authController from '../controllers/authController.js';
 const router = express.Router();
-
+router.use(authController.isAuth);
 router
   .route('/')
   .get(scheduleController.getAllSchedules)
