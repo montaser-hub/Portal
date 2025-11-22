@@ -9,7 +9,7 @@ export const findOne = async ( email, nickname ) => {
     if (orConditions.length === 0) return null;
   return await User.findOne({
     $or: orConditions
-  }).select('+password')
+  }).select('+password').populate('position', 'name').populate('level', 'name').populate('department', 'name');
 }
 
 export const create = async (data) => {
@@ -17,12 +17,12 @@ export const create = async (data) => {
 }
 
 export const update = async (id, data) => {
-  return await User.findByIdAndUpdate(id, data, { new: true })
+  return await User.findByIdAndUpdate(id, data, { new: true }).populate('position', 'name').populate('level', 'name').populate('department', 'name');
 }
 
 
 export const getUser = async (id) => {
-  return await User.findById(id)
+  return (await User.findById(id)).populated('position').populated('level').populated('department');
 }
 
 
@@ -54,7 +54,7 @@ export const findByToken = async (hashedToken) => {
   return await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() }
-  })
+  }).populate('position', 'name').populate('level', 'name').populate('department', 'name');
 }
 
 export const countAll = () => User.countDocuments();

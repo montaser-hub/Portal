@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+
 
 export default function Input({
   label,
@@ -9,7 +9,6 @@ export default function Input({
   onChange,
   placeholder = "",
   disabled = false,
-  showToggle = false,
   myClass = "",
   children,
 }) {
@@ -42,14 +41,7 @@ export default function Input({
           disabled={disabled}
           className={baseClasses}
         />
-        {type === "password" && showToggle && (
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-          >
-            {showPassword ? <BiSolidShow /> : <BiSolidHide />}
-          </span>
-        )}
+
       </div>
     </div>
   );

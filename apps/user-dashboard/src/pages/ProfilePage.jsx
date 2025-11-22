@@ -6,7 +6,6 @@ import ProfileCard from "../components/pageComponents/ProfilePage/ProfileCard";
 import { toast } from "react-hot-toast";
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMe } from "../features/user/userThunks";
 import Text from "../components/common/Text";
 
 export default function Profile() {
@@ -14,13 +13,6 @@ export default function Profile() {
   const user = useSelector((state) => state.user.user);
   const userStatus = useSelector((state) => state.user.status);
   const [activeTab, setActiveTab] = useState("Profile Info");
-  useEffect(() => {
-  if (userStatus === "idle") {
-    dispatch(fetchMe()).unwrap().catch(() => {
-      toast.error("Failed to load profile data");
-    });
-  }
-}, [userStatus]);
 
   const isLoading = userStatus === 'loading';
 

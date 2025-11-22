@@ -11,7 +11,7 @@ export const resizeUserPhoto = catchAsync(async (req, res, next) => {
 
   req.file.filename = await resizeAndSaveImage(req.file, {
     folder: "users",
-    prefix: `user-${req.user.id}`,
+    prefix: `user-${req?.user.id}`,
   });
 
   next();
@@ -19,17 +19,17 @@ export const resizeUserPhoto = catchAsync(async (req, res, next) => {
 
 // Regular User
 export const myProfile = catchAsync( async ( req, res, next ) => {
-  const id = req.user.id
+  const id = req?.user.id
   const user = await userService.getUser(id)
   res.status(200).json({ message: "User fetched successfully", data: user });
 })
 
 
 export const updateMyProfile = catchAsync( async ( req, res, next ) => {
-  const id = req.user.id
+  const id = req?.user.id
   const data = { ...req.body }
-  if (req.file && req.file.filename) {
-    data.photo = req.file.filename;
+  if (req?.file && req?.file.filename) {
+    data.photo = req?.file.filename;
   }
   const updatedUser = await userService.updateUser(id, data)
   res.status(200).json({ message: "User updated successfully", data: updatedUser });
@@ -37,7 +37,7 @@ export const updateMyProfile = catchAsync( async ( req, res, next ) => {
 
 
 export const updateMyPassword = catchAsync( async ( req, res, next ) => {
-  const email = req.user.email
+  const email = req?.user.email
   const data = { ...req.body }
   await userService.updatePassword(email, data)
   res.status(200).json({ message: "User password updated successfully" });

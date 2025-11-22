@@ -3,14 +3,21 @@ import AppError from '../utils/AppError.js'
 import { getAllDocuments } from './queryService.js'
 
 
-export const createSchedule = async (data) => {
-  const { date, shiftId, subDepartmentId, userId } = data;
+export const createSchedule = async (data, user) => {
+  
+  if(user?.role.includes('user')) {
+    data.userId = user?._id
+    data.departmentId = user?.departmentId
+  }
+  
+  const { date, shiftId, subDepartmentId, userId, departmentId } = data;
 
   // 1. التحقق من عدم تكرار نفس الـ schedule
   const existingSchedule = await scheduleRepo.findDuplicate({
     date,
     shiftId,
-    subDepartmentId,
+    subDepartmentId
+    departmentId,
     userId,
     isActive: true
   });
