@@ -5,7 +5,7 @@ import  Badge from '../../common/Badge';
 import  Button  from '../../common/Button';
 import Text from '../../common/Text';
 
-export function SwapRequestsList({ requests, currentUserId, }) {
+export default function SwapRequestsList({ requests, currentUserId, }) {
     const userRequests = requests.filter(r => r.requesterId === currentUserId);
     const featuredRequest = userRequests.find(r => r.shiftDate === '2025-10-31') || userRequests[0];
 
@@ -62,5 +62,3 @@ export function SwapRequestsList({ requests, currentUserId, }) {
       </Card>
     );
 }
-
-export default SwapRequestsList;

@@ -14,7 +14,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
-import { logout } from "../../../services/API-Services/AuthService";
+import { useAuth } from '../../../hooks/useAuth';
 
 const mockNotifications = [
   {id: 1,title: "New message from Support Team",message: "Please check your inbox.",type: "Announcement",read: false,},
@@ -54,7 +54,7 @@ export default function DesktopNavbar({
   const [notifMenuOpen, setNotifMenuOpen] = useState(false);
   const notifRef = useRef();
   const userRef = useRef();
-
+  const { logout } = useAuth();
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target))

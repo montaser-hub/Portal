@@ -51,7 +51,7 @@ export default function SwapRequestPage() {
   const loading = swapStatus === 'loading';
 
   useEffect(() => {
-    dispatch(fetchSwapRequests({ fromUserId: user._id }));
+    dispatch(fetchSwapRequests({ fromUserId: user?._id }));
   }, [dispatch, user?._id]);
 
   return (
@@ -69,7 +69,7 @@ export default function SwapRequestPage() {
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
         <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
           <Tabs.List className="flex space-x-6 border-b border-gray-200 mb-4">
-            {['request', 'status', 'history', 'received'].map((tab) => (
+            {['request', 'history', 'received'].map((tab) => (
               <Tabs.Trigger
                 key={tab}
                 value={tab}
@@ -81,8 +81,6 @@ export default function SwapRequestPage() {
               >
                 {tab === 'request'
                   ? 'New Request'
-                  : tab === 'status'
-                  ? 'Request Status'
                   : tab === 'history'
                   ? 'Requests History'
                   : 'Received Requests History'}

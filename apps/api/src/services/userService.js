@@ -1,8 +1,11 @@
 import * as userRepo from "../dataAccess/userRepo.js"
 import * as authService from "./authService.js"
 import AppError from "../utils/AppError.js"
-import {getAllDocuments} from "./queryService.js"
-export const login = async ( email, nickname, password) => {
+import { getAllDocuments } from "./queryService.js"
+import * as scheduleRepo from "../dataAccess/scheduleRepo.js";
+
+
+export const login = async (email, nickname, password) => {
   // 1) check if the user && password is correct
   const user = await userRepo.findOne(email, nickname);
   //since the instance method that is available on all users is documented
@@ -62,9 +65,11 @@ export const updatePassword = async ( email, data ) => {
   return authService.createTokenPayload(user);
 }
 
-export const deleteUser = async ( id ) => {
-  const user = await userRepo.deleteOne( id )
-  if ( !user ) throw new AppError( "User Not Found", 404 )
+export const deleteUser = async (id) => {
+  const scheduleCountCheck = await scheduleRepo.countFiltered({ userId: id });
+  if (scheduleCountCheck > 0) throw new AppError("user has assigned schedules, cannot delete", 400);
+  const user = await userRepo.deleteOne(id)
+  if (!user) throw new AppError("User Not Found", 404)
   return user
 }
 

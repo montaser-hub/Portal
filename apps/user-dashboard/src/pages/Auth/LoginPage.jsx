@@ -8,8 +8,7 @@ import toast from 'react-hot-toast';
 import Text from '../../components/common/Text';
 import Card from '../../components/common/Card';
 import Input from '../../components/common/Input';
-import { fetchMe } from '../../features/user/userThunks';
-
+import { setUser } from '../../features/user/userSlice';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,10 +31,10 @@ export default function LoginPage() {
       ...prev,
       email:
         value.length === 0
-        ? "Email is required"
+          ? 'Email is required'
           : !emailRegex.test(value)
-        ? "Email is not valid"
-        : "",
+          ? 'Email is not valid'
+          : '',
     }));
   };
 
@@ -48,10 +47,10 @@ export default function LoginPage() {
       ...prev,
       password:
         value.length === 0
-        ? "Password is required"
+          ? 'Password is required'
           : !passwordRegex.test(value)
-        ? "Password must be at least 8 chars, include uppercase, lowercase, number, special char"
-        : "",
+          ? 'Password must be at least 8 chars, include uppercase, lowercase, number, special char'
+          : '',
     }));
   };
 
@@ -63,13 +62,16 @@ export default function LoginPage() {
       setIsSubmitting(true);
 
       try {
-        const res = await login({ email, password });
-        await dispatch(fetchMe()).unwrap();
-        toast.success(res.message || 'Welcome! Redirecting...');
-
+        const { message, data:user } = await login({ email, password });
+        dispatch(setUser(user));
+        toast.success(message || 'Welcome! Redirecting...');
         navigate('/Dashboard', { replace: true });
       } catch (err) {
-        const msg = err.response.data.message;
+        const msg =
+          err?.response?.data?.message ||
+          err.message ||
+          err?.response?.data?.error ||
+          'Request failed';
         toast.error(msg);
       } finally {
         setIsSubmitting(false);
@@ -77,13 +79,10 @@ export default function LoginPage() {
     }
   };
 
-
-
-
   const getBorderColor = (field) => {
-    if (errors[field]) return "border-red-500";
-    if (touched[field]) return "border-green-500";
-    return "border-gray-300";
+    if (errors[field]) return 'border-red-500';
+    if (touched[field]) return 'border-green-500';
+    return 'border-gray-300';
   };
 
   return (
@@ -134,7 +133,7 @@ export default function LoginPage() {
               value={email}
               onChange={handleEmailChange}
               myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                "email"
+                'email'
               )}`}
             />
             {errors.email && (
@@ -147,11 +146,11 @@ export default function LoginPage() {
                 label="Password"
                 name="password"
                 placeholder="Enter your password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={handlePasswordChange}
                 myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                  "password"
+                  'password'
                 )}`}
               />
               {password && (
@@ -185,9 +184,15 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!email || !password || !!errors.email || !!errors.password}
+              disabled={
+                !email || !password || !!errors.email || !!errors.password
+              }
               className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                !email || !password || !!errors.email || !!errors.password ? "opacity-60 cursor-not-allowed" : ""}`} >
+                !email || !password || !!errors.email || !!errors.password
+                  ? 'opacity-60 cursor-not-allowed'
+                  : ''
+              }`}
+            >
               <LogIn className="mr-2 h-4 w-4" />
               Sign In
             </button>

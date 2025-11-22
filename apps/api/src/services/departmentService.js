@@ -1,4 +1,5 @@
 import * as departmentRepo from '../dataAccess/departmentRepo.js';
+import * as subDepartmentRepo from '../dataAccess/subdepartmentRepo.js';
 import AppError from '../utils/AppError.js';
 import { getAllDocuments } from './queryService.js';
 
@@ -28,9 +29,9 @@ export const updateDepartment = async (id, data) => {
 };
 
 export const deleteDepartment = async (id) => {
+  const subCountCheck = await subDepartmentRepo.countFiltered({ departmentId: id });
+  if (subCountCheck > 0) throw new AppError('department has assigned sub-departments, cannot delete', 400);
   const department = await departmentRepo.Delete(id);
-  if (!department) {
-    throw new AppError('Department not found', 404);
-  }
+  if (!department) throw new AppError('Department not found', 404);
   return department;
 };

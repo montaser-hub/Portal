@@ -4,12 +4,12 @@ import * as scheduleService from './scheduleService';
 // Upcoming schedules for current user
 export const fetchUpcomingSchedules = createAsyncThunk(
   'schedule/fetchUpcomingSchedules',
-  async ({ userId, startDate } = {}, { rejectWithValue }) => {
+  async (filter = {}, { rejectWithValue }) => {
     try {
       const now = new Date();
       const filters = {
-        userId,
-        startDate: startDate || now.toISOString(),
+        ...filter,
+        // startDate: filter.startDate || now.toISOString().split('T')[0],
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
@@ -21,13 +21,11 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 // Fetch all schedules
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
-  async ({ departmentId, excludeUserId, startDate } = {}, { rejectWithValue }) => {
+  async (filter = {}, { rejectWithValue }) => {
     try {
-      const now = new Date();
       const filters = {
-        departmentId,
-        'userId[ne]': excludeUserId,
-        startDate: startDate || now.toISOString(),
+        ...filter,
+        'userId[ne]': filter.excludeUserId,
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
@@ -36,38 +34,17 @@ export const fetchSchedules = createAsyncThunk(
   }
 );
 
-// Add new schedule
-export const addSchedule = createAsyncThunk(
-  'schedule/addSchedule',
-  async (scheduleData, { rejectWithValue }) => {
-    try {
-      return await scheduleService.addSchedule(scheduleData);
-    } catch (error) {
-      return rejectWithValue(error.message || 'Failed to create schedule');
-    }
-  }
-);
-
-// Edit schedule
 export const editSchedule = createAsyncThunk(
   'schedule/editSchedule',
-  async ({ id, data }, { rejectWithValue }) => {
-    try {
-      return await scheduleService.editSchedule(id, data);
-    } catch (error) {
-      return rejectWithValue(error.message || 'Failed to update schedule');
-    }
-  }
+  async ({ id, data }) => await scheduleService.editSchedule(id, data)
 );
 
-// Remove schedule
 export const removeSchedule = createAsyncThunk(
   'schedule/removeSchedule',
-  async (id, { rejectWithValue }) => {
-    try {
-      return await scheduleService.removeSchedule(id);
-    } catch (error) {
-      return rejectWithValue(error.message || 'Failed to delete schedule');
-    }
-  }
+  async (id) => await scheduleService.removeSchedule(id)
+);
+
+export const addSchedule = createAsyncThunk(
+  'schedule/addSchedule',
+  async (data) => await scheduleService.addSchedule(data)
 );

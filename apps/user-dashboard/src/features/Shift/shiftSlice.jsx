@@ -4,6 +4,8 @@ import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
 const initialState = {
   shifts: [],
+  shiftsMeta: {},
+
   shiftsStatus: 'idle',
   shiftsError: null,
 };
@@ -14,16 +16,17 @@ const shiftSlice = createSlice({
   reducers: {
     clearShiftError: (state) => {
       state.shiftsError = null;
-    }
+    },
   },
   extraReducers: (builder) => {
-    // Fetch Shifts
+    // Fetch Shifts (read-only)
     handleAsyncThunk(
       builder,
       fetchShifts,
       'shifts',
       'shiftsStatus',
-      'shiftsError'
+      'shiftsError',
+      'shiftsMeta'
     );
   },
 });

@@ -1,4 +1,4 @@
-export function Badge({ children, variant = "default", className = "" }) {
+export default function Badge({ children, variant = "default", className = "" }) {
     const base = "inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium";
     let variantClasses = "bg-gray-100 text-gray-700";
     const style = {};
@@ -22,4 +22,3 @@ export function Badge({ children, variant = "default", className = "" }) {
         </span>
     );
 }
-export default Badge;

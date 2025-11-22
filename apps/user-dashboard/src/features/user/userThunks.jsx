@@ -1,14 +1,19 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as userService from './userService';
 
-export const fetchMe = createAsyncThunk('user/fetchMe', async () => {
-  const res = await userService.fetchMeAPI();
-  return res;
-});
+export const fetchMe = createAsyncThunk(
+  'user/fetchMe',
+  async ( _, { rejectWithValue } ) => {
+    try {
+      return await userService.fetchMeAPI();
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to fetch me');
+    }
+  }
+);
 
 export const updateMe = createAsyncThunk('user/updateMe', async (data) => {
-  const res = await userService.updateMeAPI(data);
-  return res;
+  return await userService.updateMeAPI(data);
 });
 
 
@@ -25,7 +30,6 @@ export const updateUserPhoto = createAsyncThunk(
         data.append('photo', file);
     }
 
-    const res = await userService.updateUserPhotoAPI(data);
-    return res;
+    return await userService.updateUserPhotoAPI(data);
   }
 );

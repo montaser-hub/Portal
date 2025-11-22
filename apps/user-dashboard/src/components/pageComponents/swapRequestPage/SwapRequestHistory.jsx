@@ -22,7 +22,7 @@ export default function SwapRequestHistory({ requests = [] }) {
 /* ---------------------------- HISTORY CARD ---------------------------- */
 
 function HistoryCard({ req }) {
-  const showActions = canModify(req.fromSchedule) || canModify(req.toSchedule);
+  const showActions = canModify(req?.fromSchedule) || canModify(req?.toSchedule);
 
   return (
     <div
@@ -46,19 +46,19 @@ function HistoryCard({ req }) {
         <div className="flex justify-center items-center mt-2 md:mt-0">
           <ArrowRight size={20} className="text-[#0F7B8A]/50" />
         </div>
-        <ShiftCard schedule={req.toSchedule} title="To Shift" />
+        <ShiftCard schedule={req?.toSchedule} title="To Shift" />
       </div>
 
       {/* Message */}
       {req.message && (
         <p className="text-gray-600 italic text-sm border-l-2 border-[#0F7B8A]/20 pl-2 mt-2">
-          “{req.message}”
+          “{req?.message}”
         </p>
       )}
 
       {/* Created At */}
       <div className="text-xs text-gray-400 flex items-center gap-1 mt-2">
-        <Clock size={14} /> {new Date(req.createdAt).toLocaleString()}
+        <Clock size={14} /> {new Date(req?.createdAt).toLocaleString()}
       </div>
 
       {/* Actions */}
@@ -85,27 +85,27 @@ function ShiftCard({ title, schedule }) {
       <Detail
         icon={<User2 size={14} />}
         label="Name"
-        value={schedule.shiftId.shiftName}
+        value={schedule?.shiftId?.shiftName}
       />
       <Detail
         icon={<Repeat2 size={14} />}
         label="Type"
-        value={schedule.shiftId.shiftType}
+        value={schedule?.shiftId?.shiftType}
       />
       <Detail
         icon={<Clock size={14} />}
         label="Time"
-        value={`${schedule.shiftId.startTimeFormatted} → ${schedule.shiftId.endTimeFormatted}`}
+        value={`${schedule?.shiftId?.startTimeFormatted} → ${schedule?.shiftId?.endTimeFormatted}`}
       />
       <Detail
         icon={<User2 size={14} />}
         label="Sub-Department"
-        value={schedule.subDepartmentId.name}
+        value={schedule?.subDepartmentId?.name}
       />
       <Detail
         icon={<CalendarDays size={14} />}
         label="Date"
-        value={new Date(schedule.date).toDateString()}
+        value={new Date(schedule?.date).toDateString()}
       />
     </div>
   );
@@ -146,10 +146,10 @@ function canModify(schedule) {
 
   // convert date + startTime (minutes) to timestamp
   const [hours, minutes] = [
-    Math.floor(schedule.shiftId.startTime / 60),
-    schedule.shiftId.startTime % 60,
+    Math.floor(schedule?.shiftId?.startTime / 60),
+    schedule?.shiftId?.startTime % 60,
   ];
-  const scheduleDate = new Date(schedule.date);
+  const scheduleDate = new Date(schedule?.date);
   scheduleDate.setHours(hours, minutes, 0, 0);
 
   return Date.now() < scheduleDate.getTime();
