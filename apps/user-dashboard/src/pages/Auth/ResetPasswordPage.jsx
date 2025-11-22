@@ -159,7 +159,6 @@ const handlePasswordChange = (e) => {
                 </button>
               )}
             </div>
-            {/* ✅ عرض الخطأ عند عدم التطابق */}
             {errors.confirm && (
               <p className="text-sm text-red-500">{errors.confirm}</p>
             )}
