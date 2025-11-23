@@ -6,15 +6,18 @@ import ShiftDetails from "../components/pageComponents/candelarPage/ShiftDetails
 import Text from "../components/common/Text";
 import { fetchUpcomingSchedules, fetchSchedules } from "../features/schedule/scheduleThunks";
 import Button from "../components/common/Button";
+import HeartbeatSpinner from "../components/common/Spinner2";
 
 export default function CalendarPage() {
   const dispatch = useDispatch();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [filter, setFilter] = useState("personal");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const { upcomingSchedules = [], allSchedules = [] } = useSelector((state) => state.schedule || {}
-);
-  const { user } = useSelector((state) => state.user || {});
+  const { upcomingSchedules, allSchedules  } = useSelector((state) => state.schedule );
+  const { user } = useSelector((state) => state.user );
+  const scheduleStatus = useSelector((state) => state.schedule.upcomingSchedulesStatus);
+
+
 
   useEffect(() => {
     // schedule of only current user
@@ -40,6 +43,9 @@ export default function CalendarPage() {
       return true;
     });
   }, [upcomingSchedules, allSchedules, selectedDate, filter, user]);
+
+  const isLoading = scheduleStatus === 'loading';
+
 
   return (
     <div className="p-8 space-y-6 bg-0F7B8A">
@@ -75,6 +81,8 @@ export default function CalendarPage() {
       <div className="max-w-7xl mx-auto">
         <Card className={`p-6 shadow-sm border bg-white`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+             {isLoading ? <HeartbeatSpinner /> : upcomingSchedules && (
+              <>
             <MonthView
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
@@ -88,6 +96,8 @@ export default function CalendarPage() {
               selectedDate={selectedDate}
               selectedDateShifts={selectedDateShifts}
             />
+            </>
+             )}
           </div>
         </Card>
       </div>
