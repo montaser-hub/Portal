@@ -19,43 +19,48 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-    setEmail(value);
-    setTouched((prev) => ({ ...prev, email: true }));
+const handleEmailChange = (e) => {
+  const value = e.target.value;
+  setEmail(value);
+  setTouched((prev) => ({ ...prev, email: true }));
+  if (/[ء-ي]/.test(value) || !emailRegex.test(value)) {
     setErrors((prev) => ({
       ...prev,
-      email:
-        value.length === 0
-          ? 'Email is required'
-          : !emailRegex.test(value)
-          ? 'Email is not valid'
-          : '',
+      email: 'Email is not valid',
     }));
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-    setPassword(value);
-    setTouched((prev) => ({ ...prev, password: true }));
+  } else {
     setErrors((prev) => ({
       ...prev,
-      password:
-        value.length === 0
-          ? 'Password is required'
-          : !passwordRegex.test(value)
-          ? 'Password must be at least 8 chars, include uppercase, lowercase, number, special char'
-          : '',
+      email: '',
     }));
-  };
+  }
+};
+
+const handlePasswordChange = (e) => {
+  const value = e.target.value;
+  setPassword(value);
+  setTouched((prev) => ({ ...prev, password: true }));
+  if (/[ء-ي]/.test(value)) {
+    setErrors((prev) => ({
+      ...prev,
+      password: 'Only English characters are allowed',
+    }));
+    return;
+  }
+  setErrors((prev) => ({
+    ...prev,
+    password:
+      value.length === 0
+        ? 'Password is required'
+        : !passwordRegex.test(value)
+        ? 'Password must be at least 8 chars, include uppercase, lowercase, number, special char'
+        : '',
+  }));
+};
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!errors.email && !errors.password && email && password) {

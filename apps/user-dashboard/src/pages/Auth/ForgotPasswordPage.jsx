@@ -12,22 +12,18 @@ export default function ForgotPasswordPage() {
   const [errors, setErrors] = useState("");
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
-
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
   const handleEmailChange = (e) => {
-    const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-    setEmail(value);
-    setTouched(true);
-    setErrors(
-      value.length === 0
-        ? ""
-        : !emailRegex.test(value)
-        ? "Email is not valid"
-        : ""
-    );
-  };
+  const value = e.target.value;
+  setEmail(value);
+  setTouched(true);
+  if (/[ء-ي]/.test(value) || !emailRegex.test(value)) {
+    setErrors("Email is not valid");
+  } else {
+    setErrors("");
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();

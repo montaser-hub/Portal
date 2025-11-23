@@ -1,15 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import ProfileOverviewCard from "../components/pageComponents/ProfilePage/ProfileOverviewCard";
 import ProfileCard from "../components/pageComponents/ProfilePage/ProfileCard";
-import { toast } from "react-hot-toast";
 import HeartbeatSpinner from "../components/common/Spinner2";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector} from "react-redux";
 import Text from "../components/common/Text";
 
 export default function Profile() {
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const userStatus = useSelector((state) => state.user.status);
   const [activeTab, setActiveTab] = useState("Profile Info");
