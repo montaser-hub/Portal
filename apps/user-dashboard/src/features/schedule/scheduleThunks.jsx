@@ -10,6 +10,7 @@ export const fetchUpcomingSchedules = createAsyncThunk(
       const filters = {
         ...filter,
         // startDate: filter.startDate || now.toISOString().split('T')[0],
+        sort: 'date'
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
@@ -27,6 +28,7 @@ export const fetchSchedules = createAsyncThunk(
       const filters = {
         ...otherFilter,
         'userId[ne]': filter.excludeUserId,
+        sort: 'date'
       };
        console.log('🔍 Final filters sent to backend:', filters);
       return await scheduleService.fetchSchedules(filters);
