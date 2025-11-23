@@ -10,9 +10,9 @@ import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
 const initialState = {
   swapRequests: [],
+  swapMeta: {},
   swapStatus: 'idle',
   swapError: null,
-  swapMeta: {},
 };
 
 const swapSlice = createSlice({
@@ -26,12 +26,13 @@ const swapSlice = createSlice({
       'swapRequests',
       'swapStatus',
       'swapError',
-      'swapMeta'
+      'swapMeta',
+      'replace'
     );
 
-    handleAsyncThunk(builder, addSwapRequest, 'swapRequests');
-    handleAsyncThunk(builder, editSwapRequest, 'swapRequests');
-    handleAsyncThunk(builder, removeSwapRequest, 'swapRequests');
+    handleAsyncThunk(builder, addSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'prepend');
+    handleAsyncThunk(builder, editSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'update');
+    handleAsyncThunk(builder, removeSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'remove');
   },
 });
 

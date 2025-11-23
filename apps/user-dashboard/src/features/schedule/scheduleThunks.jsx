@@ -22,11 +22,13 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
   async (filter = {}, { rejectWithValue }) => {
+    const { excludeUserId, ...otherFilter } = filter;
     try {
       const filters = {
-        ...filter,
+        ...otherFilter,
         'userId[ne]': filter.excludeUserId,
       };
+       console.log('🔍 Final filters sent to backend:', filters);
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch schedules');
