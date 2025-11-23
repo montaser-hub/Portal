@@ -291,7 +291,9 @@ export default function Schedules() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-600">My Schedules</h1>
+          <h1 className="text-2xl font-semibold text-[#0F7B8A]">
+            My Schedules
+          </h1>
           <p className="text-gray-500 mt-1">Manage your work schedules</p>
         </div>
         <button

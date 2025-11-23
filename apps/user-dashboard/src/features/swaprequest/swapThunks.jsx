@@ -17,8 +17,19 @@ export const editSwapRequest = createAsyncThunk(
 );
 
 export const removeSwapRequest = createAsyncThunk(
-  'swap/removeSwapRequest',
-  async (id) => await swapService.removeSwapRequest(id)
+  'swap/delete',
+  async (id, thunkAPI) => {
+    try {
+      return await swapService.removeSwapRequest(id);
+    } catch (error) {
+      // If it's already deleted → treat as success
+      if (error?.response?.status === 404) {
+        return { id, alreadyDeleted: true };
+      }
+
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
 );
 
 export const fetchSwapRequest = createAsyncThunk(
