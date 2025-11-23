@@ -1,5 +1,5 @@
 export default function HeartbeatSpinner() {
-  const animationDuration = 1.5;
+  const animationDuration = 1;
   return (
 <div
   className="flex items-center justify-center w-full h-full pointer-events-none"
