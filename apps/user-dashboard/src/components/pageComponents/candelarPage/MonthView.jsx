@@ -73,16 +73,14 @@ return (
                 <div className="space-y-1">
                   {dayShifts.map((sched) => {
                     const shift = sched.shift;
-                    const shiftName = shift.shiftName;
-                    const shiftType = shift.shiftType;
                     const start = shift.startTimeFormatted;
                     const end = shift.endTimeFormatted;
                     const isOvernight = shift.isOvernight;
                     return (
-                      <div key={sched._id || sched.id} className={`px-2 py-1 rounded text-xs border ${getShiftColor(sched)}`}>
+                      <div key={sched.id} className={`px-2 py-1 rounded text-xs border ${getShiftColor(sched)}`}>
                         <div >{start} To {end} {isOvernight ? "• overnight" : ""}</div>
-                        <div className="text-xs opacity-80">{shiftName}</div>
-                        <div className="text-xs opacity-80">{shiftType}</div>
+                        <div className="text-xs opacity-80">{shift.shiftName}</div>
+                        <div className="text-xs opacity-80">{shift.shiftType}</div>
                         {filter === "department" && sched.user && (
                           <div className="truncate text-xs opacity-80">{sched.user.fullName }</div>
                         )}
