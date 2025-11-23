@@ -4,6 +4,8 @@ import {
   fetchUpcomingSchedules,
   fetchSchedules,
 } from '../features/schedule/scheduleThunks';
+import { resetSchedulesState } from '../features/schedule/ScheduleSlice';
+
 
 export default function useAppInit() {
   const dispatch = useDispatch();
@@ -14,8 +16,9 @@ export default function useAppInit() {
   );
 
   useEffect(() => {
-    // Reset on logout
+    // // Reset on logout
     if (userStatus === 'loggedOut') {
+      dispatch(resetSchedulesState());
       schedulesInitializedRef.current = false;
       return;
     }
