@@ -6,6 +6,11 @@ export const fetchSwapRequests = createAsyncThunk(
   async (filters = {}) => await swapService.fetchSwapRequests(filters)
 );
 
+export const fetchReceivedSwapRequests = createAsyncThunk(
+  'swap/fetchReceivedSwapRequests',
+  async (filters = {}) => await swapService.fetchSwapRequests(filters)
+);
+
 export const addSwapRequest = createAsyncThunk(
   'swap/addSwapRequest',
   async (data) => await swapService.addSwapRequest(data)
@@ -35,4 +40,9 @@ export const removeSwapRequest = createAsyncThunk(
 export const fetchSwapRequest = createAsyncThunk(
   'swap/fetchSwapRequest',
   async (id) => await swapService.fetchSwapRequest(id)
+);
+
+export const swapIsAproved = createAsyncThunk(
+  'swap/swapIsAproved',
+  async ({id, data }) => await swapService.swapIsAproved(id, data)
 );

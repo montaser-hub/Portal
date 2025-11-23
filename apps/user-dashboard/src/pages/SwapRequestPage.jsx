@@ -2,40 +2,102 @@ import { useState, useEffect } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Plus, Inbox, Send } from 'lucide-react';
 import SwapRequestForm from '../components/pageComponents/swapRequestPage/SwapRequestForm';
-// import SwapRequestStatus from '../components/pageComponents/swapRequestPage/SwapRequestStatus';
 import SwapRequestHistory from '../components/pageComponents/swapRequestPage/SwapRequestHistory';
 import Text from '../components/common/Text';
 import {
+  swapIsAproved,
   addSwapRequest,
   fetchSwapRequests,
+  fetchReceivedSwapRequests,
 } from '../features/swaprequest/swapThunks';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import UpdateSwapRequestModal from '../modals/updateSwap';
 import Pagination from '../components/common/paginaton';
 import SwapFilter from '../components/pageComponents/swapRequestPage/swapFilter';
+import ReceivedSwapRequests from '../components/pageComponents/swapRequestPage/swapReceived.jsx';
+import SwapDecisionModal from '../modals/SwapDecisionModal';
 
 export default function SwapRequestPage() {
   const [activeTab, setActiveTab] = useState('request');
   const [formData, setFormData] = useState({});
+
+  // SEPARATE modal states for different purposes
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [decisionModalOpen, setDecisionModalOpen] = useState(false);
+
   const [editingRequest, setEditingRequest] = useState(null);
+  const [decisionRequest, setDecisionRequest] = useState(null);
+  const [decisionAction, setDecisionAction] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterStatus, setFilterStatus] = useState('all'); // radio button filter
+  const [filterStatus, setFilterStatus] = useState('all');
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
+  const dispatch = useDispatch();
+  const {
+    swapRequests,
+    swapStatus,
+    swapMeta,
+    receivedRequests,
+    receivedStatuS,
+    receivedMeta,
+  } = useSelector((state) => state.swap);
+
+  const { user } = useSelector((state) => state.user);
+
+  const loading = swapStatus === 'loading';
+  const totalPages =
+    activeTab === 'received'
+      ? Math.ceil((receivedMeta?.totalFiltered || 1) / itemsPerPage)
+      : Math.ceil((swapMeta?.totalFiltered || 1) / itemsPerPage);
+
+  // Fetch data when tab/filters change
+  useEffect(() => {
+    if (activeTab === 'history') {
+      dispatch(
+        fetchSwapRequests({
+          page: currentPage,
+          limit: itemsPerPage,
+          status: filterStatus !== 'all' ? filterStatus : undefined,
+          fromUserId: user?._id,
+        })
+      );
+    } else if (activeTab === 'received') {
+      dispatch(
+        fetchReceivedSwapRequests({
+          page: currentPage,
+          limit: itemsPerPage,
+          status: filterStatus !== 'all' ? filterStatus : undefined,
+          toUserId: user?._id,
+        })
+      );
+    }
+  }, [dispatch, user?._id, currentPage, filterStatus, itemsPerPage, activeTab]);
+
+  // Edit modal handlers (for sent requests)
   const openEditModal = (request) => {
     setEditingRequest(request);
     setUpdateModalOpen(true);
   };
+
   const closeEditModal = () => {
     setEditingRequest(null);
     setUpdateModalOpen(false);
   };
-  const dispatch = useDispatch();
 
-  const { swapRequests, swapStatus } = useSelector((state) => state.swap);
-  const { user } = useSelector((state) => state.user);
+  // Decision modal handlers (for received requests)
+  const openDecisionModal = (request, action) => {
+    setDecisionRequest(request);
+    setDecisionAction(action);
+    setDecisionModalOpen(true);
+  };
+
+  const closeDecisionModal = () => {
+    setDecisionRequest(null);
+    setDecisionAction(null);
+    setDecisionModalOpen(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,7 +109,7 @@ export default function SwapRequestPage() {
       toast.error('Please select both shifts.');
       return;
     }
-    // Split the combined value
+
     const [toScheduleId, toUserId] = formData.swapWith.split('___');
 
     dispatch(
@@ -69,30 +131,48 @@ export default function SwapRequestPage() {
       });
   };
 
-  const loading = swapStatus === 'loading';
-  const { swapMeta } = useSelector((state) => state.swap);
-  const totalPages = Math.ceil((swapMeta?.totalFiltered || 1) / itemsPerPage);
-  useEffect(() => {
-    if (activeTab === 'history') {
-      dispatch(
-        fetchSwapRequests({
-          page: currentPage,
-          limit: itemsPerPage,
-          status: filterStatus !== 'all' ? filterStatus : undefined,
-          fromUserId: user?._id,
-        })
-      );
-    } else if (activeTab === 'received') {
-      dispatch(
-        fetchSwapRequests({
-          page: currentPage,
-          limit: itemsPerPage,
-          status: filterStatus !== 'all' ? filterStatus : undefined,
-          toUserId: user?._id,
-        })
-      );
-    }
-  }, [dispatch, user?._id, currentPage, filterStatus, itemsPerPage, activeTab]);
+  // Handle approve/reject with correct parameters
+  const handleDecisionSubmit = (request, action, message) => {
+    dispatch(
+      swapIsAproved({
+        id: request._id,
+        data: {
+          status: action,
+          replyMessage: message,
+        },
+      })
+    )
+      .unwrap()
+      .then(() => {
+        toast.success(`Request ${action} successfully.`);
+        closeDecisionModal();
+
+        // Refetch data to update UI
+        dispatch(
+          fetchReceivedSwapRequests({
+            page: currentPage,
+            limit: itemsPerPage,
+            status: filterStatus !== 'all' ? filterStatus : undefined,
+            toUserId: user?._id,
+            sort: '-createdAt',
+          })
+        );
+      })
+      .catch((err) => toast.error(err?.message || 'Failed to update request.'));
+  };
+
+  // Refetch after edit
+  const handleEditComplete = () => {
+    dispatch(
+      fetchSwapRequests({
+        page: currentPage,
+        limit: itemsPerPage,
+        status: filterStatus !== 'all' ? filterStatus : undefined,
+        fromUserId: user?._id,
+        sort: '-createdAt',
+      })
+    );
+  };
 
   const getTabIcon = (tab) => {
     switch (tab) {
@@ -123,12 +203,12 @@ export default function SwapRequestPage() {
   return (
     <>
       <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 blue-50/30 min-h-screen">
-        <div className=" bg-gray-50 p-6">
+        <div className="bg-gray-50 p-6">
           <div className="mx-auto">
             <Text
               as="h1"
               content="Swap Request"
-              MyClass={`text-3xl font-semibold text-[#0F7B8A] mb-4`}
+              MyClass="text-3xl font-semibold text-[#0F7B8A] mb-4"
             />
             <Text
               as="p"
@@ -137,7 +217,8 @@ export default function SwapRequestPage() {
             />
           </div>
         </div>
-        <div className="p-6 mx-auto bg-white  w-full flex-1 flex flex-col">
+
+        <div className="p-6 mx-auto bg-white w-full flex-1 flex flex-col">
           <Tabs.Root
             value={activeTab}
             onValueChange={(tab) => {
@@ -153,7 +234,7 @@ export default function SwapRequestPage() {
                   value={tab}
                   className={`flex items-center gap-2 pb-2 text-sm font-medium transition-all ${
                     activeTab === tab
-                      ? `border-b-2 border-[#0F7B8A] text-[#0F7B8A]`
+                      ? 'border-b-2 border-[#0F7B8A] text-[#0F7B8A]'
                       : 'text-gray-500 hover:text-[#0F7B8A] hover:bg-teal-50/50'
                   }`}
                 >
@@ -172,10 +253,6 @@ export default function SwapRequestPage() {
               />
             </Tabs.Content>
 
-            {/* <Tabs.Content value="status">
-                <SwapRequestStatus requests={swapRequests} />
-              </Tabs.Content> */}
-
             <Tabs.Content value="history">
               <SwapFilter
                 filterStatus={filterStatus}
@@ -189,40 +266,60 @@ export default function SwapRequestPage() {
                 />
               </div>
             </Tabs.Content>
+
             <Tabs.Content value="received">
-              <div className="flex flex-col items-center justify-center h-full text-center mt-32">
-                <div className="bg-gray-100 p-6 rounded-full mb-4">
-                  <Inbox size={48} className="text-gray-400" />
-                </div>
-                <Text
-                  as="p"
-                  MyClass={'text-gray-500 text-lg'}
-                  content="No past swap requests found."
-                />
-              </div>
+              <SwapFilter
+                filterStatus={filterStatus}
+                setFilterStatus={setFilterStatus}
+                setCurrentPage={setCurrentPage}
+              />
+              <ReceivedSwapRequests
+                requests={receivedRequests}
+                onAction={openDecisionModal}
+              />
             </Tabs.Content>
           </Tabs.Root>
         </div>
       </div>
-      <div>
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          limit={itemsPerPage}
-          totalPages={totalPages}
-          onLimitChange={(newLimit) => {
-            setItemsPerPage(newLimit);
-            setCurrentPage(1);
-          }}
-          totalItems={swapMeta?.totalFiltered || 0}
-          filteredItems={swapRequests.length}
-        />
-      </div>
+
+      {activeTab !== 'request' && (
+        <div>
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            limit={itemsPerPage}
+            totalPages={totalPages}
+            onLimitChange={(newLimit) => {
+              setItemsPerPage(newLimit);
+              setCurrentPage(1);
+            }}
+            totalItems={
+              activeTab === 'received'
+                ? receivedMeta?.totalFiltered || 0
+                : swapMeta?.totalFiltered || 0
+            }
+            filteredItems={
+              activeTab === 'received'
+                ? receivedRequests.length
+                : swapRequests.length
+            }
+          />
+        </div>
+      )}
+
       <UpdateSwapRequestModal
         isOpen={updateModalOpen}
         onClose={closeEditModal}
         request={editingRequest}
-        onUpdated={() => {}}
+        onUpdated={handleEditComplete}
+      />
+
+      <SwapDecisionModal
+        isOpen={decisionModalOpen}
+        onClose={closeDecisionModal}
+        request={decisionRequest}
+        action={decisionAction}
+        onSubmit={handleDecisionSubmit}
       />
     </>
   );
