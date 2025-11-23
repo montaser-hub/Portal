@@ -22,7 +22,7 @@ export default function Button({
 
   return (
     <button
-      className={`${base} ${variantClasses} ${className}`}
+      className={`${base} ${variantClasses} ${className} text-gray-500`}
       style={style}
       onClick={onClick}
       {...props}

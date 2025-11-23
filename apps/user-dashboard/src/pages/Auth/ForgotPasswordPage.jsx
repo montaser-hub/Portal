@@ -121,7 +121,7 @@ export default function ForgotPasswordPage() {
               </button>
 
               <div className="text-center text-sm text-gray-500">
-                <span>Remember your password? </span>
+                <Text as="span" content="Remember your password?" />
                 <Link
                   to="/Login"
                   className="text-[#0F7B8A] hover:text-[#0D6C78]"
