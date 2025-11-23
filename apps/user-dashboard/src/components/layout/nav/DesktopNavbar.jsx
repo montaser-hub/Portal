@@ -111,8 +111,8 @@ export default function DesktopNavbar({
             }}
             className={`relative cursor-pointer p-2 rounded-lg transition duration-300 ${
               notifMenuOpen || currentPage === 'notifications'
-                ? 'bg-[#E0F4F6] text-gray-700'
-                : 'text-gray-700 hover:bg-[#E0F4F6]'
+                ? 'bg-[#E0F4F6] text-teal-700'
+                : 'text-gray-500 hover:bg-[#E0F4F6]'
             }`}
           >
             <Bell className="h-5 w-5" />

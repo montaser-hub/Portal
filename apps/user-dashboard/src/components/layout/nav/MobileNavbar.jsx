@@ -118,7 +118,6 @@ export default function MobileNavbar({
               <User className="h-5 w-5" /> Profile
             </Link>
 
-            {/* ✅ زر تسجيل الخروج */}
             <button
               onClick={logout}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"

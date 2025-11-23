@@ -1,5 +1,4 @@
 import { currentUser, shifts } from "../../common/mockData";
-import { COLORS } from "../../common/colors";
 
 // دوال مساعدة لشبكة التقويم
 export const getDaysInMonth = (date) => {
@@ -27,7 +26,7 @@ export const getShiftsForDate = (date, filter) => {
 
 export const getShiftColor = (shift) => {
   if (shift.status === 'Completed') return 'bg-gray-100 text-gray-700 border-gray-300';
-  if (shift.status === 'Assigned') return `bg-[${COLORS.primary}]/10 text-[${COLORS.primary}] border-[${COLORS.primary}]/20`;
-  if (shift.status === 'Open') return `bg-[${COLORS.alert}]/10 text-[${COLORS.alert}] border-[${COLORS.alert}]/20`;
-  return 'bg-secondary/20 text-secondary-foreground border-border';
+  if (shift.status === 'Assigned') return `bg-[#0F7B8A]/10 text-[#0F7B8A] border-[#0F7B8A]/20`;
+  if (shift.status === 'Open') return `bg-[#E74C3C]/10 text-[#E74C3C] border-[#E74C3C]/20`;
+  return 'bg-[#E8EEF1/20 text-[#2C3E50] border-[#E5E7EB]';
 };
