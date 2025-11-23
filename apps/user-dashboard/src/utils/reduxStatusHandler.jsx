@@ -8,12 +8,10 @@ export const handleAsyncThunk = (
 ) => {
   builder
     .addCase(thunk.pending, (state) => {
-      console.log(`${dataKey} pending...`);
       state[statusKey] = 'loading';
       state[errorKey] = null;
     })
     .addCase(thunk.fulfilled, (state, action) => {
-      console.log(`${dataKey} fetched:`, action.payload);
       state[statusKey] = 'succeeded';
       state[dataKey] = action.payload?.data || [];
       if (metaKey) {
@@ -26,7 +24,6 @@ export const handleAsyncThunk = (
       }
     })
     .addCase(thunk.rejected, (state, action) => {
-      console.log(`${dataKey} rejected:`, action.payload || action.error);
       state[statusKey] = 'failed';
       state[errorKey] =
         action.payload || action.error?.message || 'Something went wrong';

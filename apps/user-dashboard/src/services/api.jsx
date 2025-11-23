@@ -28,11 +28,7 @@ api.interceptors.request.use(
     const currentStatus = state.user.status;
     const url = config.url;
 
-    console.log('API Request:', {
-      method: config.method?.toUpperCase(),
-      url,
-      userStatus: currentStatus,
-    });
+
 
     // Check if this is a public route (allowed even when logged out)
     const isPublicRoute = PUBLIC_ROUTES.some((route) => url?.includes(route));
@@ -45,7 +41,6 @@ api.interceptors.request.use(
 
     // Block everything else when logged out or in invalid state
     if (currentStatus === 'loggedOut' || currentStatus === 'failed') {
-      console.log('Blocking request - user not authenticated');
       return Promise.reject({
         message: 'Authentication required',
         isAuthError: true,
@@ -88,7 +83,6 @@ api.interceptors.response.use(
     ) {
       const state = store.getState();
       if (state.user.status !== 'loggedOut') {
-        console.log('Session expired - logging out');
         store.dispatch(logoutUser());
 
         // redirect to login (non-breaking)
