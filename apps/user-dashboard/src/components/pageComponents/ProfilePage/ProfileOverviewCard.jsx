@@ -111,10 +111,10 @@ export default function ProfileOverviewCard() {
           {isEditing ? (
             <>
               <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
-              <Button onClick={handleSaveAttempt}>Save Changes</Button>
+              <Button variant="primary" onClick={handleSaveAttempt}>Save Changes</Button>
             </>
           ) : (
-            <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+            <Button variant="primary" onClick={() => setIsEditing(true)}>Edit Profile</Button>
           )}
         </div>
         <Text as="h4" content="Employment Details" MyClass="mt-4 text-md font-medium text-teal-700" />
