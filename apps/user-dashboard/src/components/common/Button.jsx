@@ -3,7 +3,7 @@ export default function Button({
   children,
   className = "",
   onClick,
-  variant = "primary",
+  variant = "outline",
   ...props
 }) {
   const base = "px-4 py-2 rounded-lg font-medium transition-colors";
