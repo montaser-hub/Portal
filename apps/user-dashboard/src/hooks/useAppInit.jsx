@@ -22,14 +22,12 @@ export default function useAppInit() {
 
     // Wait for authenticated user
     if (!user || userStatus !== 'succeeded') {
-      console.log('⏳ Waiting for user authentication...');
       return;
     }
 
     // Prevent duplicate fetches
     if (schedulesInitializedRef.current) return;
 
-    console.log('📅 Initializing schedules for user:', user.name);
     schedulesInitializedRef.current = true;
 
     // Fetch schedules
