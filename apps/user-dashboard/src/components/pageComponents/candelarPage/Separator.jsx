@@ -1,5 +1,4 @@
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
-import { COLORS } from "../../common/colors";
 
 // ---------------- Separator ----------------
 export default function Separator({ className = "", orientation = "horizontal", decorative = true, ...props }) {
@@ -9,7 +8,7 @@ export default function Separator({ className = "", orientation = "horizontal", 
       decorative={decorative}
       orientation={orientation}
       className={
-        (orientation === "horizontal" ? `bg-border shrink-0 h-px w-full ${COLORS.grayBorder}` : `bg-border shrink-0 h-full w-px ${COLORS.grayBorder}`) +
+        (orientation === "horizontal" ? `bg-[#E5E7EB] shrink-0 h-px w-full` : `bg-[#E5E7EB] shrink-0 h-full w-px`) +
         className
       }
       {...props}

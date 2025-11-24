@@ -20,8 +20,8 @@ export default function Pagination({
   };
 
   const getPages = () => {
-    let pages = [];
-    let half = Math.floor(maxVisiblePages / 2);
+    const pages = [];
+    const half = Math.floor(maxVisiblePages / 2);
     let start = Math.max(1, currentPage - half);
     let end = Math.min(totalPages, currentPage + half);
 
@@ -55,7 +55,7 @@ export default function Pagination({
      ${
        isActive
          ? 'bg-teal-600 text-white font-semibold shadow-md'
-         : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700'
+         : 'bg-white text-gray-700 hover:bg-gray-100 '
      }`;
 
   return (

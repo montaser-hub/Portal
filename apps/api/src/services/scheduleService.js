@@ -1,11 +1,11 @@
-// scheduleService.js
 import * as scheduleRepo from '../dataAccess/scheduleRepo.js';
 import * as subDepartmentService from './SubdepartmentService.js';
 import * as shiftService from './shiftService.js';
 import * as departmentService from './departmentService.js';
 import AppError from '../utils/AppError.js';
 import { getAllDocuments } from './queryService.js';
-import { addMinutes, areIntervalsOverlapping } from 'date-fns';
+import { addMinutes, areIntervalsOverlapping, addSeconds } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 /**
  * Validation function to check duplicate schedules and overlapping shifts
@@ -78,8 +78,8 @@ const overlappingSchedulesValidation = async (data) => {
  * Create a new schedule
  */
 export const createSchedule = async (data, user) => {
-  if (!data.userId && user?._id) data.userId = user._id;
-  if (!data.departmentId && user?.departmentId) data.departmentId = user.departmentId;
+  if (!data.userId && user?._id) data.userId = user?._id;
+  if (!data.departmentId && user?.departmentId) data.departmentId = user?.departmentId;
 
   await overlappingSchedulesValidation(data);
 
@@ -103,33 +103,37 @@ export const updateSchedule = async (id, data, user) => {
  * Get all schedules with optional query params
  */
 export const getAllSchedules = async (queryParams) => {
-  const searchableFields = [
-    'userId',
-    'date',
-    'shiftId',
-    'subDepartmentId',
-    'departmentId',
-    'swapRequestId',
-    'isActive'
-  ];
-  return await getAllDocuments(scheduleRepo, queryParams, searchableFields);
-};
+  const searchableFields = ['userId', 'date', 'shiftId', 'subDepartmentId', 'departmentId', 'swapRequestId', 'isActive'];
+  return  await getAllDocuments(scheduleRepo, queryParams, searchableFields);
+}
 
-/**
- * Get a single schedule by id
- */
-export const getSchedule = async (id) => {
-  const schedule = await scheduleRepo.findById(id);
-  if (!schedule) throw new AppError("Schedule Not Found", 404);
-  return schedule;
-};
+export const getSchedule = async ( id ) => {
+  const schedule = await scheduleRepo.findById( id )
+  if ( !schedule ) throw new AppError( "Shift Not Found", 404 )
+  return schedule
+}
 
-/**
- * Soft delete a schedule
- */
-export const deleteSchedule = async (id) => {
-  const data = { isActive: false };
-  const schedule = await scheduleRepo.update(id, data);
-  if (!schedule) throw new AppError("Schedule Not Found", 404);
-  return schedule;
-};
+export const deleteSchedule = async ( id ) => {
+  data = { isActive: false }
+  const schedule = await scheduleRepo.update( id, data )
+  if ( !schedule ) throw new AppError( "Shift Not Found", 404 )
+  return schedule
+}
+
+export const nextSchedule = async ( userId, nowInTZ, timezone) => {
+  const schedules = await scheduleRepo.nextSchedule( userId )
+  // Filter nearest after now
+    const upcomingSchedule = schedules.find((s) => {
+      const scheduleDateTime = getScheduleDateTime(s, timezone);
+      return scheduleDateTime >= nowInTZ;
+    } );
+
+  return upcomingSchedule
+}
+
+function getScheduleDateTime(schedule, timezone = 'Africa/Cairo') {
+  // Combine schedule.date + shift.startTime (seconds) → exact datetime in user TZ
+  const date = new Date(schedule.date); // stored as UTC
+  const dateInTZ = toZonedTime(date, timezone);
+  return addSeconds(dateInTZ, schedule.shift.startTime || 0);
+}

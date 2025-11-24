@@ -12,20 +12,20 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
 
           <div className="flex items-center gap-2">
-            <Text as="p" content={`© ${currentYear} SmartShift. All rights reserved.`} MyClass="text-sm text-muted-foreground" />
+            <Text as="p" content={`© ${currentYear} SmartShift. All rights reserved.`} MyClass="text-sm text-gray-500" />
           </div>
 
           <div className="flex items-center gap-4">
-            <Link to="#" className="text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200">
+            <Link to="#" className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200">
               <Facebook size={20} />
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200">
+            <Link to="#" className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200">
               <Twitter size={20} />
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200">
+            <Link to="#" className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200">
               <Linkedin size={20} />
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200">
+            <Link to="#" className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200">
               <Instagram size={20} />
             </Link>
           </div>
@@ -33,19 +33,19 @@ export default function Footer() {
           <div className="flex items-center gap-6">
             <Link
               to="#"
-              className="text-sm text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200"
+              className="text-sm text-gray-500 hover:text-[#40a5b4] transition-colors duration-200"
             >
               Privacy Policy
             </Link>
             <Link
               to="#"
-              className="text-sm text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200"
+              className="text-sm text-gray-500 hover:text-[#40a5b4] transition-colors duration-200"
             >
               Terms of Service
             </Link>
             <Link
               to="#"
-              className="text-sm text-muted-foreground hover:text-[#0F7B8A] transition-colors duration-200"
+              className="text-sm text-gray-500 hover:text-[#40a5b4] transition-colors duration-200"
             >
               Support
             </Link>

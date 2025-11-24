@@ -10,6 +10,7 @@ export const fetchUpcomingSchedules = createAsyncThunk(
       const filters = {
         ...filter,
         // startDate: filter.startDate || now.toISOString().split('T')[0],
+        sort: 'date'
       };
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
@@ -22,11 +23,14 @@ export const fetchUpcomingSchedules = createAsyncThunk(
 export const fetchSchedules = createAsyncThunk(
   'schedule/fetchSchedules',
   async (filter = {}, { rejectWithValue }) => {
+    const { excludeUserId, ...otherFilter } = filter;
     try {
       const filters = {
-        ...filter,
+        ...otherFilter,
         'userId[ne]': filter.excludeUserId,
+        sort: 'date'
       };
+       console.log('🔍 Final filters sent to backend:', filters);
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch schedules');
@@ -47,4 +51,18 @@ export const removeSchedule = createAsyncThunk(
 export const addSchedule = createAsyncThunk(
   'schedule/addSchedule',
   async (data) => await scheduleService.addSchedule(data)
+);
+
+export const fetchNearestSchedule = createAsyncThunk(
+  'schedule/fetchNearestSchedule',
+  async ({ timezone }, { rejectWithValue }) => {
+    try {
+      const schedule = await scheduleService.fetchNearestSchedule( timezone );
+      return schedule.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.message || 'Failed to fetch nearest schedule'
+      );
+    }
+  }
 );

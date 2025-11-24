@@ -24,6 +24,18 @@ export const findAll = () => {
     .populate('shift', 'shiftName shiftType startTime endTime startTimeFormatted endTimeFormatted');
 };
 
+export const nextSchedule = async ( userId ) => {
+  return await Schedule.find({userId})
+    .sort({ date: 1 }) // date first, earliest shift first
+    .populate('department', 'name')
+    .populate('subDepartment', 'name')
+    .populate('user', 'firstName lastName')
+    .populate({
+      path: 'shift',
+      select: 'shiftName shiftType startTime endTime',
+    })
+}
+
 export const deleteOne = async (id) => {
   return await Schedule.findByIdAndDelete(id);
 };
@@ -42,6 +54,6 @@ export const findMany = async (query) => {
   return await Schedule.find(query).populate({
     path: 'shift',
     model: 'Shift',
-    select: 'startTime endTime shiftName'
+    select: 'startTime endTime shiftName shiftType'
   });
 };

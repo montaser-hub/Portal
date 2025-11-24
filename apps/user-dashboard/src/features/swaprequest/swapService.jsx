@@ -14,4 +14,6 @@ export const editSwapRequest = async (id, data) => crudService.update(endpoint, 
 
 export const removeSwapRequest = async (id) => crudService.remove( endpoint, id );
 
-export const fetchSwapRequest = async (id) => crudService.getById(endpoint, id);
+export const fetchSwapRequest = async (id) => crudService.getById( endpoint, id );
+
+export const swapIsAproved = async (id, data) => crudService.update(endpoint, id, data);

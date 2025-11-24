@@ -3,7 +3,7 @@ import * as subDepartmentService from "./subDepartmentService";
 
 export const fetchSubDepartments = createAsyncThunk(
   "subDepartment/fetchSubDepartments",
-  async ({departmentId} = {}) => await subDepartmentService.fetchSubDepartments({departmentId})
+  async (filter = {}) => await subDepartmentService.fetchSubDepartments(filter)
 );
 
 
