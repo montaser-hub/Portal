@@ -9,14 +9,14 @@ export const findAll = () => {
     path: 'manager',
     select: 'firstName lastName nickname photo -_id',
   })
-  .populate({ path: 'location', select: 'name -_id' });
+  .populate({ path: 'location', select: 'name street city state country postalCode -_id' });
 };
 
 export const getOne = async(id) => {
   return await Department.findById(id).populate({
     path: 'manager',
     select: 'firstName lastName nickname photo -_id',
-  });
+  }).populate({ path: 'location', select: 'name street city state country postalCode -_id' });
 };
 export const update = async (id, data) => {
   return await Department.findByIdAndUpdate(id, data, { new: true });

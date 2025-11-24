@@ -4,6 +4,8 @@ import {
   fetchUpcomingSchedules,
   fetchSchedules,
 } from '../features/schedule/scheduleThunks';
+import { resetSchedulesState } from '../features/schedule/ScheduleSlice';
+
 
 export default function useAppInit() {
   const dispatch = useDispatch();
@@ -14,22 +16,21 @@ export default function useAppInit() {
   );
 
   useEffect(() => {
-    // Reset on logout
+    // // Reset on logout
     if (userStatus === 'loggedOut') {
+      dispatch(resetSchedulesState());
       schedulesInitializedRef.current = false;
       return;
     }
 
     // Wait for authenticated user
     if (!user || userStatus !== 'succeeded') {
-      console.log('⏳ Waiting for user authentication...');
       return;
     }
 
     // Prevent duplicate fetches
     if (schedulesInitializedRef.current) return;
 
-    console.log('📅 Initializing schedules for user:', user.name);
     schedulesInitializedRef.current = true;
 
     // Fetch schedules

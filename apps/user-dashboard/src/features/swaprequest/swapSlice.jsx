@@ -1,18 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchSwapRequests,
+  fetchReceivedSwapRequests,
   addSwapRequest,
   editSwapRequest,
   removeSwapRequest,
+  swapIsAproved,
 } from './swapThunks';
 
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
 const initialState = {
   swapRequests: [],
-  swapStatus: 'idle',
-  swapError: null,
+  receivedRequests: [],
+
   swapMeta: {},
+  receivedMeta: {},
+
+  swapStatus: 'idle',
+  receivedStatus: 'idle',
+
+  swapError: null,
+  receivedError: null,
 };
 
 const swapSlice = createSlice({
@@ -26,12 +35,25 @@ const swapSlice = createSlice({
       'swapRequests',
       'swapStatus',
       'swapError',
-      'swapMeta'
+      'swapMeta',
+      'replace'
     );
 
-    handleAsyncThunk(builder, addSwapRequest, 'swapRequests');
-    handleAsyncThunk(builder, editSwapRequest, 'swapRequests');
-    handleAsyncThunk(builder, removeSwapRequest, 'swapRequests');
+    handleAsyncThunk(
+        builder,
+        fetchReceivedSwapRequests,
+        'receivedRequests',
+        'receivedStatus',
+        'receivedError',
+        'receivedMeta',
+        'replace',
+      );
+
+
+    handleAsyncThunk(builder, addSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'prepend');
+    handleAsyncThunk(builder, editSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'update');
+    handleAsyncThunk( builder, removeSwapRequest, 'swapRequests', 'swapStatus', 'swapError', null, 'remove' );
+    handleAsyncThunk(builder, swapIsAproved, 'receivedRequests', 'receivedStatus', 'receivedError', null, 'update');
   },
 });
 

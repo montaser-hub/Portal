@@ -94,14 +94,14 @@ export default function Schedules() {
   // Fetch reference data ONCE on mount with proper error handling
   useEffect(() => {
     if (user?.departmentId) {
-      dispatch(fetchShifts({ departmentId: user.departmentId }))
+      dispatch(fetchShifts({ departmentId: user.departmentId, sort:'shiftType,shiftName' }))
         .unwrap()
         .catch((error) => {
           console.error('Failed to fetch shifts:', error);
           toast.error('Failed to load shifts');
         });
 
-      dispatch(fetchSubDepartments({ departmentId: user.departmentId }))
+      dispatch(fetchSubDepartments({ departmentId: user.departmentId, sort:'name' }))
         .unwrap()
         .catch((error) => {
           console.error('Failed to fetch sub-departments:', error);

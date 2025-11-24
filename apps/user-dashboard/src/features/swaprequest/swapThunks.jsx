@@ -6,6 +6,11 @@ export const fetchSwapRequests = createAsyncThunk(
   async (filters = {}) => await swapService.fetchSwapRequests(filters)
 );
 
+export const fetchReceivedSwapRequests = createAsyncThunk(
+  'swap/fetchReceivedSwapRequests',
+  async (filters = {}) => await swapService.fetchSwapRequests(filters)
+);
+
 export const addSwapRequest = createAsyncThunk(
   'swap/addSwapRequest',
   async (data) => await swapService.addSwapRequest(data)
@@ -17,11 +22,27 @@ export const editSwapRequest = createAsyncThunk(
 );
 
 export const removeSwapRequest = createAsyncThunk(
-  'swap/removeSwapRequest',
-  async (id) => await swapService.removeSwapRequest(id)
+  'swap/delete',
+  async (id, thunkAPI) => {
+    try {
+      return await swapService.removeSwapRequest(id);
+    } catch (error) {
+      // If it's already deleted → treat as success
+      if (error?.response?.status === 404) {
+        return { id, alreadyDeleted: true };
+      }
+
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
 );
 
 export const fetchSwapRequest = createAsyncThunk(
   'swap/fetchSwapRequest',
   async (id) => await swapService.fetchSwapRequest(id)
+);
+
+export const swapIsAproved = createAsyncThunk(
+  'swap/swapIsAproved',
+  async ({id, data }) => await swapService.swapIsAproved(id, data)
 );
