@@ -52,3 +52,17 @@ export const addSchedule = createAsyncThunk(
   'schedule/addSchedule',
   async (data) => await scheduleService.addSchedule(data)
 );
+
+export const fetchNearestSchedule = createAsyncThunk(
+  'schedule/fetchNearestSchedule',
+  async ({ timezone }, { rejectWithValue }) => {
+    try {
+      const schedule = await scheduleService.fetchNearestSchedule( timezone );
+      return schedule.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.message || 'Failed to fetch nearest schedule'
+      );
+    }
+  }
+);

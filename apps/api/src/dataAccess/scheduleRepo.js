@@ -25,6 +25,18 @@ export const findAll = () => {
     .populate('shift', 'shiftName shiftType startTime endTime');
 };
 
+export const nextSchedule = async ( userId ) => {
+  return await Schedule.find({userId})
+    .sort({ date: 1 }) // date first, earliest shift first
+    .populate('department', 'name')
+    .populate('subDepartment', 'name')
+    .populate('user', 'firstName lastName')
+    .populate({
+      path: 'shift',
+      select: 'shiftName shiftType startTime endTime',
+    })
+}
+
 export const deleteOne = async (id) => {
   return await Schedule.findByIdAndDelete(id);
 };
@@ -36,7 +48,7 @@ export const countFiltered = (filter) => Schedule.countDocuments(filter);
 // التحقق من تكرار الـ schedule
 export const findDuplicate = async (criteria) => {
   const { date, shiftId, subDepartmentId, userId, isActive } = criteria;
-  
+
   const query = {
     date: new Date(date),
     shiftId,
@@ -57,7 +69,7 @@ export const checkShiftConflict = async ({ date, userId, shiftId, isActive, excl
   // نجيب الشفت الجديد اللي عايزين نضيفه
   const Shift = mongoose.model('Shift');
   const newShift = await Shift.findById(shiftId);
-  
+
   if (!newShift) return false;
 
   // نحول الدقائق لـ hours و minutes
@@ -68,10 +80,10 @@ export const checkShiftConflict = async ({ date, userId, shiftId, isActive, excl
   };
 
   const dateStr = new Date(date).toISOString().split('T')[0];
-  
+
   const newShiftStartTime = convertMinutesToTime(newShift.startTime);
   const newShiftEndTime = convertMinutesToTime(newShift.endTime);
-  
+
   const newShiftStart = new Date(`${dateStr}T${newShiftStartTime}`);
   const newShiftEnd = new Date(`${dateStr}T${newShiftEndTime}`);
 
@@ -95,7 +107,7 @@ export const checkShiftConflict = async ({ date, userId, shiftId, isActive, excl
   for (const schedule of existingSchedules) {
     // نجيب الشفت - لو الـ populate شغال هيكون موجود، لو لأ نجيبه يدوياً
     const existingShift = schedule.shift || await Shift.findById(schedule.shiftId);
-    
+
     if (!existingShift) continue;
 
     const existingStartTime = convertMinutesToTime(existingShift.startTime);
@@ -116,3 +128,4 @@ export const checkShiftConflict = async ({ date, userId, shiftId, isActive, excl
 
   return false;
 };
+

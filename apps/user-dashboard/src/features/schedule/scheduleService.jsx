@@ -14,3 +14,8 @@ export const editSchedule = async (id, data) => crudService.update(endpoint, id,
 export const removeSchedule = async (id) => crudService.remove(endpoint, id);
 
 export const fetchSchedule = async (id) => crudService.getById(endpoint, id);
+
+export const fetchNearestSchedule = async (timezone = 'Africa/Cairo') => {
+  const query = timezone ? `?timezone=${timezone}` : '';
+  return await crudService.getAll('/schedules/nearestSchedule' + query);
+};
