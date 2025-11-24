@@ -5,6 +5,7 @@ import {
   addSchedule,
   editSchedule,
   removeSchedule,
+  fetchNearestSchedule,
 } from './scheduleThunks';
 import { handleAsyncThunk } from '../../utils/reduxStatusHandler';
 
@@ -13,12 +14,15 @@ const initialState = {
   allSchedulesMeta: {},
   upcomingSchedules: [],
   upcomingSchedulesMeta: {},
+  nearestSchedule: null,
 
   allSchedulesStatus: 'idle',
   upcomingSchedulesStatus: 'idle',
+  nearestScheduleStatus: 'idle',
 
   allSchedulesError: null,
   upcomingSchedulesError: null,
+  nearestScheduleError: null,
 };
 
 const scheduleSlice = createSlice({
@@ -107,9 +111,21 @@ const scheduleSlice = createSlice({
       .addCase(removeSchedule.rejected, (state, action) => {
         state.allSchedulesStatus = 'failed';
         state.allSchedulesError = action.payload;
+      })
+      .addCase(fetchNearestSchedule.pending, (state) => {
+        state.nearestScheduleStatus = 'loading';
+      })
+      .addCase(fetchNearestSchedule.fulfilled, (state, action) => {
+        state.nearestScheduleStatus = 'succeeded';
+        state.nearestSchedule = action.payload;
+      })
+      .addCase(fetchNearestSchedule.rejected, (state, action) => {
+        state.nearestScheduleStatus = 'failed';
+        state.nearestScheduleError = action.payload;
       });
   },
 });
 
-export const { clearScheduleError, resetSchedulesState } = scheduleSlice.actions;
+export const { clearScheduleError, resetSchedulesState } =
+  scheduleSlice.actions;
 export default scheduleSlice.reducer;
