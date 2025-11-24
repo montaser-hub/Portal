@@ -9,11 +9,11 @@ export const addSchedule = catchAsync( async ( req, res, next ) => {
   return res.status(200).json({ message: "Schedule added successfully", data: scheduleData });
 } )
 
-export const updateSchedule = catchAsync( async ( req, res, next ) => {
+export const updateSchedule = catchAsync (async ( req, res, next ) => {
   const id = req.params.id
   const data = { ...req.body }
-
-  const updatedSchedule = await scheduleService.updateSchedule(id, data)
+  const user = req?.user
+  const updatedSchedule = await scheduleService.updateSchedule(id, data,user)
   res.status(200).json({ message: "Schedule updated successfully", data: updatedSchedule });
 })
 
