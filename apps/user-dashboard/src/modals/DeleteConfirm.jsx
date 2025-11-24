@@ -1,4 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
+import Text from "../components/common/Text";
+import Button from "../components/common/Button";
 
 export default function DeleteConfirm({ isOpen, onCancel, onDelete }) {
   return (
@@ -12,24 +14,23 @@ export default function DeleteConfirm({ isOpen, onCancel, onDelete }) {
             transition={{ duration: 0.2 }}
             className="bg-white rounded-xl shadow-xl w-[90%] max-w-sm p-6 text-center"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Confirm Deletion</h2>
-            <p className="text-gray-600 mb-6">Are you sure you want to delete this schedule?</p>
+            <Text as='h2' MyClass="text-xl font-semibold mb-4 text-gray-600" content="Confirm Deletion" />
+            <Text as='p' MyClass="text-gray-600 mb-6" content="Are you sure you want to delete this schedule?" />
             <div className="flex justify-center gap-4">
-              <button
+              <Button
+                variant="secondary"
                 onClick={onCancel}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
+                >
+                  Cancel
+              </Button>
+              <Button
+                variant="alert"
                 onClick={onDelete}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
+                >Delete
+              </Button>
             </div>
           </motion.div>
-        </div>
+          </div>
       )}
     </AnimatePresence>
   );

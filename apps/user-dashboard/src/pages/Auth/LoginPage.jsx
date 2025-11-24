@@ -9,6 +9,7 @@ import Text from '../../components/common/Text';
 import Card from '../../components/common/Card';
 import Input from '../../components/common/Input';
 import { setUser } from '../../features/user/userSlice';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,49 +19,56 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const handleEmailChange = (e) => {
-  const value = e.target.value;
-  setEmail(value);
-  setTouched((prev) => ({ ...prev, email: true }));
-  if (/[ء-ي]/.test(value) || !emailRegex.test(value)) {
-    setErrors((prev) => ({
-      ...prev,
-      email: 'Email is not valid',
-    }));
-  } else {
-    setErrors((prev) => ({
-      ...prev,
-      email: '',
-    }));
-  }
-};
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setTouched((prev) => ({ ...prev, email: true }));
 
-const handlePasswordChange = (e) => {
-  const value = e.target.value;
-  setPassword(value);
-  setTouched((prev) => ({ ...prev, password: true }));
-  if (/[ء-ي]/.test(value)) {
-    setErrors((prev) => ({
-      ...prev,
-      password: 'Only English characters are allowed',
-    }));
-    return;
-  }
-  setErrors((prev) => ({
-    ...prev,
-    password:
-      value.length === 0
-        ? 'Password is required'
-        : !passwordRegex.test(value)
-        ? 'Password must be at least 8 chars, include uppercase, lowercase, number, special char'
-        : '',
-  }));
-};
+    let error = '';
+    if (!value.trim()) {
+      error = 'Email is required';
+    } else if (/[ء-ي]/.test(value)) {
+      error = 'English characters only';
+    } else if (!emailRegex.test(value)) {
+      error = 'Please enter a valid email address';
+    }
+
+    setErrors((prev) => ({ ...prev, email: error }));
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    setTouched((prev) => ({ ...prev, password: true }));
+
+    let error = '';
+    if (!value.trim()) {
+      error = 'Password is required';
+    } else if (/[ء-ي]/.test(value)) {
+      error = 'English characters only';
+    } else if (value.length < 8) {
+      error = 'Password must be at least 8 characters';
+    } else if (!/(?=.*[a-z])/.test(value)) {
+      error = 'Password must contain at least one lowercase letter';
+    } else if (!/(?=.*[A-Z])/.test(value)) {
+      error = 'Password must contain at least one uppercase letter';
+    } else if (!/(?=.*\d)/.test(value)) {
+      error = 'Password must contain at least one number';
+    } else if (!/(?=.*[@$!%*?&])/.test(value)) {
+      error = 'Password must contain at least one special character (@$!%*?&)';
+    } else if (!passwordRegex.test(value)) {
+      error = 'Password does not meet all requirements';
+    }
+
+    setErrors((prev) => ({ ...prev, password: error }));
+  };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!errors.email && !errors.password && email && password) {
