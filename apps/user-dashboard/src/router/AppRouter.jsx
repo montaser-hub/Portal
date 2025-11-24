@@ -15,12 +15,14 @@ import ProtectedRoute from './ProtectedRoute';
 import SpinnerPage from '../pages/SpinnerPage.jsx';
 import { PublicRoute } from './ProtectedRoute.jsx';
 import Footer from '../components/layout/Footer';
+import AIAssistant from '../pages/Assistant';
 
 function AppLayout() {
   return (
     <>
       <Navbar />
       <Outlet />
+      <AIAssistant />
       <Footer />
     </>
   );
