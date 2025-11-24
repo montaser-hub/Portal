@@ -1,35 +1,57 @@
-
+import {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  getDay,
+  isSameDay,
+  parseISO
+} from 'date-fns';
 
 // Get all days (with padding) for a given month
 export const getDaysInMonth = (date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startingDayOfWeek = firstDay.getDay();
+  const firstDay = startOfMonth(date);
+  const lastDay = endOfMonth(date);
+  const startingDayOfWeek = getDay(firstDay);
+
   const days = [];
-  for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
-  for (let i = 1; i <= lastDay.getDate(); i++) days.push(new Date(year, month, i));
+
+  // Add empty slots for days before the first day of month
+  for (let i = 0; i < startingDayOfWeek; i++) {
+    days.push(null);
+  }
+
+  // Add all days of the month
+  const daysInMonth = eachDayOfInterval({ start: firstDay, end: lastDay });
+  days.push(...daysInMonth);
+
   return days;
 };
 
-// Convert ISO date to YYYY-MM-DD
-const dateToYMD = (isoDate) => {
+// Convert ISO date to Date object
+const parseDate = (isoDate) => {
   if (!isoDate) return null;
-  return (isoDate || "").split("T")[0];
+  try {
+    return parseISO(isoDate.split("T")[0]);
+  } catch {
+    return null;
+  }
 };
 
 // Filter schedules for a specific date (and optional personal filter)
 export const getShiftsForDate = (date, filter, schedules = [], currentUser = null) => {
   if (!date) return [];
-  const dateStr = date.toISOString().split("T")[0];
+
   return schedules.filter((sched) => {
-    const schedDate = dateToYMD(sched.date);
+    const schedDate = parseDate(sched.date);
     if (!schedDate) return false;
-    if (schedDate !== dateStr) return false;
+
+    // Check if dates match
+    if (!isSameDay(date, schedDate)) return false;
+
+    // Apply personal filter
     if (filter === "personal") {
       const assignedUserId = sched?.user?.id;
-      const currentUserId =  currentUser?.id;
+      const currentUserId = currentUser?.id;
       return assignedUserId && currentUserId && assignedUserId === currentUserId;
     }
 
@@ -40,9 +62,12 @@ export const getShiftsForDate = (date, filter, schedules = [], currentUser = nul
 // Return UI color class based on schedule type/status
 export const getShiftColor = (schedule) => {
   if (!schedule) return "bg-white";
+
   const isActive = schedule?.isActive !== false;
   const isOvernight = schedule?.shift?.isOvernight || false;
+
   if (!isActive) return "bg-gray-100 text-gray-700 border-gray-300";
   if (isOvernight) return "bg-yellow-50 text-[#B45309] border-yellow-200";
+
   return `bg-[#0F7B8A]/10 text-[#0F7B8A] border-[#0F7B8A]/20`;
 };

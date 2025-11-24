@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Button from '../components/common/Button';
 
 export default function ScheduleModal({
   isOpen,
@@ -70,13 +71,12 @@ export default function ScheduleModal({
             transition={{ duration: 0.2 }}
             className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative"
           >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-3 bg-gray-50 border rounded-full text-teal-300 hover:bg-gray-200 hover:text-teal-400"
-            >
-              <X size={20} />
-            </button>
-
+          <Button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-3 bg-gray-50 border rounded-full text-teal-300 hover:bg-gray-200 hover:text-teal-400"
+          >
+            <X size={20} />
+          </Button>
             <h2 className="text-xl font-semibold mb-4 text-gray-800">
               {editing ? 'Edit Schedule' : 'Create Schedule'}
             </h2>

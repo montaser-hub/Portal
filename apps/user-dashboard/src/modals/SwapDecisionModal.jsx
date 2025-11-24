@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import Button from '../components/common/Button';
+import Text from '../components/common/Text';
 
 export default function SwapDecisionModal({
   isOpen,
@@ -15,19 +17,15 @@ export default function SwapDecisionModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-lg relative">
-        <button
+        <Button
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-4 right-4 p-3 bg-gray-50 border rounded-full text-teal-300 hover:bg-gray-200 hover:text-teal-400"
         >
           <X size={20} />
-        </button>
-
-        <h2 className="text-xl font-semibold mb-4 capitalize">
-          {action === 'approved' ? 'Approve Request' : 'Reject Request'}
-        </h2>
-
-        <p className="text-gray-600 mb-3">Provide an optional message:</p>
-
+        </Button>
+        <Text as='h2' MyClass="text-xl text-gray-600 font-semibold mb-4 capitalize"
+        content={action === 'approved' ? 'Approve Request' : 'Reject Request'} />
+        <Text as='p' MyClass="text-gray-600 mb-3" content= "Provide an optional message:" />
         <textarea
           className="w-full border rounded-lg p-3 text-sm"
           rows="3"
@@ -37,27 +35,23 @@ export default function SwapDecisionModal({
         />
 
         <div className="flex justify-end gap-3 mt-6">
-          <button
+          <Button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border text-sm"
+            variant="secondary"
+            className="px-4 py-2 rounded-lg text-sm"
           >
             Cancel
-          </button>
-
-          <button
-            onClick={() => {
-              onSubmit( request, action, message )
+          </Button>
+          <Button
+            onClick={() => { onSubmit( request, action, message )
               setMessage('')
               onClose()
             }}
-            className={`px-4 py-2 rounded-lg text-white text-sm ${
-              action === 'approved'
-                ? 'bg-green-600 hover:bg-green-700'
-                : 'bg-red-400 hover:bg-red-600'
-            }`}
+            variant={action === 'approved' ? 'primary' : 'alert'}
+            className="px-4 py-2 rounded-lg text-sm"
           >
             Confirm {action}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

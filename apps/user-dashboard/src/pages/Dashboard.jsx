@@ -23,8 +23,8 @@ export default function Dashboard() {
         fetchNearestSchedule({ timezone: user.timezone || 'Africa/Cairo' })
       );
     }
-  }, [ user ] );
-  
+  }, [ user, dispatch ] );
+
   if (userStatus === 'idle' || userStatus === 'loading' || upcomingSchedulesStatus === 'loading' || nearestScheduleStatus === 'loading') return <HeartbeatSpinner />;
   if (userStatus === 'failed') return <ErrorMessage errorMessage={userError} />;
 
@@ -41,9 +41,7 @@ export default function Dashboard() {
           content={
             <>
               Welcome back,{' '}
-              <span className="font-semibold italic">
-                {user?.nickname || user?.fullName}{' '}
-              </span>
+              <Text as="span" content={user?.nickname } MyClass="font-semibold italic" />
             </>
           }
         />

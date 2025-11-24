@@ -31,34 +31,71 @@ export default function ProfileOverviewCard() {
     contactNumber: false,
   });
 
-  /** Regex rules */
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const nameRegex = /^[A-Za-z.-]{3,}$/;
-  const egyptPhoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
 
   const hasErrors = Object.values(errors).some((e) => e);
 
-  /** Validation logic */
+  /* Validation logic */
   const validateField = (name, value) => {
-    const error = "";
-    // Arabic input check
-    if (/[ء-ي]/.test(value)) return "English Language Only";
-    // Required check
-    if (!value.trim()) return `${name} is required`;
-    // Name validation
-    if (["firstName", "lastName", "nickname"].includes(name)) {
-      if (/\d/.test(value)) return "Characters Only";
-      if (!nameRegex.test(value)) return "Must be at least 3 letters";
+    if (!value || !value.trim()) {
+      const fieldNames = {
+        nickname: 'Nickname',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        email: 'Email',
+        contactNumber: 'Phone Number'
+      };
+      return `${fieldNames[name]} is required`;
     }
-    // Email validation
-    if (name === "email" && !emailRegex.test(value)) return "Invalid email";
+    /* Arabic characters case */
+    if (/[ء-ي]/.test(value)) {
+      return 'English characters only';
+    }
+    /* Name validation */
+    if (['firstName', 'lastName', 'nickname'].includes(name)) {
+      if (/\d/.test(value)) {
+        return 'Name cannot contain numbers';
+      }
+      if (value.trim().length < 2) {
+        return 'Name must be at least 2 characters';
+      }
+      if (!/^[A-Za-z.\s-]+$/.test(value)) {
+        return 'Name can only contain letters, spaces, dots and hyphens';
+      }
+    }
+    /* Email validation */
+    if (name === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Please enter a valid email address (example@domain.com)';
+      }
+    }
+    /* Phone number validation */
+    if (name === 'contactNumber') {
+      const cleanValue = value.replace(/\s/g, '');
+        if (/\s/.test(value)) {
+          return 'Phone number must not contain spaces';
+      }
+      if (/[A-Za-z]/.test(cleanValue)) {
+        return 'Phone number must contain numbers only';
+      }
 
-    // Phone validation
-    if (name === "contactNumber") {
-      if (/[A-Za-z]/.test(value)) return "Number Only";
-      if (!egyptPhoneRegex.test(value)) return "Phone must be an Egyptian number";
+      if (!/^\d+$/.test(cleanValue)) {
+        return 'Phone number must contain numbers only';
+      }
+
+      if (cleanValue.length !== 11) {
+        return 'Egyptian phone number must be 11 digits';
+      }
+
+      if (!cleanValue.startsWith('01')) {
+        return 'Egyptian phone number must start with 01';
+      }
+
+      if (!/^01[0125]/.test(cleanValue)) {
+        return 'Invalid Egyptian phone operator (must be 010, 011, 012, or 015)';
+      }
+
     }
-    return error;
+    return '';
   };
 
   const handleChange = (e) => {
@@ -95,7 +132,6 @@ export default function ProfileOverviewCard() {
     (key) => pendingData[key] !== (user[key] ?? "")
   );
 
-  /** New: handle save attempt before opening modal */
   const handleSaveAttempt = () => {
     setIsModalOpen(true);
   };
@@ -264,6 +300,7 @@ export default function ProfileOverviewCard() {
             Cancel
           </Button>
           <Button
+            variant="primary"
             className="bg-[#0F7B8A] hover:bg-[#0F7B8A]/90 text-white"
             onClick={handleConfirmSave}
           >
