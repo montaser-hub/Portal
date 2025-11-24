@@ -6,12 +6,12 @@ import CountdownTimer from '../../common/CountdownTimer';
 import { formatScheduleDate } from '../../common/dateHelpers';
 import { addMinutes, differenceInSeconds } from 'date-fns';
 
-export default function UpcomingscheduleCard({ schedule }) {
+export default function UpcomingscheduleCard({schedule}) {
   // Check if starting soon (less than 1 hour)
   const isStartingSoon =
     schedule?.date && schedule?.shift?.startTime
       ? differenceInSeconds(
-          addMinutes(new Date(schedule.date), schedule.shift.startTime),
+          addMinutes(new Date(schedule.date), schedule?.shift?.startTime),
           new Date()
         ) < 3600
       : false;

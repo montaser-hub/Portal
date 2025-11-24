@@ -3,7 +3,8 @@ import * as scheduleController from '../controllers/scheduleController.js';
 import * as authController from '../controllers/authController.js';
 
 const router = express.Router();
-router.use(authController.isAuth);
+router.use( authController.isAuth );
+router.route('/nearestSchedule').get(scheduleController.getNearestSchedule)
 router
   .route('/')
   .get(scheduleController.getAllSchedules)
