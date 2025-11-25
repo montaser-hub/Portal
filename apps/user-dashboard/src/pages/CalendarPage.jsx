@@ -23,7 +23,12 @@ export default function CalendarPage() {
     // Schedule of only current user
     dispatch(fetchUpcomingSchedules({ userId: user?.id }));
     // All schedules for department as a whole
-    dispatch(fetchSchedules());
+    dispatch(
+      fetchSchedules({
+        excludeUserId: user?.id,
+        departmentId: user?.departmentId,
+      })
+    );
   }, [dispatch, user?.id]);
 
   // Select shifts for the selected date based on filter

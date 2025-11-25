@@ -30,7 +30,6 @@ export const fetchSchedules = createAsyncThunk(
         'userId[ne]': filter.excludeUserId,
         sort: 'date'
       };
-       console.log('🔍 Final filters sent to backend:', filters);
       return await scheduleService.fetchSchedules(filters);
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch schedules');
