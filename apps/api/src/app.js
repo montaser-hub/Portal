@@ -10,6 +10,7 @@ import departmentRouter from './routes/departmentRoutes'
 import subDepartmentRouter from './routes/subDepartmentRoutes'
 import swapRequestRouter from './routes/swapRequestRoutes'
 import assistantRouter from './routes/assistantRoutes'
+import notificationRouter from './routes/notificationRoutes'
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 import cors from 'cors';
@@ -65,8 +66,9 @@ app.use( '/api/v1/shifts', shiftRouter);
 app.use( '/api/v1/schedules', scheduleRouter);
 app.use('/api/v1/positions', positionRouter);
 app.use('/api/v1/levels', levelRouter);
-app.use( '/api/v1/swapRequests', swapRequestRouter);
-app.use( '/api/v1/assistant', assistantRouter);
+app.use('/api/v1/swapRequests', swapRequestRouter);
+app.use('/api/v1/assistant', assistantRouter);
+app.use('/api/v1/notifications', notificationRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can not find ${req.originalUrl} on this srver`, 404));

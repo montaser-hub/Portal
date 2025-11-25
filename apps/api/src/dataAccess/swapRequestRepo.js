@@ -2,7 +2,7 @@ import SwapRequest from '../models/swapRequestModel.js'
 
 // Create SwapRequest
 export const create = async (data) => {
-  return await SwapRequest.create(data)
+  return (await SwapRequest.create(data)).populate('fromUser', 'firstName lastName role fullName')
 }
 
 // Find SwapRequest
@@ -42,9 +42,8 @@ export const findAll = () => {
 
 // Update SwapRequest
 export const update = async (id, data) => {
-  return await SwapRequest.findByIdAndUpdate(id, data, { new: true })
+  return await SwapRequest.findByIdAndUpdate(id, data, { new: true }).populate('fromUser', 'firstName lastName role fullName')
 }
-
 // Delete SwapRequest
 export const removeById = async (id) => {
   return await SwapRequest.findByIdAndDelete(id)
