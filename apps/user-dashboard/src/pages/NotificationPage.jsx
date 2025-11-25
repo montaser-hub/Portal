@@ -105,7 +105,7 @@ export default function NotificationsPage() {
                     />
                     <Text
                       as="span"
-                      content={formatTimestamp(notification.timestamp)}
+                      content={formatTimestamp(notification.createdAt)}
                       MyClass="text-sm text-gray-500 whitespace-nowrap"
                     />
                   </div>
