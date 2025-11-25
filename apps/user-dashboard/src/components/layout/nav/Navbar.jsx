@@ -29,7 +29,9 @@ export default function Navbar() {
   const [currentPage, setCurrentPage] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const unreadCount = mockNotifications.filter((n) => !n.read).length;
+  const unreadCount = useSelector(
+    (state) => state.notifications.list.filter((n) => !n.read).length
+  );
   const dropdownRef = useRef(null);
 
   useEffect(() => {
