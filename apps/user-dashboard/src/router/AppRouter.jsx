@@ -12,6 +12,7 @@ import NotificationsPage from '../pages/NotificationPage';
 import ForgotPasswordPage from '../pages/Auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/Auth/ResetPasswordPage';
 import ProtectedRoute from './ProtectedRoute';
+import SpinnerPage from '../pages/SpinnerPage.jsx';
 import { PublicRoute } from './ProtectedRoute.jsx';
 import Footer from '../components/layout/Footer';
 import AIAssistant from '../pages/Assistant';
@@ -35,6 +36,7 @@ export default function AppRouter() {
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+        <Route path="/Spinner" element={<SpinnerPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>
