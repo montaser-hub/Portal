@@ -54,3 +54,11 @@ export const getNearestSchedule = catchAsync( async ( req, res, next ) => {
   const schedule = await scheduleService.nextSchedule(userId, nowInTZ, timezone)
   res.status(200).json({ message: "Next Schedule fetched successfully", data: schedule });
 } )
+
+
+export const createMultiUserSchedule = catchAsync( async ( req, res, next ) => {
+  const data = { ...req.body }
+
+  const scheduleData = await scheduleService.createMultiUserSchedule(data)
+  return res.status(200).json({ message: "Schedule added successfully", data: scheduleData });
+})

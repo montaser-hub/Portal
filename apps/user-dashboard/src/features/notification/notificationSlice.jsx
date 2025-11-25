@@ -28,23 +28,8 @@ const notificationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadNotifications.fulfilled, (state, action) => {
-        const incoming = action.payload?.notifications || [];
-        const oldList = state.list;
-
-        const newItems = incoming.filter(
-          (n) => !oldList.some((o) => o._id === n._id) && !n.read
-        );
-
-        newItems.forEach((n) => {
-          if (Notification.permission === 'granted') {
-            new Notification(n.title, {
-              body: n.message,
-              icon: '/logo.png',
-            });
-          }
-        });
-
-        state.list = incoming;
+        state.list = action.payload?.notifications || [];
+        state.status = 'succeeded';
       })
       .addCase(markAllRead.fulfilled, (state) => {
         state.list = state.list.map((n) => ({ ...n, read: true }));
