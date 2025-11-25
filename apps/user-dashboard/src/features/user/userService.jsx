@@ -8,3 +8,5 @@ export const updateMeAPI = (data) => crudService.update('/users/updateMe', '', d
 
 
 export const updateUserPhotoAPI = (data) => crudService.update('/users/updateMe', '', data);
+
+export const updateUserPassAPI = (data) => crudService.update('/users/updateMyPassword', '', data);

@@ -33,3 +33,10 @@ export const updateUserPhoto = createAsyncThunk(
     return await userService.updateUserPhotoAPI(data);
   }
 );
+
+export const updateUserPass = createAsyncThunk(
+  'user/updateUserPass',
+  async (passwordData) => {
+    return await userService.updateUserPassAPI(passwordData);
+  }
+);

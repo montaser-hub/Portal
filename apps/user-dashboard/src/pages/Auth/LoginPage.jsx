@@ -150,7 +150,7 @@ export default function LoginPage() {
               )}`}
             />
             {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
+              <Text as="p" content={errors.email} MyClass="text-sm text-red-500" />
             )}
 
             {/* Password Input */}
@@ -181,7 +181,7 @@ export default function LoginPage() {
               )}
             </div>
             {errors.password && (
-              <p className="text-sm text-red-500">{errors.password}</p>
+              <Text as="p" content={errors.password} MyClass="text-sm text-red-500" />
             )}
 
             {/* Forgot Password */}
