@@ -3,8 +3,16 @@ import { Inbox } from 'lucide-react';
 import { Clock, Repeat2, ArrowRight, MessageSquare } from 'lucide-react';
 import StatusChip from '../../common/StatusChip';
 import ShiftCard from './swapShiftCard';
+import { useSelector } from "react-redux";
+import HeartbeatSpinner from "../../common/Spinner2";
+import Button from '../../common/Button';
 export default function ReceivedSwapRequests({ requests = [], onAction }) {
-  if (!requests.length) {
+
+  const receivedRequests = useSelector((state) => state.swap.receivedRequests);
+  const receivedStatus = useSelector((state) => state.swap.receivedStatus);
+  const isLoading = receivedStatus === 'loading';
+
+  if (!requests.length && !isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center mt-32">
         <div className="bg-gray-100 p-6 rounded-full mb-4">
@@ -20,12 +28,21 @@ export default function ReceivedSwapRequests({ requests = [], onAction }) {
   }
 
   return (
-    <div className="space-y-4">
-      {requests.map((req) => (
-        <ReceivedHistoryCard key={req._id} req={req} onAction={onAction} />
-      ))}
-    </div>
-  );
+      <>
+        {isLoading ? (
+          <HeartbeatSpinner />
+        ) : receivedRequests.length > 0 ? (
+        <div
+          className="space-y-4 max-h-[550px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100"
+        >
+          {requests.map((req) => (
+            <ReceivedHistoryCard key={req._id} req={req} onAction={onAction} />
+          ))}
+        </div>
+                ) : null}
+        <div></div>
+    </>
+);
 }
 
 //TODO: Received History Card to be reusable with history card
@@ -41,8 +58,8 @@ function ReceivedHistoryCard({ req, onAction }) {
             <Repeat2 size={20} className="text-teal-600" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Request ID</p>
-            <p className="font-semibold text-gray-800">#{req.id.slice(-8)}</p>
+            <Text as="p" MyClass="text-xs text-gray-500 font-medium" content="Request ID" />
+            <Text as="p" MyClass="font-semibold text-gray-700" content={`#${req.id.slice(-8)}`} />
           </div>
         </div>
         <StatusChip status={req.status} />
@@ -71,41 +88,37 @@ function ReceivedHistoryCard({ req, onAction }) {
 
       {/* Message */}
       {req.message && (
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
+        <div className="bg-gray-200 rounded-lg p-4 mb-4">
           <div className="flex items-start gap-2">
             <MessageSquare size={16} className="text-gray-400 mt-0.5" />
             <div>
-              <p className="text-xs text-gray-500 font-medium mb-1">Message</p>
-              <p className="text-sm text-gray-700 italic">"{req?.message}"</p>
+              <Text as="p" MyClass="text-xs text-gray-500 font-medium mb-1" content="Message" />
+              <Text as="p" MyClass="text-sm text-gray-600 italic font-semibold" content={`"${req?.message}"`} />
             </div>
           </div>
         </div>
       )}
 
+
       {/* Footer */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Clock size={16} />
+          <Clock className='text-teal-500' size={16} />
           <span>{new Date(req?.createdAt).toLocaleString()}</span>
         </div>
 
         {req.status === 'pending' && (
           <div className="flex gap-2">
-            <button
-              onClick={() => onAction(req, 'approved')}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
-            >
-              Approve
-            </button>
+            <Button variant="alert" onClick={() => onAction(req, 'rejected')}>
+                Reject
+            </Button>
+            <Button variant="primary" onClick={() => onAction(req, 'approved')}>
+                Approve
+            </Button>
 
-            <button
-              onClick={() => onAction(req, 'rejected')}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700"
-            >
-              Reject
-            </button>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import Text from "../components/common/Text";
+import Button from "../components/common/Button";
 
 export default function Modal({ isOpen, onClose, title, children }) {
   return (
@@ -13,16 +15,16 @@ export default function Modal({ isOpen, onClose, title, children }) {
             transition={{ duration: 0.2 }}
             className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative"
           >
-            <button
+            <Button
               onClick={onClose}
-              className="absolute top-3 right-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full p-2 transition"
+              className="absolute top-2 right-[1em] p-3 -mr-2 bg-gray-50 border rounded-full text-teal-300 hover:bg-gray-200 hover:text-teal-400"
             >
-              <X size={16} />
-            </button>
+              <X size={20} />
+            </Button>
+
             {title && (
-              <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                {title}
-              </h2>
+              <Text as="h2" content={title} MyClass="text-lg font-semibold mb-4 text-gray-600" />
+
             )}
             <div className="text-gray-700">{children}</div>
           </motion.div>

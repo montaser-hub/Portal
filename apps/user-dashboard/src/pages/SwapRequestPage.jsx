@@ -205,16 +205,8 @@ export default function SwapRequestPage() {
       <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 blue-50/30 min-h-screen">
         <div className="bg-gray-50 p-6">
           <div className="mx-auto">
-            <Text
-              as="h1"
-              content="Swap Request"
-              MyClass="text-3xl font-semibold text-[#0F7B8A] mb-4"
-            />
-            <Text
-              as="p"
-              content="Manage your shift swap requests and track approval progress."
-              MyClass="text-gray-600"
-            />
+            <Text as="h1" content="Swap Request" MyClass="text-3xl font-semibold text-[#0F7B8A] mb-4"  />
+            <Text as="p" content="Manage your shift swap requests and track approval progress." MyClass="text-gray-600"  />
           </div>
         </div>
 
