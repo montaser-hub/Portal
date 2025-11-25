@@ -17,6 +17,11 @@ import Pagination from '../components/common/paginaton';
 import SwapFilter from '../components/pageComponents/swapRequestPage/swapFilter';
 import ReceivedSwapRequests from '../components/pageComponents/swapRequestPage/swapReceived.jsx';
 import SwapDecisionModal from '../modals/SwapDecisionModal';
+import {
+  fetchUpcomingSchedules,
+  fetchSchedules,
+} from '../features/schedule/scheduleThunks';
+import { addDays, addHours, formatISO } from 'date-fns';
 
 export default function SwapRequestPage() {
   const [activeTab, setActiveTab] = useState('request');
@@ -70,6 +75,27 @@ export default function SwapRequestPage() {
           limit: itemsPerPage,
           status: filterStatus !== 'all' ? filterStatus : undefined,
           toUserId: user?._id,
+        })
+      );
+    } else if (activeTab === 'request') {
+      const now = new Date();
+      const startDate = addHours(now, 24); // 24 hours from now
+      const endDate = addDays(now, 14); // 2 weeks from now
+
+      dispatch(
+        fetchUpcomingSchedules({
+          userId: user?._id,
+          startDate: formatISO(startDate), // convert to ISO string
+          endDate: formatISO(endDate),
+        })
+      );
+
+      dispatch(
+        fetchSchedules({
+          'userId[ne]': user?._id,
+          departmentId: user?.departmentId,
+          startDate: formatISO(startDate),
+          endDate: formatISO(endDate),
         })
       );
     }
