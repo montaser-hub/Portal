@@ -143,3 +143,21 @@ export const swapSchedule = async (id, userId) => {
   if (!updatedSchedule) throw new AppError("Schedule Not Found", 404);
   return updatedSchedule;
 }
+
+
+export const createMultiUserSchedule = async ( data ) => {
+  const { dates, userIds, ...commonFields } = data;
+
+  // Convert ISO strings → real Date objects
+  const dateObjects = dates.map(d => new Date(d));
+
+  // Build array of documents (one per user × date)
+  const documentsToInsert = dateObjects.flatMap(date =>
+    userIds.map(userId => ({
+      ...commonFields,
+      userId,
+      date,
+    }))
+  );
+  return await scheduleRepo.createMultiUserSchedule(documentsToInsert);
+}

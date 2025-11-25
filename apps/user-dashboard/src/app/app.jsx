@@ -3,7 +3,7 @@ import AppRouter from '../router/AppRouter';
 import AppInitializer from '../AppInitializer';
 import useAppInit from '../hooks/useAppInit';
 // import DebugPanel from '../components/common/DebugPanel';
-import { useEffect } from 'react';
+import useNotificationSSE from '../hooks/useNotificationSSE';
 
 export function App() {
   return (
@@ -15,6 +15,7 @@ export function App() {
 
 function InnerApp() {
   useAppInit();
+  useNotificationSSE();
   return (
     <>
       <AppRouter />
