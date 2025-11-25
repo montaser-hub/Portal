@@ -110,7 +110,7 @@ export default function ForgotPasswordPage() {
               />
 
               {errors && (
-                <p className="text-sm text-red-500 mt-2">{errors}</p>
+                <Text as="p" content={errors} MyClass="text-sm text-red-500 mt-2" />
               )}
 
               <button
