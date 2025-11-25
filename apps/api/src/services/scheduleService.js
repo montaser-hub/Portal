@@ -19,7 +19,7 @@ const overlappingSchedulesValidation = async (data) => {
 
   if (subDepartmentId) {
     const subDepartment = await subDepartmentService.getSubDepartmentById(subDepartmentId);
-  
+
     if (departmentId && subDepartment.departmentId.toString() !== departmentId.toString()) {
       throw new AppError("SubDepartment does not belong to the specified Department", 400);
     }
@@ -136,4 +136,10 @@ function getScheduleDateTime(schedule, timezone = 'Africa/Cairo') {
   const date = new Date(schedule.date); // stored as UTC
   const dateInTZ = toZonedTime(date, timezone);
   return addSeconds(dateInTZ, schedule.shift.startTime || 0);
+}
+
+export const swapSchedule = async (id, userId) => {
+  const updatedSchedule = await scheduleRepo.update(id, userId);
+  if (!updatedSchedule) throw new AppError("Schedule Not Found", 404);
+  return updatedSchedule;
 }
