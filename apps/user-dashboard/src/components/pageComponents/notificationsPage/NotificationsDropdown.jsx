@@ -68,7 +68,7 @@ export default function NotificationDropdown({ isOpen, onClose }) {
                   />
                   <Text
                     as="span"
-                    content={formatTimestamp(n.timestamp)}
+                    content={formatTimestamp(n.createdAt)}
                     MyClass="text-[11px] text-gray-400 mt-1 block"
                   />
                 </div>
