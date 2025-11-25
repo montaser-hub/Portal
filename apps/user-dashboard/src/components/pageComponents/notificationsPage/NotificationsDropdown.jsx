@@ -48,7 +48,7 @@ export default function NotificationDropdown({ isOpen, onClose }) {
           </div>
 
           <div className="max-h-64 overflow-y-auto">
-            {notifications.slice(0, 2).map((n) => (
+            {notifications.slice(0, 4).map((n) => (
               <div
                 key={n._id}
                 className="flex items-start gap-3 px-4 py-3 hover:bg-[#E0F4F6] transition cursor-pointer"

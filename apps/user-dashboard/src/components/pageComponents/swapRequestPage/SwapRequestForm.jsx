@@ -47,7 +47,7 @@ export default function SwapRequestForm({ formData, onChange, onSubmit }) {
         />
         <Text
           as="p"
-          content="Fill in the details below to initiate a swap."
+          content={`Select your shift and the shift you want to swap with to initiate a swap request. Your selection is vaild for next 24 hours schedules till 14 days in advance.`}
           MyClass="text-sm text-gray-600 mb-4"
         />
         <div onSubmit={(e) => e.preventDefault()} className="space-y-4">
