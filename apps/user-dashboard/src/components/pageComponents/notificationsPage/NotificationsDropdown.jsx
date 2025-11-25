@@ -1,11 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Bell, CheckCircle, Calendar, AlertTriangle } from "lucide-react";
+import { getNotificationIcon, formatTimestamp } from "../../../utils/notificationUtil";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
-
+import { useDispatch, useSelector } from "react-redux";
+import { loadNotifications } from "../../../features/notification/notificationSlice";
+import { Bell } from 'lucide-react';
 export default function NotificationDropdown({ isOpen, onClose }) {
   const dropdownRef = useRef(null);
+  const dispatch = useDispatch();
+  const { list: notifications } = useSelector((state) => state.notifications);
+
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(loadNotifications());
+    }
+  }, [isOpen, dispatch]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -16,30 +26,6 @@ export default function NotificationDropdown({ isOpen, onClose }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
-
-  const notifications = [
-    {
-      id: 1,
-      title: "Shift Swap Approved",
-      message: "Your request to swap with John has been approved.",
-      icon: <CheckCircle className="h-5 w-5 text-green-600" />,
-      time: "2h ago",
-    },
-    {
-      id: 2,
-      title: "New Schedule Update",
-      message: "Your weekly schedule has been updated.",
-      icon: <Calendar className="h-5 w-5 text-blue-600" />,
-      time: "5h ago",
-    },
-    {
-      id: 3,
-      title: "Credential Expiring Soon",
-      message: "Your certification will expire in 3 days.",
-      icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
-      time: "1d ago",
-    },
-  ];
 
   return (
     <AnimatePresence>
@@ -55,43 +41,56 @@ export default function NotificationDropdown({ isOpen, onClose }) {
           <div className="px-4 pb-2 border-b flex items-center gap-2">
             <Bell className="h-5 w-5 text-[#0F7B8A]" />
             <Text
-            as="h4"
-            content="Notifications"
-            MyClass="font-semibold text-gray-700" />
+              as="h4"
+              content="Notifications"
+              MyClass="font-semibold text-gray-700"
+            />
           </div>
 
           <div className="max-h-64 overflow-y-auto">
             {notifications.slice(0, 2).map((n) => (
               <div
-                key={n.id}
+                key={n._id}
                 className="flex items-start gap-3 px-4 py-3 hover:bg-[#E0F4F6] transition cursor-pointer"
                 onClick={onClose}
               >
-                <div className="mt-1">{n.icon}</div>
+                <div className="mt-1">{getNotificationIcon(n.type)}</div>
                 <div className="flex-1">
                   <Text
-                  as="p"
-                  content={n.title}
-                  MyClass="text-sm font-semibold text-gray-800" />
+                    as="p"
+                    content={n.title}
+                    MyClass="text-sm font-semibold text-gray-800"
+                  />
                   <Text
-                  as="p"
-                  content={n.message}
-                  MyClass="text-xs text-gray-500 mt-1" />
+                    as="p"
+                    content={n.message}
+                    MyClass="text-xs text-gray-500 mt-1"
+                  />
                   <Text
-                  as="span"
-                  content={n.time}
-                  MyClass="text-[11px] text-gray-400 mt-1 block" />
+                    as="span"
+                    content={formatTimestamp(n.timestamp)}
+                    MyClass="text-[11px] text-gray-400 mt-1 block"
+                  />
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="px-4 pt-2 border-t">
+          <div className="px-4 pt-2 border-t flex justify-between items-center gap-2">
+            {Notification.permission !== 'granted' && (
+              <button
+                onClick={() => Notification.requestPermission()}
+                className="text-sm text-teal-600 hover:bg-blue-50 py-2 px-3 rounded-md whitespace-nowrap"
+              >
+                Enable Notifications
+              </button>
+            )}
+
             <Link
               to="/Notifications"
-              onMouseDown={(e) => e.currentTarget.classList.add("bg-[#E0F4F6]")}
+              onMouseDown={(e) => e.currentTarget.classList.add('bg-[#E0F4F6]')}
               onClick={() => setTimeout(() => onClose(), 150)}
-              className="block text-center py-2 text-sm font-medium text-[#0F7B8A] hover:bg-[#E0F4F6] active:bg-[#E0F4F6] transition rounded-md"
+              className="text-sm font-medium text-[#0F7B8A] hover:bg-[#E0F4F6] active:bg-[#E0F7F6] py-2 px-3 rounded-md whitespace-nowrap"
             >
               Show All
             </Link>

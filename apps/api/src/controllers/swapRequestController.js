@@ -47,3 +47,9 @@ export const deleteSwapRequest = catchAsync( async ( req, res, next ) => {
 });
 
 
+export const IsApproved = catchAsync( async ( req, res, next ) => {
+  const id = req.params.id
+  const data = { ...req.body }
+  const swapRequestData = await swapRequestService.IsApproved(id, data)
+  res.status(200).json({ message: "swapRequest status updated successfully", data: swapRequestData });
+});

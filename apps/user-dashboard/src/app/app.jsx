@@ -3,6 +3,7 @@ import AppRouter from '../router/AppRouter';
 import AppInitializer from '../AppInitializer';
 import useAppInit from '../hooks/useAppInit';
 // import DebugPanel from '../components/common/DebugPanel';
+import { useEffect } from 'react';
 
 export function App() {
   return (
@@ -14,7 +15,6 @@ export function App() {
 
 function InnerApp() {
   useAppInit();
-
   return (
     <>
       <AppRouter />
@@ -23,5 +23,10 @@ function InnerApp() {
     </>
   );
 }
+export const requestBrowserPermission = () => {
+  if (Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+};
 
 export default App;
