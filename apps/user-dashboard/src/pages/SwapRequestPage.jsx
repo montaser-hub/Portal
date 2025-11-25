@@ -66,6 +66,7 @@ export default function SwapRequestPage() {
           limit: itemsPerPage,
           status: filterStatus !== 'all' ? filterStatus : undefined,
           fromUserId: user?._id,
+          sort: '-createdAt',
         })
       );
     } else if (activeTab === 'received') {
@@ -75,6 +76,7 @@ export default function SwapRequestPage() {
           limit: itemsPerPage,
           status: filterStatus !== 'all' ? filterStatus : undefined,
           toUserId: user?._id,
+          sort: '-createdAt',
         })
       );
     } else if (activeTab === 'request') {

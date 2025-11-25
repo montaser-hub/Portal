@@ -57,3 +57,8 @@ export const findMany = async (query) => {
     select: 'startTime endTime shiftName shiftType'
   });
 };
+
+
+export const createMultiUserSchedule = async (data) => {
+  return await Schedule.insertMany(data);
+}
