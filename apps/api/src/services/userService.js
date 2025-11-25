@@ -3,7 +3,7 @@ import * as authService from "./authService.js"
 import AppError from "../utils/AppError.js"
 import { getAllDocuments } from "./queryService.js"
 import * as scheduleRepo from "../dataAccess/scheduleRepo.js";
-
+import { sendNotification } from "../controllers/notificationController.js";
 
 export const login = async (email, nickname, password) => {
   // 1) check if the user && password is correct
@@ -36,6 +36,13 @@ export const updateUser = async ( id, data ) => {
   const updatedUser = await userRepo.update(id, { email, nikename, ...body })
 
   if(!updatedUser) throw new AppError("User Not Found", 404)
+
+  sendNotification(updatedUser?._id, {
+    title: " Profile Updated",
+    message: `Your profile was updated successfully.`,
+    type: "Profile Update",
+    priority: "Low"
+  })
   return updatedUser
 }
 export const getUser = async ( id ) => {
@@ -62,6 +69,12 @@ export const updatePassword = async ( email, data ) => {
   // 3) Update password
   user.password = data.newPassword;
   await user.save();
+  sendNotification(user?._id, {
+    title: " Password Changed",
+    message: `Your password was changed successfully.`,
+    type: "Password Change",
+    priority: "Medium"
+  })
   return authService.createTokenPayload(user);
 }
 
