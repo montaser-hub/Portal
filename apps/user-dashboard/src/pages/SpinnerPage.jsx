@@ -6,7 +6,6 @@ export default function SpinnerPage() {
 
 
   return (
-      // <ECGHeartSpinner />
       <HeartbeatSpinner />
   );
 }

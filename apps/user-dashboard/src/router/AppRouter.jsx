@@ -4,7 +4,7 @@ import LoginPage from '../pages/Auth/LoginPage';
 import Navbar from '../components/layout/nav/Navbar';
 import Dashboard from '../pages/Dashboard';
 import CalendarPage from '../pages/CalendarPage';
-import MySchedules from '../pages/MySchedules.jsx';
+import MySchedules from '../pages/MySchedules';
 import SwapRequestPage from '../pages/SwapRequestPage';
 import Profile from '../pages/ProfilePage';
 import NotFoundPage from '../pages/NotFoundPage';

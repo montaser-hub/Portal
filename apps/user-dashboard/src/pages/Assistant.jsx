@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, X, MessageSquare } from 'lucide-react';
 import axios from '../services/api';
+import Button from '../components/common/Button';
+import Text from '../components/common/Text';
+import Input from '../components/common/Input';
 
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
@@ -37,12 +40,12 @@ export default function AIAssistant() {
   return (
     <>
       {/* Floating Button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 bg-teal-600 text-white p-4 rounded-full shadow-lg hover:bg-teal-700 transition-all z-50"
+      <Button
+      onClick={() => setOpen(true)}
+      className="mb-8 fixed bottom-6 right-6 bg-teal-600 text-white p-4 rounded-full shadow-lg hover:bg-teal-700 transition-all z-50"
       >
         <MessageSquare className="w-6 h-6" />
-      </button>
+      </Button>
 
       {/* Chat Window */}
       <AnimatePresence>
@@ -58,11 +61,11 @@ export default function AIAssistant() {
             <div className="flex items-center justify-between p-3 border-b bg-teal-600 text-white">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
-                <span className="font-semibold">Smart Shift Assistant</span>
+                <Text as="span" MyClass="font-semibold" content="Smart Shift Assistant" />
               </div>
-              <button onClick={() => setOpen(false)}>
-                <X className="w-5 h-5" />
-              </button>
+              <Button onClick={() => setOpen(false)}>
+                <X className="w-5 h-5 text-white" />
+              </Button>
             </div>
 
             {/* Messages */}
@@ -89,19 +92,20 @@ export default function AIAssistant() {
 
             {/* Input */}
             <div className="p-3 border-t flex items-center gap-2">
-              <input
+              <Input
+                type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Ask about your shifts..."
-                className="flex-1 border rounded-xl p-2 text-sm focus:ring-2 focus:ring-teal-400 outline-none"
+                myClass="flex-1 border rounded-xl p-2 text-sm focus:ring-2 focus:ring-teal-400 outline-none"
               />
-              <button
+              <Button
                 onClick={sendMessage}
                 className="p-2 bg-teal-600 rounded-full text-white hover:bg-teal-700"
               >
                 <Send className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           </motion.div>
         )}
