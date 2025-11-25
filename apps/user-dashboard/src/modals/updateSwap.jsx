@@ -7,7 +7,7 @@ import { editSwapRequest, removeSwapRequest, fetchSwapRequests } from '../featur
 import Text from '../components/common/Text';
 import Button from '../components/common/Button';
 import { X } from 'lucide-react';
-import { CustomSelect, ScheduleOption } from '../components/pageComponents/swapRequestPage/SwapRequestForm';
+import { CustomSelect, ScheduleOption } from '../components/pageComponents/swapRequestPage/selectSwap';
 
 export default function UpdateSwapRequestModal({
   isOpen,
