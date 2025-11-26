@@ -4,41 +4,13 @@ import { Link } from "react-router-dom";
 import {
   Bell,
   User,
-  LogOut,
-  Calendar,
-  CheckCircle,
-  RefreshCw,
-  Megaphone,
-  AlertTriangle,
+  LogOut
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 import { useAuth } from '../../../hooks/useAuth';
-
-const mockNotifications = [
-  {id: 1,title: "New message from Support Team",message: "Please check your inbox.",type: "Announcement",read: false,},
-  {id: 2,title: "Password changed successfully",message: "Your password was updated.",type: "Credential Expiring",read: true,},
-  {id: 3,title: "Schedule updated",message: "Your schedule has been changed.",type: "Schedule Change",read: false,},
-  {id: 4,title: "Swap Approved",message: "Your swap request was approved.",type: "Swap Approved",read: false,}
-];
-
-function getNotificationIcon(type) {
-  switch (type) {
-    case "Schedule Change":
-      return <Calendar className="h-5 w-5 text-[#0F7B8A]" />;
-    case "Swap Approved":
-      return <CheckCircle className="h-5 w-5 text-green-600" />;
-    case "Swap Rejected":
-      return <RefreshCw className="h-5 w-5 text-red-500" />;
-    case "Announcement":
-      return <Megaphone className="h-5 w-5 text-[#0F7B8A]" />;
-    case "Credential Expiring":
-      return <AlertTriangle className="h-5 w-5 text-red-500" />;
-    default:
-      return <Bell className="h-5 w-5 text-[#0F7B8A]" />;
-  }
-}
+import NotificationDropdown from '../../pageComponents/notificationsPage/NotificationsDropdown';
 
 export default function DesktopNavbar({
   navigation,
@@ -123,59 +95,11 @@ export default function DesktopNavbar({
             )}
           </div>
 
-          <AnimatePresence>
-            {notifMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg py-2 z-30"
-              >
-                {mockNotifications.length > 0 ? (
-                  mockNotifications.map((n) => (
-                    <div
-                      key={n.id}
-                      onClick={() => setNotifMenuOpen(false)}
-                      className="px-4 py-2 border-b last:border-none hover:bg-[#E0F4F6] cursor-pointer transition flex items-center gap-2"
-                    >
-                      <div>{getNotificationIcon(n.type)}</div>
-                      <div className="flex-1">
-                        <Text
-                          as="h4"
-                          content={n.title}
-                          MyClass="font-medium text-sm text-gray-800"
-                        />
-                        <Text
-                          as="p"
-                          content={n.message}
-                          MyClass="text-xs text-gray-500 mt-1"
-                        />
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="px-4 py-4 text-center text-gray-500 text-sm">
-                    No new notifications
-                  </div>
-                )}
-                <div className="mt-2">
-                  <Link
-                    to="/Notifications"
-                    onClick={() => {
-                      setCurrentPage('notifications');
-                      setNotifMenuOpen(false);
-                    }}
-                    className="block text-center text-[#0F7B8A] py-2 font-medium text-sm hover:bg-[#E0F4F6] rounded-none"
-                  >
-                    Show all
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <NotificationDropdown
+            isOpen={notifMenuOpen}
+            onClose={() => setNotifMenuOpen(false)}
+          />
         </div>
-
         {/* User Menu */}
         <div ref={userRef} className="relative">
           <div

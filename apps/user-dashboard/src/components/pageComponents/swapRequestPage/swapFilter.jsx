@@ -1,3 +1,4 @@
+import Input from "../../common/Input";
 export default function SwapFilter({
   filterStatus,
   setFilterStatus,
@@ -7,24 +8,18 @@ export default function SwapFilter({
   return (
     <div className="flex items-center space-x-4 mb-4">
       {options.map((status) => (
-        <label
+        <Input
           key={status}
-          className="flex items-center space-x-1 text-gray-700"
-        >
-          <input
-            type="radio"
-            name="swapFilter"
-            value={status}
-            checked={filterStatus === status}
-            onChange={(e) => {
-              setFilterStatus(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="accent-[#0F7B8A]"
-            aria-label={status}
-          />
-          <span className="capitalize">{status}</span>
-        </label>
+          type="radio"
+          name="swapFilter"
+          label={status}
+          value={status}
+          checked={filterStatus === status}
+          onChange={(e) => {
+            setFilterStatus(e.target.value);
+            setCurrentPage(1);
+          }}
+        />
       ))}
     </div>
   );

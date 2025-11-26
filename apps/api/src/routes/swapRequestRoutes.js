@@ -5,6 +5,7 @@ import * as authController from '../controllers/authController.js';
 const swapRequestRouter = express.Router();
 swapRequestRouter.use(authController.isAuth);
 
+swapRequestRouter.route('/isAproved/:id').patch(swapRequestController.IsApproved);
 swapRequestRouter
   .route('/')
   .get(swapRequestController.getSwapRequests)

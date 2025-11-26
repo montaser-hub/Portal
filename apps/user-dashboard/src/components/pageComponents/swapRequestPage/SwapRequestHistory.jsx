@@ -5,14 +5,19 @@ import {
   Repeat2,
   ArrowRight,
   MessageSquare,
-  Calendar,
 } from 'lucide-react';
 import StatusChip from '../../common/StatusChip';
 import ShiftCard from './swapShiftCard.jsx';
 import CanModify from '../../common/CanModify.jsx';
+import { useSelector } from "react-redux";
+import HeartbeatSpinner from "../../common/Spinner2";
+import Button from '../../common/Button';
 
 export default function SwapRequestHistory({ requests = [], onEdit }) {
-  if (!requests.length) {
+  const swapRequests = useSelector((state) => state.swap.swapRequests);
+  const swapStatus = useSelector((state) => state.swap.swapStatus);
+  const isLoading = swapStatus === 'loading';
+  if (requests.length===0 && !isLoading) {
     return (
       // <div className="flex flex-col items-center justify-center h-full text-center">
       <div className="flex flex-col items-center justify-center h-full text-center mt-32">
@@ -29,12 +34,20 @@ export default function SwapRequestHistory({ requests = [], onEdit }) {
   }
 
   return (
-    <div className="space-y-4">
-      {requests.map((req) => (
-        <HistoryCard key={req?._id} req={req} onEdit={onEdit} />
-      ))}
-    </div>
-  );
+    <>
+      {isLoading ? (
+        <HeartbeatSpinner />
+      ) : swapRequests.length > 0 ? (
+        <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100">
+          {requests.map((req) => (
+            <HistoryCard key={req?._id} req={req} onEdit={onEdit} />
+          ))}
+        </div>
+      ) : null}
+      <div></div>
+    </>
+);
+
 }
 
 /* ---------------------------- HISTORY CARD ---------------------------- */
@@ -51,8 +64,8 @@ function HistoryCard({ req, onEdit }) {
             <Repeat2 size={20} className="text-teal-600" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Request ID</p>
-            <p className="font-semibold text-gray-800">#{req.id.slice(-8)}</p>
+            <Text as="p" MyClass="text-xs text-gray-500 font-medium" content="Request ID" />
+            <Text as="p" MyClass="font-semibold text-gray-700" content={`#${req.id.slice(-8)}`} />
           </div>
         </div>
         <StatusChip status={req.status} />
@@ -81,15 +94,15 @@ function HistoryCard({ req, onEdit }) {
 
       {/* Message Section */}
       {req.message && (
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
+        <div className="bg-gray-200 rounded-lg p-4 mb-4">
           <div className="flex items-start gap-2">
             <MessageSquare
               size={16}
               className="text-gray-400 mt-0.5 flex-shrink-0"
             />
             <div className="flex-1">
-              <p className="text-xs text-gray-500 font-medium mb-1">Message</p>
-              <p className="text-sm text-gray-700 italic">"{req?.message}"</p>
+              <Text as="p" MyClass="text-xs text-gray-500 font-medium mb-1" content="Message" />
+              <Text as="p" MyClass="text-sm text-gray-600 italic font-semibold" content={`"${req?.message}"`} />
             </div>
           </div>
         </div>
@@ -103,12 +116,9 @@ function HistoryCard({ req, onEdit }) {
         </div>
 
         {showActions && (
-          <button
-            onClick={() => onEdit(req)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition-colors text-sm font-medium shadow-sm"
-          >
+          <Button variant="primary" onClick={() => onEdit(req)}>
             Edit Request
-          </button>
+          </Button>
         )}
       </div>
     </div>

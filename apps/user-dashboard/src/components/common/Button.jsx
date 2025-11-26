@@ -6,24 +6,22 @@ export default function Button({
   variant = "outline",
   ...props
 }) {
-  const base = "px-4 py-2 rounded-lg font-medium transition-colors";
+  const base = "px-4 py-2 rounded-lg font-medium transition-color duration-300";
   let variantClasses = "";
-  let style = {};
 
-  if (variant === "primary") {
-    variantClasses = `text-white hover:opacity-90`;
-    style = { backgroundColor: "#0F7B8A" };
+  if (variant === "base") {
+    variantClasses = `${base}`;
+  } else if (variant === "primary") {
+    variantClasses = `${base} text-white bg-[#0F7B8A] hover:bg-[#0c656c] `;
   } else if (variant === "secondary") {
-    variantClasses = ` text-gray-600 hover:bg-[#E0F4F6]`;
+    variantClasses = ` ${base} text-gray-600 hover:bg-gray-200`;
   } else if (variant === "alert") {
-    variantClasses = `text-white hover:opacity-90`;
-    style = { backgroundColor: "#E74C3C" };
+    variantClasses = ` ${base} text-white bg-red-600 hover:bg-red-700`;
   }
 
   return (
     <button
-      className={`${base} ${variantClasses} ${className} text-gray-500`}
-      style={style}
+      className={` ${variantClasses} ${className} text-gray-500`}
       onClick={onClick}
       {...props}
     >

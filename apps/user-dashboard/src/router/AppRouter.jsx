@@ -4,7 +4,7 @@ import LoginPage from '../pages/Auth/LoginPage';
 import Navbar from '../components/layout/nav/Navbar';
 import Dashboard from '../pages/Dashboard';
 import CalendarPage from '../pages/CalendarPage';
-import MySchedules from '../pages/MySchedules.jsx';
+import MySchedules from '../pages/Schedules';
 import SwapRequestPage from '../pages/SwapRequestPage';
 import Profile from '../pages/ProfilePage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -15,12 +15,14 @@ import ProtectedRoute from './ProtectedRoute';
 import SpinnerPage from '../pages/SpinnerPage.jsx';
 import { PublicRoute } from './ProtectedRoute.jsx';
 import Footer from '../components/layout/Footer';
+import AIAssistant from '../pages/Assistant';
 
 function AppLayout() {
   return (
     <>
       <Navbar />
       <Outlet />
+      <AIAssistant />
       <Footer />
     </>
   );

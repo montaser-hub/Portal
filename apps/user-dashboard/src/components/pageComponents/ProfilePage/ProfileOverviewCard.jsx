@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Wrench } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import Modal from "../../../modals/EditProfileModal";
+import PasswordChangeModal from "../../../modals/PasswordChangeModal";
 import { toast } from "react-hot-toast";
 import { updateMe } from "../../../features/user/userThunks";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +18,7 @@ export default function ProfileOverviewCard() {
   const [pendingData, setPendingData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [errors, setErrors] = useState({
     nickname: "",
     firstName: "",
@@ -31,54 +34,80 @@ export default function ProfileOverviewCard() {
     contactNumber: false,
   });
 
-  /** Regex rules */
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const nameRegex = /^[A-Za-z.-]{3,}$/;
-  const egyptPhoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
-
   const hasErrors = Object.values(errors).some((e) => e);
 
-  /** Validation logic */
   const validateField = (name, value) => {
-    const error = "";
-    // Arabic input check
-    if (/[ء-ي]/.test(value)) return "English Language Only";
-    // Required check
-    if (!value.trim()) return `${name} is required`;
-    // Name validation
-    if (["firstName", "lastName", "nickname"].includes(name)) {
-      if (/\d/.test(value)) return "Characters Only";
-      if (!nameRegex.test(value)) return "Must be at least 3 letters";
+    if (!value || !value.trim()) {
+      const fieldNames = {
+        nickname: 'Nickname',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        email: 'Email',
+        contactNumber: 'Phone Number'
+      };
+      return `${fieldNames[name]} is required`;
     }
-    // Email validation
-    if (name === "email" && !emailRegex.test(value)) return "Invalid email";
 
-    // Phone validation
-    if (name === "contactNumber") {
-      if (/[A-Za-z]/.test(value)) return "Number Only";
-      if (!egyptPhoneRegex.test(value)) return "Phone must be an Egyptian number";
+    /* SPACE VALIDATION */
+    if (["firstName", "lastName"].includes(name)) {
+      if (/^\s/.test(value) || /\s$/.test(value)) {
+        return "Using space in middle only";
+      }
     }
-    return error;
+    if (!["firstName", "lastName"].includes(name)) {
+      if (/\s/.test(value)) {
+        return "Spaces are not allowed in this field";
+      }
+    }
+
+    /* Arabic characters */
+    if (/[ء-ي]/.test(value)) {
+      return 'English characters only';
+    }
+
+    /* Name Validation */
+    if (['firstName', 'lastName', 'nickname'].includes(name)) {
+      if (/\d/.test(value)) return 'Name cannot contain numbers';
+      if (value.trim().length < 2) return 'Name must be at least 2 characters';
+      if (!/^[A-Za-z.\s-]+$/.test(value))
+        return 'Name can only contain letters, spaces, dots and hyphens';
+    }
+
+    /* Email validation */
+    if (name === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Please enter a valid email address (example@domain.com)';
+      }
+    }
+
+    /* Contact Number validation */
+    if (name === 'contactNumber') {
+      const cleanValue = value.replace(/\s/g, '');
+      if (/[A-Za-z]/.test(cleanValue)) return 'Phone number must contain numbers only';
+      if (!/^\d+$/.test(cleanValue)) return 'Phone number must contain numbers only';
+      if (cleanValue.length !== 11) return 'Egyptian phone number must be 11 digits';
+      if (!cleanValue.startsWith('01')) return 'Egyptian phone number must start with 01';
+      if (!/^01[0125]/.test(cleanValue)) {
+        return 'Invalid Egyptian phone operator (must be 010, 011, 012, or 015)';
+      }
+    }
+
+    return '';
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setPendingData((prev) => ({ ...prev, [name]: value }));
-
     setErrors((prev) => ({
       ...prev,
       [name]: validateField(name, value),
     }));
-
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-
     setTouched((prev) => ({ ...prev, [name]: true }));
-
     setErrors((prev) => ({
       ...prev,
       [name]: validateField(name, value),
@@ -95,7 +124,6 @@ export default function ProfileOverviewCard() {
     (key) => pendingData[key] !== (user[key] ?? "")
   );
 
-  /** New: handle save attempt before opening modal */
   const handleSaveAttempt = () => {
     setIsModalOpen(true);
   };
@@ -164,11 +192,21 @@ export default function ProfileOverviewCard() {
         <HeartbeatSpinner />
       ) : (
         <Card className="p-6 space-y-4 bg-white border-gray-200">
-          <Text
-            as="h3"
-            content="Contact Information"
-            MyClass="text-lg font-medium text-teal-700"
-          />
+          <div className="flex items-center justify-between">
+            <Text
+              as="h3"
+              content="Contact Information"
+              MyClass="text-lg font-medium text-teal-700"
+            />
+            {/* Password Change Button */}
+            <Button
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0F7B8A] to-[#0D6C78] text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              <Wrench className="h-4 w-4" />
+              <Text as="span" content="Change Password" MyClass="text-sm font-medium" />
+            </Button>
+          </div>
 
           {/* Editable Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -189,7 +227,7 @@ export default function ProfileOverviewCard() {
                     myClass={`border-2 ${getBorderColor(field)}`}
                   />
                   {errors[field] && touched[field] && (
-                    <p className="text-sm text-red-500">{errors[field]}</p>
+                    <Text as="p" content={errors[field]} MyClass="text-sm text-red-500" />
                   )}
                 </div>
               )
@@ -264,6 +302,7 @@ export default function ProfileOverviewCard() {
             Cancel
           </Button>
           <Button
+            variant="primary"
             className="bg-[#0F7B8A] hover:bg-[#0F7B8A]/90 text-white"
             onClick={handleConfirmSave}
           >
@@ -271,6 +310,12 @@ export default function ProfileOverviewCard() {
           </Button>
         </div>
       </Modal>
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </>
   );
 }
