@@ -3,9 +3,8 @@ import { Calendar, CalendarDays, Menu, House, RefreshCw, Cog } from "lucide-reac
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import Text from "../../common/Text";
-import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {  useSelector } from "react-redux";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
@@ -70,17 +69,6 @@ export default function Navbar() {
               <Text content="SmartShift" MyClass="text-xl font-bold text-[#0F7B8A]" />
               <Text as="p" content="Healthcare Scheduling" MyClass="text-xs text-gray-500" />
             </div>
-            <div>
-              <Link
-                to="/Dashboard"
-                className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200"
-              >
-                {currentUser?.role === "admin" || currentUser?.role === "manager" ? (
-                  <Cog className="h-6 w-6" />
-                ) : null}
-              </Link>
-            </div>
-
           </div>
 
           {/* Navigation Section */}
@@ -95,7 +83,6 @@ export default function Navbar() {
               currentUser={currentUser}
               getUserInitials={getUserInitials}
               profileImage={currentUser?.photo}
-
             />
 
             {/* Mobile menu button */}
