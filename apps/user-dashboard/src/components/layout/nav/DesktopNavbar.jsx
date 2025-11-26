@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import {
   Bell,
   User,
-  LogOut
+  LogOut,
+  Cog
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "../../common/Text";
@@ -45,33 +46,44 @@ export default function DesktopNavbar({
   return (
     <div className="hidden md:flex items-center flex-1">
       {/* Navigation Links */}
-      <nav className="flex items-center gap-4 ml-12">
-        {navigation.map((item) => {
-          const Icon = item.icon;
-          const isActive =
-            currentPage === item.id && item.id !== 'notifications';
-          return (
-            <Link
-              key={item.id}
-              to={item.path}
-              onClick={() => {
-                setCurrentPage(item.id);
-                setUserMenuOpen(false);
-                setNotifMenuOpen(false);
-              }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
-                isActive
-                  ? 'bg-[#0F7B8A] text-white shadow-md'
-                  : 'text-gray-700 hover:bg-[#E0F4F6] hover:text-black'
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              <Text as="span" content={item.label} />
-            </Link>
-          );
-        })}
-      </nav>
+    <nav className="flex items-center gap-3 ml-12">
+    {navigation.map((item) => {
+      const Icon = item.icon;
+      const isActive =
+        currentPage === item.id && item.id !== "notifications";
+      return (
+        <Link
+          key={item.id}
+          to={item.path}
+          onClick={() => {
+            setCurrentPage(item.id);
+            setUserMenuOpen(false);
+            setNotifMenuOpen(false);
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+            isActive
+              ? "bg-[#0F7B8A] text-white shadow-md"
+              : "text-gray-700 hover:bg-[#E0F4F6] hover:text-black"
+          }`}
+        >
+          <Icon className="h-4 w-4" />
+          <Text as="span" content={item.label} />
+        </Link>
+      );
+    })}
 
+    {currentUser?.role === "admin" || currentUser?.role === "manager" ?(
+      <a
+        href="https://example.com/admin"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
+      >
+        <Cog className="h-6 w-6" />
+        <Text as="span" content="Setting" className="text-1xl" />
+      </a>
+    ): null}
+    </nav>
       {/* Right Section */}
       <div className="flex items-center gap-6 ml-auto">
         {/* Notifications */}
