@@ -16,10 +16,9 @@ import cookieParser from 'cookie-parser';
 
 
 const app = express();
-
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200'];
+    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200','https://tangerine-cuchufli-e07247.netlify.app/shifts'];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
