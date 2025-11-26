@@ -17,6 +17,11 @@ import Pagination from '../components/common/paginaton';
 import SwapFilter from '../components/pageComponents/swapRequestPage/swapFilter';
 import ReceivedSwapRequests from '../components/pageComponents/swapRequestPage/swapReceived.jsx';
 import SwapDecisionModal from '../modals/SwapDecisionModal';
+import {
+  fetchUpcomingSchedules,
+  fetchSchedules,
+} from '../features/schedule/scheduleThunks';
+import { addDays, addHours, formatISO } from 'date-fns';
 
 export default function SwapRequestPage() {
   const [activeTab, setActiveTab] = useState('request');
@@ -61,6 +66,7 @@ export default function SwapRequestPage() {
           limit: itemsPerPage,
           status: filterStatus !== 'all' ? filterStatus : undefined,
           fromUserId: user?._id,
+          sort: '-createdAt',
         })
       );
     } else if (activeTab === 'received') {
@@ -70,6 +76,28 @@ export default function SwapRequestPage() {
           limit: itemsPerPage,
           status: filterStatus !== 'all' ? filterStatus : undefined,
           toUserId: user?._id,
+          sort: '-createdAt',
+        })
+      );
+    } else if (activeTab === 'request') {
+      const now = new Date();
+      const startDate = addHours(now, 24); // 24 hours from now
+      const endDate = addDays(now, 14); // 2 weeks from now
+
+      dispatch(
+        fetchUpcomingSchedules({
+          userId: user?._id,
+          startDate: formatISO(startDate), // convert to ISO string
+          endDate: formatISO(endDate),
+        })
+      );
+
+      dispatch(
+        fetchSchedules({
+          'userId[ne]': user?._id,
+          departmentId: user?.departmentId,
+          startDate: formatISO(startDate),
+          endDate: formatISO(endDate),
         })
       );
     }
@@ -205,16 +233,8 @@ export default function SwapRequestPage() {
       <div className="p-6 bg-gradient-to-br from-gray-50 via-teal-50/20 blue-50/30 min-h-screen">
         <div className="bg-gray-50 p-6">
           <div className="mx-auto">
-            <Text
-              as="h1"
-              content="Swap Request"
-              MyClass="text-3xl font-semibold text-[#0F7B8A] mb-4"
-            />
-            <Text
-              as="p"
-              content="Manage your shift swap requests and track approval progress."
-              MyClass="text-gray-600"
-            />
+            <Text as="h1" content="Swap Request" MyClass="text-3xl font-semibold text-[#0F7B8A] mb-4"  />
+            <Text as="p" content="Manage your shift swap requests and track approval progress." MyClass="text-gray-600"  />
           </div>
         </div>
 

@@ -1,10 +1,18 @@
 import * as SwapRequestRepo from '../dataAccess/swapRequestRepo.js'
 import AppError from '../utils/AppError.js'
 import { getAllDocuments } from './queryService.js'
-
+import { sendNotification } from '../controllers/notificationController.js'
+import { swapSchedule } from './scheduleService.js'
 //  Add SwapRequest
 export const addSwapRequest = async (data) => {
-  return await SwapRequestRepo.create(data)
+  const createdSwapRequest = await SwapRequestRepo.create( data )
+    sendNotification(createdSwapRequest?.toUserId, {
+    title: " Swap Request",
+    message: `Swap request was sent form ${createdSwapRequest.fromUser.fullName} check your swap requet panel.`,
+    type: `Swap Request`,
+    priority: "Medium"
+  })
+  return createdSwapRequest;
 }
 
 // Get SwapRequest By Id
@@ -24,6 +32,12 @@ export const getAllSwapRequests = async (queryParams) => {
 export const updateSwapRequest = async (id, data) => {
   const updatedSwapRequest = await SwapRequestRepo.update(id, data)
   if (!updatedSwapRequest) throw new AppError("SwapRequest already existed.", 400)
+    sendNotification(createdSwapRequest?.toUserId, {
+    title: " Swap Request",
+    message: `Swap request was sent form ${updatedSwapRequest.fromUser.fullName} check your swap requet panel.`,
+    type: "Swap Updated",
+    priority: "Low"
+  })
   return updatedSwapRequest
 }
 
@@ -34,3 +48,22 @@ export const deleteSwapRequest = async (id) => {
   return await SwapRequestRepo.removeById(id)
 }
 
+export const IsApproved = async (id, data) => {
+  const isExists = await getSwapRequest(id)
+  if(isExists?.status === "approved") throw new AppError("SwapRequest already approved.", 400)
+  const updatedSwapRequest = await SwapRequestRepo.update(id, data)
+
+  if ( updatedSwapRequest?.status == 'approved' ) {
+    swapSchedule( updatedSwapRequest?.fromScheduleId, { userId: updatedSwapRequest?.toUserId } )
+    swapSchedule( updatedSwapRequest?.toScheduleId, { userId: updatedSwapRequest?.fromUserId } )
+  }
+  const title = updatedSwapRequest?.status === "approved" ? "Swap Request Approved" : "Swap Request Declined";
+  sendNotification(updatedSwapRequest?.fromUserId, {
+    title,
+    message: `Your swap request was ${updatedSwapRequest.status}.`,
+    type: `Swap ${updatedSwapRequest.status}`,
+    priority: "High"
+  });
+
+  return updatedSwapRequest
+}

@@ -12,18 +12,25 @@ export default function ForgotPasswordPage() {
   const [errors, setErrors] = useState("");
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
-  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleEmailChange = (e) => {
-  const value = e.target.value;
-  setEmail(value);
-  setTouched(true);
-  if (/[ء-ي]/.test(value) || !emailRegex.test(value)) {
-    setErrors("Email is not valid");
-  } else {
-    setErrors("");
-  }
-};
+    const value = e.target.value;
+    setEmail(value);
+    setTouched(true);
+
+    let error = '';
+    if (!value.trim()) {
+      error = 'Email is required';
+    } else if (/[ء-ي]/.test(value)) {
+      error = 'English characters only';
+    } else if (!emailRegex.test(value)) {
+      error = 'Please enter a valid email address';
+    }
+
+    setErrors(error);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,7 +110,7 @@ export default function ForgotPasswordPage() {
               />
 
               {errors && (
-                <p className="text-sm text-red-500 mt-2">{errors}</p>
+                <Text as="p" content={errors} MyClass="text-sm text-red-500 mt-2" />
               )}
 
               <button
@@ -117,7 +124,7 @@ export default function ForgotPasswordPage() {
               </button>
 
               <div className="text-center text-sm text-gray-500">
-                <Text as="span" content="Remember your password?" />
+                <Text as="span" content="Remember your password? " />
                 <Link
                   to="/Login"
                   className="text-[#0F7B8A] hover:text-[#0D6C78]"

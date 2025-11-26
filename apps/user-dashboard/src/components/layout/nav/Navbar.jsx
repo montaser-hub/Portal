@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Calendar, CalendarDays, Menu, House, RefreshCw } from "lucide-react";
+import { Calendar, CalendarDays, Menu, House, RefreshCw, Cog } from "lucide-react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import Text from "../../common/Text";
 import { mockNotifications } from "../../common/mockData";
 import { AnimatePresence } from "framer-motion";
-import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import {  useSelector } from "react-redux";
 const navigation = [
   { id: "dashboard", label: "Dashboard", icon: House, path: "/Dashboard" },
   { id: "calendar", label: "My Calendar", icon: Calendar, path: "/Calendar" },
@@ -25,12 +25,13 @@ function getUserInitials(name = "") {
 
 export default function Navbar() {
   const location = useLocation();
-  const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const unreadCount = mockNotifications.filter((n) => !n.read).length;
+  const unreadCount = useSelector(
+    (state) => state.notifications.list.filter((n) => !n.read).length
+  );
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -69,6 +70,17 @@ export default function Navbar() {
               <Text content="SmartShift" MyClass="text-xl font-bold text-[#0F7B8A]" />
               <Text as="p" content="Healthcare Scheduling" MyClass="text-xs text-gray-500" />
             </div>
+            <div>
+              <Link
+                to="/Dashboard"
+                className="text-gray-500 hover:text-[#40a5b4] transition-colors duration-200"
+              >
+                {currentUser?.role === "admin" || currentUser?.role === "manager" ? (
+                  <Cog className="h-6 w-6" />
+                ) : null}
+              </Link>
+            </div>
+
           </div>
 
           {/* Navigation Section */}

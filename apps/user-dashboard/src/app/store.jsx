@@ -4,6 +4,7 @@ import scheduleReducer from '../features/schedule/ScheduleSlice';
 import swapReducer from '../features/swaprequest/swapSlice';
 import shiftReducer from '../features/Shift/shiftSlice';
 import subDepartmentReducer from '../features/subDepartment/subDepartmentSlice';
+import notificationReducer from '../features/notification/notificationSlice';
 
 const loaderSlice = createSlice({
   name: 'loader',
@@ -28,6 +29,7 @@ const store = configureStore({
     swap: swapReducer,
     shift: shiftReducer,
     subDepartment: subDepartmentReducer,
+    notifications: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
