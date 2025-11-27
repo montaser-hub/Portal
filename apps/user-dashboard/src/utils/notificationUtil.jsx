@@ -13,7 +13,7 @@ import {
 import { format } from 'date-fns';
 export const getNotificationIcon = (type) => {
   switch (type) {
-    case 'Profile Updated':
+    case 'Profile Update':
       return <UserCheck className="h-6 w-6 text-[#0F7B8A]" />;
     case 'Password Changed':
       return <KeyRound className="h-6 w-6 text-[#0F7B8A]" />;
