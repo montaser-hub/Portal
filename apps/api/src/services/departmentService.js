@@ -21,7 +21,7 @@ export const getDepartment = async (id) => {
 };
 
 export const updateDepartment = async (id, data) => {
-  const department = await departmentRepo.findByIdAndUpdate(id, data);
+  const department = await departmentRepo.update(id, data);
   if (!department) {
     throw new AppError('Department not found', 404);
   }

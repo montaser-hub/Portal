@@ -30,7 +30,30 @@ const swapRequestSchema = new mongoose.Schema({
     type: String,
     enum: ['pending','approved','rejected','cancelled'],
     default: 'pending'
-  }
+  },
+  departmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department'
+  },
+  approvalHistory: [{
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    role: {
+      type: String,
+      enum: [ 'user', 'manager', 'admin' ]
+    },
+    status: {
+      type: String,
+      enum: [ 'approved', 'rejected' ]
+    },
+    message: String,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
@@ -61,6 +84,27 @@ const swapRequestSchema = new mongoose.Schema({
  swapRequestSchema.virtual('toSchedule', {
    ref: 'Schedule',
    localField: 'toScheduleId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('department', {
+   ref: 'Department',
+   localField: 'departmentId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('SubDepartment', {
+   ref: 'SubDepartment',
+   localField: 'subDepartmentId',
+   foreignField: '_id',
+   justOne: true
+ })
+
+ swapRequestSchema.virtual('shift', {
+   ref: 'Shift',
+   localField: 'shiftId',
    foreignField: '_id',
    justOne: true
  })
