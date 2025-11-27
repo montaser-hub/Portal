@@ -7,17 +7,17 @@ import * as scheduleSchema from '../validators/ScheduleSchema.js';
 const router = express.Router();
 router.use( authController.isAuth );
 router.route('/nearestSchedule').get(scheduleController.getNearestSchedule)
-router.route('/createMultiUser').post(scheduleController.createMultiUserSchedule)
+router.route('/createMultiUser').post(validation(scheduleSchema.createMultiUserScheduleSchema),scheduleController.createMultiUserSchedule)
 router
   .route('/')
   .get(scheduleController.getAllSchedules)
-  .post( scheduleController.addSchedule );
+  .post(validation(scheduleSchema.createScheduleSchema), scheduleController.addSchedule );
 
 
 router
   .route('/:id')
   .get(scheduleController.getSchedule)
-  .patch(scheduleController.updateSchedule)
+  .patch(validation(scheduleSchema.updateScheduleSchema), scheduleController.updateSchedule)
   .delete(scheduleController.deleteSchedule);
 
 export default router;
