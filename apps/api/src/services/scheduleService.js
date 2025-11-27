@@ -11,10 +11,10 @@ import { toZonedTime } from 'date-fns-tz';
  * Validation function to check duplicate schedules and overlapping shifts
  */
 export const overlappingSchedulesValidation = async (data) => {
-  const { date, shiftId, subDepartmentId, userId, departmentId } = data;
+  const { date, shiftId, subDepartmentId, userId, departmentId, ignoreScheduleId = null } = data;
   // ===== Validation 0: Check department & subDepartment exist via service =====
   if (departmentId) {
-    const department = await departmentService.getDepartment(departmentId);
+    await departmentService.getDepartment(departmentId);
   }
 
   if (subDepartmentId) {
@@ -26,38 +26,40 @@ export const overlappingSchedulesValidation = async (data) => {
   }
 
   const newShift = shiftId ? await shiftService.getShift(shiftId) : null;
-  if (shiftId && !newShift) throw new AppError("Shift not found", 404);
+
+  const scheduleDate = new Date(date);
 
   // ===== Validation 1: Duplicate schedule =====
-  const existingSchedule = await scheduleRepo.findOne({
-    date: new Date(date),
+  const duplicateQuery = {
+    date: scheduleDate,
     shiftId,
     subDepartmentId,
     userId,
     isActive: true
-  });
-  if (existingSchedule) throw new AppError("Schedule already exists for this date, shift, and subdepartment", 409);
+  };
+  if (ignoreScheduleId) duplicateQuery._id = { $ne: ignoreScheduleId };
 
+    const existingSchedule = await scheduleRepo.findOne(duplicateQuery);
+    if (existingSchedule) throw new AppError("Schedule already exists for this date, shift, and subdepartment", 409);
   // ===== Validation 2: Overlapping shifts =====
-  if (userId && newShift) {
-    const shiftDate = new Date(date);
-    const newShiftStart = addMinutes(new Date(shiftDate), newShift.startTime);
-    const newShiftEnd = addMinutes(new Date(shiftDate), newShift.endTime);
+    if (!userId || !newShift) return;
+
+    const newShiftStart = addMinutes( new Date( scheduleDate ), newShift?.startTime );
+    const newShiftEnd = addMinutes(new Date(scheduleDate), newShift?.endTime);
 
     const existingSchedules = await scheduleRepo.findMany({
-      date: new Date(date),
+      date: scheduleDate,
       userId,
-      isActive: true
+      isActive: true,
+      ...(ignoreScheduleId && { _id: { $ne: ignoreScheduleId } })
     });
-
-    await Promise.all(existingSchedules.map(sch => sch.populate('shift')));
 
     for (const schedule of existingSchedules) {
       const existingShift = schedule?.shift;
       if (!existingShift) continue;
 
-      const existingStart = addMinutes(new Date(shiftDate), existingShift.startTime);
-      const existingEnd = addMinutes(new Date(shiftDate), existingShift.endTime);
+      const existingStart = addMinutes(new Date(scheduleDate), existingShift.startTime);
+      const existingEnd = addMinutes(new Date(scheduleDate), existingShift.endTime);
 
       const overlap = areIntervalsOverlapping(
         { start: newShiftStart, end: newShiftEnd },
@@ -71,8 +73,7 @@ export const overlappingSchedulesValidation = async (data) => {
         );
       }
     }
-  }
-};
+}
 
 /**
  * Create a new schedule
@@ -92,7 +93,10 @@ export const createSchedule = async (data, user) => {
 export const updateSchedule = async (id, data, user) => {
     if (!data.userId && user?._id) data.userId = user._id;
   if (!data.departmentId && user?.departmentId) data.departmentId = user.departmentId;
-  await overlappingSchedulesValidation(data);
+  await overlappingSchedulesValidation( {
+    ...data,
+    ignoreScheduleId: id
+  });
 
   const updatedSchedule = await scheduleRepo.update(id, data);
   if (!updatedSchedule) throw new AppError("Schedule Not Found", 404);
