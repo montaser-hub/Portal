@@ -10,7 +10,7 @@ import { toZonedTime } from 'date-fns-tz';
 /**
  * Validation function to check duplicate schedules and overlapping shifts
  */
-const overlappingSchedulesValidation = async (data) => {
+export const overlappingSchedulesValidation = async (data) => {
   const { date, shiftId, subDepartmentId, userId, departmentId } = data;
   // ===== Validation 0: Check department & subDepartment exist via service =====
   if (departmentId) {
