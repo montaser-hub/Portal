@@ -1,4 +1,3 @@
-// Input.jsx
 import { useState } from "react";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
 
@@ -58,7 +57,7 @@ export default function Input({
     const currentOption = options.find(opt => opt[valueKey] === value);
     const displayValue = currentOption?.[displayKey] ||
                         (value && typeof value === 'string' && value !== "" ?
-                         options.find(opt => opt[valueKey] === value)?.[displayKey] : "") ||
+                          options.find(opt => opt[valueKey] === value)?.[displayKey] : "") ||
                         "";
 
     return (
