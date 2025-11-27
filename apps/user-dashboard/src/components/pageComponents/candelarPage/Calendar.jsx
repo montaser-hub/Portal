@@ -7,7 +7,7 @@ import {
   parseISO
 } from 'date-fns';
 
-// Get all days (with padding) for a given month
+// Get all days for month with padding
 export const getDaysInMonth = (date) => {
   const firstDay = startOfMonth(date);
   const lastDay = endOfMonth(date);
@@ -15,19 +15,19 @@ export const getDaysInMonth = (date) => {
 
   const days = [];
 
-  // Add empty slots for days before the first day of month
+  // Add padding for days before month start
   for (let i = 0; i < startingDayOfWeek; i++) {
     days.push(null);
   }
 
-  // Add all days of the month
+  // Add month days
   const daysInMonth = eachDayOfInterval({ start: firstDay, end: lastDay });
   days.push(...daysInMonth);
 
   return days;
 };
 
-// Convert ISO date to Date object
+// Parse ISO date to Date object
 const parseDate = (isoDate) => {
   if (!isoDate) return null;
   try {
@@ -37,7 +37,7 @@ const parseDate = (isoDate) => {
   }
 };
 
-// Filter schedules for a specific date (and optional personal filter)
+// Filter schedules for specific date
 export const getShiftsForDate = (date, filter, schedules = [], currentUser = null) => {
   if (!date) return [];
 
@@ -45,10 +45,8 @@ export const getShiftsForDate = (date, filter, schedules = [], currentUser = nul
     const schedDate = parseDate(sched.date);
     if (!schedDate) return false;
 
-    // Check if dates match
     if (!isSameDay(date, schedDate)) return false;
 
-    // Apply personal filter
     if (filter === "personal") {
       const assignedUserId = sched?.user?.id;
       const currentUserId = currentUser?.id;
@@ -59,15 +57,28 @@ export const getShiftsForDate = (date, filter, schedules = [], currentUser = nul
   });
 };
 
-// Return UI color class based on schedule type/status
+// Get color class based on shift type and status
 export const getShiftColor = (schedule) => {
   if (!schedule) return "bg-white";
 
   const isActive = schedule?.isActive !== false;
   const isOvernight = schedule?.shift?.isOvernight || false;
+  const shiftType = schedule?.shift?.shiftType;
+
+  // Weekend shifts are always inactive and gray
+  if (shiftType === "Weekend") return "bg-gray-100 text-gray-700 border-gray-300";
+
 
   if (!isActive) return "bg-gray-100 text-gray-700 border-gray-300";
-  if (isOvernight) return "bg-yellow-50 text-[#B45309] border-yellow-200";
+  if (isOvernight || schedule?.shift?.shiftName === "Night Shift" ) return "bg-yellow-50 text-[#B45309] border-yellow-200";
 
-  return `bg-[#0F7B8A]/10 text-[#0F7B8A] border-[#0F7B8A]/20`;
+  // Color mapping for active shift types
+  const shiftColors = {
+    "On Call": "bg-orange-50 text-orange-700 border-orange-200",
+    "Evening": "bg-orange-50 text-orange-700 border-orange-200",
+    "Morning": "bg-green-50 text-green-700 border-green-200",
+    "Night": "bg-blue-50 text-blue-700 border-blue-200"
+  };
+
+  return shiftColors[shiftType] || "bg-[#0F7B8A]/10 text-[#0F7B8A] border-[#0F7B8A]/20";
 };

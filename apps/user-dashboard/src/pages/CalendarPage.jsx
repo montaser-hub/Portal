@@ -19,10 +19,9 @@ export default function CalendarPage() {
   const { user } = useSelector((state) => state.user);
   const scheduleStatus = useSelector((state) => state.schedule.upcomingSchedulesStatus);
 
+  // Fetch schedules on component mount
   useEffect(() => {
-    // Schedule of only current user
     dispatch(fetchUpcomingSchedules({ userId: user?.id }));
-    // All schedules for department as a whole
     dispatch(
       fetchSchedules({
         excludeUserId: user?.id,
@@ -31,17 +30,14 @@ export default function CalendarPage() {
     );
   }, [dispatch, user?.id]);
 
-  // Select shifts for the selected date based on filter
+  // Get shifts for selected date based on filter
   const selectedDateShifts = useMemo(() => {
     if (!selectedDate) return [];
     const baseSchedules = filter === "department" ? allSchedules : upcomingSchedules;
     return baseSchedules.filter((sched) => {
-      // Parse the schedule date
       const schedDate = parseISO(sched.date.split("T")[0]);
       if (!schedDate) return false;
-      // Check if dates match
       if (!isSameDay(selectedDate, schedDate)) return false;
-      // Apply personal filter
       if (filter === "personal") {
         const assignedUserId = sched?.user?.id;
         const currentUserId = user?.id;
@@ -55,21 +51,22 @@ export default function CalendarPage() {
 
   return (
     <div className="p-8 space-y-6 bg-0F7B8A">
+      {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
           <Text
             as="h1"
             content="Schedule Calendar"
-            MyClass="text-3xl font-semibold text-[#0F7B8A] mb-2"
+            className="text-3xl font-semibold text-[#0F7B8A] mb-2"
           />
           <Text
             as="p"
-            MyClass="text-gray-600"
+            className="text-gray-600"
             content="View and manage your schedules"
           />
         </div>
 
-        {/* Filter (personal, department) */}
+        {/* Filter Buttons */}
         <div className="flex items-center gap-2">
           <Button
             variant="base"
@@ -88,6 +85,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
+      {/* Main Calendar Content */}
       <div className="max-w-7xl mx-auto">
         <Card className={`p-6 shadow-sm border bg-white`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

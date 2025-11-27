@@ -21,8 +21,9 @@ export default function MonthView({
 
   return (
     <div className="lg:col-span-2">
+      {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
-        <Text as="h2" content={monthName} MyClass="font-semibold text-gray-500" />
+        <Text as="h2" content={monthName} className="font-semibold text-gray-500" />
         <div className="flex items-center gap-2">
           <Button variant="base" onClick={previousMonth}>
             <ChevronLeft className="h-9 w-9 border border-none rounded-lg hover:bg-[#E0F4F6] transition-colors duration-300" />
@@ -44,6 +45,7 @@ export default function MonthView({
         </div>
       </div>
 
+      {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-2">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="text-center text-[#6B7280] py-2">{day}</div>
@@ -81,7 +83,7 @@ export default function MonthView({
                       const isOvernight = shift.isOvernight;
                       return (
                         <div key={sched.id} className={`px-2 py-1 rounded text-xs border ${getShiftColor(sched)}`}>
-                          <div>{start} To {end} {isOvernight ? "• overnight" : ""}</div>
+                          <div>{start} To {end} {isOvernight ? "overnight" : ""}</div>
                           <div className="text-xs opacity-80">{shift.shiftName}</div>
                           <div className="text-xs opacity-80">{shift.shiftType}</div>
                           {filter === "department" && sched.user && (
@@ -98,19 +100,19 @@ export default function MonthView({
         })}
       </div>
 
-      {/* Legend */}
+      {/* Color Legend */}
       <div className={`flex items-center gap-6 mt-6 pt-6 border-t border-[#E5E7EB]`}>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded" style={{ backgroundColor: `#0F7B8A1A`, borderColor: `#0F7B8A33`, borderWidth: "1px" }}></div>
-          <Text as="span" content="Assigned / Active" MyClass="text-sm text-[#6B7280]" />
+          <Text as="span" content="Assigned / Active" className="text-sm text-[#6B7280]" />
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-gray-100 border border-gray-300"></div>
-          <Text as="span" content="Unassigned / Inactive" MyClass="text-sm text-[#6B7280]" />
+          <Text as="span" content="Unassigned / Inactive" className="text-sm text-[#6B7280]" />
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded" style={{ backgroundColor: `#FDE68A`, borderColor: `#FCD34D`, borderWidth: "1px", borderStyle: "solid" }}></div>
-          <Text as="span" content="Overnight" MyClass="text-sm text-[#6B7280]" />
+          <Text as="span" content="Overnight/Night" className="text-sm text-[#6B7280]" />
         </div>
       </div>
     </div>
