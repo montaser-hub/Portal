@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { validateField } from '../utils/validation';
 
 export const useValidate = (initialState = {}) => {
@@ -44,6 +44,11 @@ export const useValidate = (initialState = {}) => {
     setTouched(prev => ({ ...prev, ...fields }));
   }, []);
 
+  const hasErrors = useMemo(
+    () => Object.values(errors).some(error => Boolean(error)),
+    [errors]
+  );
+
   return {
     errors,
     touched,
@@ -53,7 +58,7 @@ export const useValidate = (initialState = {}) => {
     resetValidation,
     setCustomErrors,
     setTouched: setTouchedFields,
-    hasErrors: Object.values(errors).some(error => error)
+    hasErrors
   };
 };
 

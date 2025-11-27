@@ -35,20 +35,6 @@ export default function Input({
 
   // Handle input change with Arabic character blocking
   const handleInputChange = (e) => {
-    const value = e.target.value;
-
-    if (/[ء-ي]/.test(value)) {
-      const syntheticEvent = {
-        ...e,
-        target: {
-          ...e.target,
-          value: ''
-        }
-      };
-      onChange?.(syntheticEvent);
-      return;
-    }
-
     onChange?.(e);
   };
 
