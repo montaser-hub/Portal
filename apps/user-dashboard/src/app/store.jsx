@@ -5,6 +5,7 @@ import swapReducer from '../features/swaprequest/swapSlice';
 import shiftReducer from '../features/Shift/shiftSlice';
 import subDepartmentReducer from '../features/subDepartment/subDepartmentSlice';
 import notificationReducer from '../features/notification/notificationSlice';
+import inputAdminReducer from '../features/inputAdmin/inputAdminSlice';
 
 const loaderSlice = createSlice({
   name: 'loader',
@@ -25,6 +26,7 @@ const store = configureStore({
   reducer: {
     loader: loaderSlice.reducer,
     user: userReducer,
+    inputAdmin: inputAdminReducer,
     schedule: scheduleReducer,
     swap: swapReducer,
     shift: shiftReducer,

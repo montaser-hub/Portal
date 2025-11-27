@@ -1,6 +1,5 @@
-// PasswordChangeModal.jsx
 import { useState } from "react";
-import { Eye, EyeOff, Wrench } from "lucide-react";
+import { Wrench } from "lucide-react";
 import Modal from "./EditProfileModal";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
@@ -9,108 +8,66 @@ import { useDispatch } from "react-redux";
 import { updateUserPass } from "../features/user/userThunks";
 import { useAuth } from "../hooks/useAuth";
 import Text from "../components/common/Text";
+import useValidate from "../hooks/useValidate";
 
 export default function PasswordChangeModal({ isOpen, onClose }) {
   const dispatch = useDispatch();
   const { logout } = useAuth();
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({
+
+  const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
-  const [touched, setTouched] = useState({
-    currentPassword: false,
-    newPassword: false,
-    confirmPassword: false,
-  });
+
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false,
   });
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCurrentPasswordChange = (e) => {
+  // Centralized validation hook
+  const { errors, touched, validateField, handleBlur, resetValidation } = useValidate();
+
+  // Handle input changes with validation
+  const handleInputChange = (field) => (e) => {
     const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
+    setFormData(prev => ({ ...prev, [field]: value }));
 
-    setCurrentPassword(value);
-    setTouched((p) => ({ ...p, currentPassword: true }));
-    setErrors((p) => ({
-      ...p,
-      currentPassword: value.length === 0 ? "Current password is required" : "",
-    }));
+    // Validate field with additional data if needed
+    if (field === 'newPassword') {
+      validateField('password', value);
+      if (formData.confirmPassword) {
+        validateField('confirmPassword', formData.confirmPassword, { password: value });
+      }
+    } else if (field === 'confirmPassword') {
+      validateField('confirmPassword', value, { password: formData.newPassword });
+    } else {
+      validateField('currentPassword', value);
+    }
   };
 
-  const handleNewPasswordChange = (e) => {
-    const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-
-    setNewPassword(value);
-    setTouched((p) => ({ ...p, newPassword: true }));
-
-    setErrors((p) => ({
-      ...p,
-      newPassword:
-        value.length === 0
-          ? "New password is required"
-          : !passwordRegex.test(value)
-          ? "Must include uppercase, lowercase, number, special char, and 8+ chars"
-          : "",
-      confirmPassword:
-        confirmPassword && value !== confirmPassword
-          ? "Passwords do not match"
-          : "",
-    }));
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-
-    setConfirmPassword(value);
-    setTouched((p) => ({ ...p, confirmPassword: true }));
-
-    setErrors((p) => ({
-      ...p,
-      confirmPassword:
-        value.length === 0
-          ? "Please confirm your password"
-          : value !== newPassword
-          ? "Passwords do not match"
-          : "",
-    }));
-  };
-
-  const getBorderColor = (field) => {
-    const error = errors[field];
-    const isTouched = touched[field];
-    const values = {
-      currentPassword,
-      newPassword,
-      confirmPassword,
-    };
-    const value = values[field];
-
-    if (!isTouched) return "border-gray-300";
-    if (error) return "border-red-500";
-    if (value && !error) return "border-green-500";
-    return "border-gray-300";
-  };
-
+  // Submit password change
   const handleSubmit = () => {
-    const hasErrors = Object.values(errors).some((e) => e);
-    const hasEmptyFields = !currentPassword || !newPassword || !confirmPassword;
+    // Final validation before submission
+    const currentPasswordError = validateField('currentPassword', formData.currentPassword);
+    const newPasswordError = validateField('password', formData.newPassword);
+    const confirmPasswordError = validateField('confirmPassword', formData.confirmPassword, {
+      password: formData.newPassword
+    });
+
+    const hasErrors = currentPasswordError || newPasswordError || confirmPasswordError;
+    const hasEmptyFields = !formData.currentPassword || !formData.newPassword || !formData.confirmPassword;
 
     if (!hasErrors && !hasEmptyFields) {
+      setIsLoading(true);
+
       const passwordData = {
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword,
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+        confirmPassword: formData.confirmPassword,
       };
 
       dispatch(updateUserPass(passwordData))
@@ -119,29 +76,28 @@ export default function PasswordChangeModal({ isOpen, onClose }) {
           toast.success("Password changed successfully!");
           handleReset();
           onClose();
-          logout();
+          setTimeout(() => {
+            logout();
+          }, 1000);
         })
         .catch((err) => {
           const msg = err.response?.data?.message || "Failed to change password";
           toast.error(msg);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
 
+  // Reset form and validation
   const handleReset = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setErrors({
+    setFormData({
       currentPassword: "",
       newPassword: "",
-      confirmPassword: "",
+      confirmPassword: ""
     });
-    setTouched({
-      currentPassword: false,
-      newPassword: false,
-      confirmPassword: false,
-    });
+    resetValidation();
     setShowPasswords({
       current: false,
       new: false,
@@ -149,144 +105,97 @@ export default function PasswordChangeModal({ isOpen, onClose }) {
     });
   };
 
+  // Handle modal cancel
   const handleCancel = () => {
     handleReset();
     onClose();
   };
 
+  // Submit button disabled state
+  const isSubmitDisabled =
+    !formData.currentPassword ||
+    !formData.newPassword ||
+    !formData.confirmPassword ||
+    errors.currentPassword ||
+    errors.password ||
+    errors.confirmPassword ||
+    isLoading;
+
   return (
     <Modal isOpen={isOpen} onClose={handleCancel}>
       <div className="space-y-6">
-        {/* Header with Icon */}
+        {/* Modal Header */}
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-xl bg-[#0F7B8A] flex items-center justify-center shadow-md">
             <Wrench className="h-6 w-6 text-white" />
           </div>
           <div>
-            <Text as="h2" content="Change Password" MyClass="text-xl font-semibold text-[#0F7B8A]" />
-            <Text as="p" content="Update your account password" MyClass="text-sm text-gray-500" />
+            <Text as="h2" content="Change Password" className="text-xl font-semibold text-[#0F7B8A]" />
+            <Text as="p" content="Update your account password" className="text-sm text-gray-500" />
           </div>
         </div>
 
-        {/* Current Password */}
+        {/* Current Password Input */}
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              label="Current Password"
-              type={showPasswords.current ? "text" : "password"}
-              value={currentPassword}
-              onChange={handleCurrentPasswordChange}
-              placeholder="Enter current password"
-              myClass={`border-2 ${getBorderColor("currentPassword")} pr-12`}
-            />
-            {currentPassword && (
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPasswords((p) => ({ ...p, current: !p.current }))
-                }
-                className="absolute right-3 top-[2.6rem] transform -translate-y-1/2 focus:outline-none"
-              >
-                {showPasswords.current ? (
-                  <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                ) : (
-                  <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                )}
-              </button>
-            )}
-          </div>
-          {errors.currentPassword && touched.currentPassword && (
-            <Text as="p" content={errors.currentPassword} MyClass="text-sm text-red-500" />
-          )}
+          <Input
+            label="Current Password"
+            name="currentPassword"
+            type={showPasswords.current ? "text" : "password"}
+            value={formData.currentPassword}
+            onChange={handleInputChange('currentPassword')}
+            onBlur={() => handleBlur('currentPassword')}
+            placeholder="Enter current password"
+            error={errors.currentPassword}
+            touched={touched.currentPassword}
+          />
         </div>
 
-        {/* New Password */}
+        {/* New Password Input */}
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              label="New Password"
-              type={showPasswords.new ? "text" : "password"}
-              value={newPassword}
-              onChange={handleNewPasswordChange}
-              placeholder="Enter new password"
-              myClass={`border-2 ${getBorderColor("newPassword")} pr-12`}
-            />
-            {newPassword && (
-              <Button
-                onClick={() =>
-                  setShowPasswords((p) => ({ ...p, new: !p.new }))
-                }
-                className="absolute right-3 top-[2.6rem] transform -translate-y-1/2 focus:outline-none"
-              >
-                {showPasswords.new ? (
-                  <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                ) : (
-                  <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                )}
-              </Button>
-            )}
-
-          </div>
-          {errors.newPassword && touched.newPassword && (
-            <Text as="p" content={errors.newPassword} MyClass="text-sm text-red-500" />
-          )}
+          <Input
+            label="New Password"
+            name="password"
+            type={showPasswords.new ? "text" : "password"}
+            value={formData.newPassword}
+            onChange={handleInputChange('newPassword')}
+            onBlur={() => handleBlur('password')}
+            placeholder="Enter new password"
+            error={errors.password}
+            touched={touched.password}
+          />
         </div>
 
-        {/* Confirm Password */}
+        {/* Confirm Password Input */}
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              label="Confirm New Password"
-              type={showPasswords.confirm ? "text" : "password"}
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-              placeholder="Re-enter new password"
-              myClass={`border-2 ${getBorderColor("confirmPassword")} pr-12`}
-            />
-            {confirmPassword && (
-              <Button
-                onClick={() =>
-                  setShowPasswords((p) => ({ ...p, confirm: !p.confirm }))
-                }
-                className="absolute right-3 top-[2.6rem] transform -translate-y-1/2 focus:outline-none"
-              >
-                {showPasswords.confirm ? (
-                  <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                ) : (
-                  <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                )}
-              </Button>
-            )}
-          </div>
-          {errors.confirmPassword && touched.confirmPassword && (
-            <Text as="p" content={errors.confirmPassword} MyClass="text-sm text-red-500" />
-          )}
+          <Input
+            label="Confirm New Password"
+            name="confirmPassword"
+            type={showPasswords.confirm ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={handleInputChange('confirmPassword')}
+            onBlur={() => handleBlur('confirmPassword')}
+            placeholder="Re-enter new password"
+            error={errors.confirmPassword}
+            touched={touched.confirmPassword}
+          />
         </div>
 
-        {/* Buttons */}
+        {/* Action Buttons */}
         <div className="flex justify-end gap-3 pt-4">
-          <Button variant="secondary" onClick={handleCancel}>
+          <Button
+            variant="secondary"
+            onClick={handleCancel}
+            disabled={isLoading}
+            className="px-6 py-2"
+          >
             Cancel
           </Button>
           <Button
             variant="primary"
-            onClick={() => {
-              handleSubmit();
-            }}
-            disabled={
-              !currentPassword ||
-              !newPassword ||
-              !confirmPassword ||
-              Object.values(errors).some((e) => e)
-            }
-            className={`bg-[#0F7B8A] hover:bg-[#0D6C78] text-white ${
-              !currentPassword ||
-              !newPassword ||
-              !confirmPassword ||
-              Object.values(errors).some((e) => e)
-                ? "opacity-60 cursor-not-allowed"
-                : ""
-            }`}
+            onClick={handleSubmit}
+            disabled={isSubmitDisabled}
+            isLoading={isLoading}
+            className="px-6 py-2 bg-[#0F7B8A] hover:bg-[#0D6C78] text-white"
           >
             Change Password
           </Button>
