@@ -1,4 +1,3 @@
-// useValidate.jsx
 import { useState, useCallback } from 'react';
 import { validateField } from '../utils/validation';
 

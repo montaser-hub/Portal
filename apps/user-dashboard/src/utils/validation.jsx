@@ -1,5 +1,3 @@
-
-// Centralized validation system
 export const validators = {
   // No spaces allowed validator
   noSpaces: (value, fieldName) => {

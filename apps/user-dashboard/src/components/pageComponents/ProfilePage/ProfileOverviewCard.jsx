@@ -9,15 +9,12 @@ import PasswordChangeModal from "../../../modals/PasswordChangeModal";
 import AdminFields from "./AdminFields";
 import { toast } from "react-hot-toast";
 import { updateMe, updateAdmin } from "../../../features/user/userThunks";
-import {
-  fetchDepartments,
-  fetchPositions,
-  fetchLevels
-} from "../../../features/inputAdmin/inputAdminThunks";
+import { fetchDepartments, fetchPositions, fetchLevels} from "../../../features/inputAdmin/inputAdminThunks";
 import { setFilteredLevels } from "../../../features/inputAdmin/inputAdminSlice";
 import { useSelector, useDispatch } from "react-redux";
 import useValidate from "../../../hooks/useValidate";
 import HeartbeatSpinner from "../../common/Spinner2";
+import { formatDate } from "../../common/dateHelpers";
 
 export default function ProfileOverviewCard() {
   const dispatch = useDispatch();
@@ -191,16 +188,7 @@ export default function ProfileOverviewCard() {
     resetForm();
   };
 
-  // Format date for display
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+
 
   return (
     <>
@@ -275,18 +263,18 @@ export default function ProfileOverviewCard() {
 
           {/* Admin-only fields */}
           <AdminFields
-  departments={departments}
-  positions={positions}
-  levels={filteredLevels.length > 0 ? filteredLevels : levels}
-  userData={user} // ✅ إضافة بيانات المستخدم
-  pendingData={pendingData}
-  errors={errors}
-  touched={touched}
-  isEditing={isEditing}
-  isAdmin={isAdmin}
-  onChange={handleChange}
-  onBlur={handleBlur}
-/>
+            departments={departments}
+            positions={positions}
+            levels={filteredLevels.length > 0 ? filteredLevels : levels}
+            userData={user}
+            pendingData={pendingData}
+            errors={errors}
+            touched={touched}
+            isEditing={isEditing}
+            isAdmin={isAdmin}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
 
           {/* Additional employment info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
