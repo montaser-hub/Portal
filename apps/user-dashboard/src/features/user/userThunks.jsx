@@ -16,6 +16,16 @@ export const updateMe = createAsyncThunk('user/updateMe', async (data) => {
   return await userService.updateMeAPI(data);
 });
 
+export const updateAdmin = createAsyncThunk(
+  'user/updateAdmin',
+  async ({ id, ...data }, { rejectWithValue }) => {
+    try {
+      return await userService.updateAdmin(id, data);
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to update admin');
+    }
+  }
+);
 
 export const updateUserPhoto = createAsyncThunk(
   'user/updateUserPhoto',

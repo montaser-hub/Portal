@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+// LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, Eye, EyeOff, Calendar } from 'lucide-react';
+import { Calendar, LogIn } from 'lucide-react';
 import { login } from '../../services/API-Services/AuthService';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
@@ -9,73 +9,44 @@ import Text from '../../components/common/Text';
 import Card from '../../components/common/Card';
 import Input from '../../components/common/Input';
 import { setUser } from '../../features/user/userSlice';
+import useValidate from '../../hooks/useValidate';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ email: '', password: '' });
-  const [touched, setTouched] = useState({ email: false, password: false });
-  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // Validation hook
+  const { errors, touched, validateField, handleBlur } = useValidate();
 
+  // Handle email input
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setTouched((prev) => ({ ...prev, email: true }));
-
-    let error = '';
-    if (!value.trim()) {
-      error = 'Email is required';
-    } else if (/[ء-ي]/.test(value)) {
-      error = 'English characters only';
-    } else if (!emailRegex.test(value)) {
-      error = 'Please enter a valid email address';
-    }
-
-    setErrors((prev) => ({ ...prev, email: error }));
+    validateField('email', value);
   };
 
+  // Handle password input
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    setTouched((prev) => ({ ...prev, password: true }));
-
-    let error = '';
-    if (!value.trim()) {
-      error = 'Password is required';
-    } else if (/[ء-ي]/.test(value)) {
-      error = 'English characters only';
-    } else if (value.length < 8) {
-      error = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])/.test(value)) {
-      error = 'Password must contain at least one lowercase letter';
-    } else if (!/(?=.*[A-Z])/.test(value)) {
-      error = 'Password must contain at least one uppercase letter';
-    } else if (!/(?=.*\d)/.test(value)) {
-      error = 'Password must contain at least one number';
-    } else if (!/(?=.*[@$!%*?&])/.test(value)) {
-      error = 'Password must contain at least one special character (@$!%*?&)';
-    } else if (!passwordRegex.test(value)) {
-      error = 'Password does not meet all requirements';
-    }
-
-    setErrors((prev) => ({ ...prev, password: error }));
+    validateField('password', value);
   };
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!errors.email && !errors.password && email && password) {
+
+    const emailError = validateField('email', email);
+    const passwordError = validateField('password', password);
+
+    if (!emailError && !passwordError && email && password) {
       setIsSubmitting(true);
 
       try {
-        const { message, data:user } = await login({ email, password });
+        const { message, data: user } = await login({ email, password });
         dispatch(setUser(user));
         toast.success(message || 'Welcome! Redirecting...');
         navigate('/Dashboard', { replace: true });
@@ -92,16 +63,10 @@ export default function LoginPage() {
     }
   };
 
-  const getBorderColor = (field) => {
-    if (errors[field]) return 'border-red-500';
-    if (touched[field]) return 'border-green-500';
-    return 'border-gray-300';
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6 py-12">
       <div className="w-full max-w-md space-y-8">
-        {/* Logo and Title */}
+        {/* Logo Section */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="text-white w-16 h-16 rounded-xl bg-[#0F7B8A] flex items-center justify-center shadow-md">
@@ -112,28 +77,28 @@ export default function LoginPage() {
             <Text
               as="h1"
               content="SmartShift"
-              MyClass="text-2xl font-semibold text-[#0F7B8A] text-center"
+              className="text-2xl font-semibold text-[#0F7B8A] text-center"
             />
             <Text
               as="p"
               content="Healthcare Scheduling"
-              MyClass="text-gray-500 text-center"
+              className="text-gray-500 text-center"
             />
           </div>
         </div>
 
-        {/* Login Card */}
+        {/* Login Form Card */}
         <Card className="p-8 shadow-sm border bg-white border-gray-200 space-y-6">
           <div className="space-y-2 text-center">
             <Text
               as="h2"
               content="Sign In"
-              MyClass="text-xl font-normal text-gray-500"
+              className="text-xl font-normal text-gray-500"
             />
             <Text
               as="p"
               content="Access your SmartShift account"
-              MyClass="text-sm text-gray-500"
+              className="text-sm text-gray-500"
             />
           </div>
 
@@ -142,49 +107,29 @@ export default function LoginPage() {
             <Input
               label="Email"
               name="email"
+              type="email"
               placeholder="Enter your Email"
               value={email}
               onChange={handleEmailChange}
-              myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                'email'
-              )}`}
+              onBlur={() => handleBlur('email')}
+              error={errors.email}
+              touched={touched.email}
             />
-            {errors.email && (
-              <Text as="p" content={errors.email} MyClass="text-sm text-red-500" />
-            )}
 
             {/* Password Input */}
-            <div className="relative">
-              <Input
-                label="Password"
-                name="password"
-                placeholder="Enter your password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={handlePasswordChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                  'password'
-                )}`}
-              />
-              {password && (
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-2 top-9 focus:outline-none"
-                >
-                  {showPassword ? (
-                    <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  )}
-                </button>
-              )}
-            </div>
-            {errors.password && (
-              <Text as="p" content={errors.password} MyClass="text-sm text-red-500" />
-            )}
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={handlePasswordChange}
+              onBlur={() => handleBlur('password')}
+              error={errors.password}
+              touched={touched.password}
+            />
 
-            {/* Forgot Password */}
+            {/* Forgot Password Link */}
             <div className="text-right">
               <Link
                 to="/forgotPassword"
@@ -197,27 +142,25 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={
-                !email || !password || !!errors.email || !!errors.password
-              }
+              disabled={!email || !password || !!errors.email || !!errors.password || isSubmitting}
               className={`w-full h-11 mt-6 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                !email || !password || !!errors.email || !!errors.password
+                !email || !password || !!errors.email || !!errors.password || isSubmitting
                   ? 'opacity-60 cursor-not-allowed'
                   : ''
               }`}
             >
               <LogIn className="mr-2 h-4 w-4" />
-              Sign In
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
         </Card>
 
-        {/* Help Text */}
+        {/* Help Section */}
         <div className="text-center">
           <Text
             as="p"
             content="Need help accessing your account? "
-            MyClass="text-sm text-gray-500 inline"
+            className="text-sm text-gray-500 inline"
           />
           <Link
             to="/"

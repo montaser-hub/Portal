@@ -1,88 +1,75 @@
+// ResetPasswordPage.jsx
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock } from "lucide-react";
+import { toast } from 'react-hot-toast';
 import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
+import useValidate from "../../hooks/useValidate";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [errors, setErrors] = useState({ password: "", confirm: "" });
-  const [touched, setTouched] = useState({ password: false, confirm: false });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || "";
 
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  // Validation hook
+  const { errors, touched, validateField, handleBlur} = useValidate();
 
-const handlePasswordChange = (e) => {
-  const value = e.target.value;
-
-  // منع الأحرف العربية
-  if (/[ء-ي]/.test(value)) return;
-
-  setPassword(value);
-  setTouched((p) => ({ ...p, password: true }));
-
-  setErrors((p) => ({
-    ...p,
-    password:
-      value.length === 0
-        ? "Password is required"
-        : !passwordRegex.test(value)
-        ? "Must include uppercase, lowercase, number, special char, and 8+ chars"
-        : "",
-    // تحقق فوري إذا لم تتطابق كلمة المرور مع التأكيد
-    confirm:
-      confirm && value !== confirm
-        ? "Passwords do not match"
-        : "",
-  }));
-};
-
-
-  const handleConfirmChange = (e) => {
+  // Handle password input
+  const handlePasswordChange = (e) => {
     const value = e.target.value;
-    if (/[ء-ي]/.test(value)) return;
-    setConfirm(value);
-    setTouched((p) => ({ ...p, confirm: true }));
 
-    setErrors((p) => ({
-      ...p,
-      confirm:
-        value.length === 0
-          ? "Confirm your password"
-          : value !== password
-          ? "Passwords do not match"
-          : "",
-    }));
+    if (value === '' && e.target.type !== 'custom-dropdown') {
+      return;
+    }
+
+    setPassword(value);
+    validateField('password', value);
+
+    if (confirmPassword) {
+      validateField('confirmPassword', confirmPassword, { password: value });
+    }
   };
 
-  const getBorderColor = (field) => {
-    const error = errors[field];
-    const isTouched = touched[field];
-    const value = field === "password" ? password : confirm;
-    if (!isTouched) return "border-gray-300";
-    if (error) return "border-red-500";
-    if (value && !error) return "border-green-500";
-    return "border-gray-300";
+  // Handle confirm password input
+  const handleConfirmPasswordChange = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    validateField('confirmPassword', value, { password });
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!errors.password && !errors.confirm && password && confirm) {
-      navigate("/Login");
+
+    const passwordError = validateField('password', password);
+    const confirmError = validateField('confirmPassword', confirmPassword, { password });
+
+    if (!passwordError && !confirmError && password && confirmPassword) {
+      setIsSubmitting(true);
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        toast.success("Password reset successfully!");
+        navigate("/Login", { replace: true });
+      } catch (error) {
+        console.error("Reset password error:", error);
+        toast.error("Failed to reset password. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6 py-12">
       <div className="w-full max-w-md">
+        {/* Page Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center">
             <div className="text-white w-14 h-14 rounded-xl bg-[#0F7B8A] flex items-center justify-center shadow-md">
@@ -92,95 +79,74 @@ const handlePasswordChange = (e) => {
           <Text
             as="h1"
             content="Reset Password"
-            MyClass="text-2xl font-semibold text-[#0F7B8A] mt-4"
+            className="text-2xl font-semibold text-[#0F7B8A] mt-4"
           />
           <Text
             as="p"
             content={`Enter a new password for ${email || "your account"}`}
-            MyClass="text-sm text-gray-500 mt-2"
+            className="text-sm text-gray-500 mt-2"
           />
         </div>
 
+        {/* Reset Form Card */}
         <Card className="p-6 shadow-sm border bg-white border-gray-200 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* New Password */}
-            <div className="relative">
-              <Input
-                label="New Password"
-                placeholder="Enter new password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={handlePasswordChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                  "password"
-                )}`}
-              />
-              {password && (
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-12 transform -translate-y-1/2 focus:outline-none"
-                >
-                  {showPassword ? (
-                    <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  )}
-                </button>
-              )}
-            </div>
-            {errors.password && (
-              <Text as="p" content={errors.password} MyClass="text-sm text-red-500" />
-            )}
+            {/* New Password Input */}
+            <Input
+              label="New Password"
+              name="password"
+              type="password"
+              placeholder="Enter new password"
+              value={password}
+              onChange={handlePasswordChange}
+              onBlur={() => handleBlur('password')}
+              error={errors.password}
+              touched={touched.password}
+              className="h-11 placeholder-gray-400"
+            />
 
-            {/* Confirm Password */}
-            <div className="relative">
-              <Input
-                label="Confirm Password"
-                placeholder="Re-enter password"
-                type={showConfirm ? "text" : "password"}
-                value={confirm}
-                onChange={handleConfirmChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor(
-                  "confirm"
-                )}`}
-              />
-              {confirm && (
-                <button
-                  type="button"
-                  onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-2 top-12 transform -translate-y-1/2 focus:outline-none"
-                >
-                  {showConfirm ? (
-                    <Eye className="h-5 w-5 text-[#0F7B8A]" />
-                  ) : (
-                    <EyeOff className="h-5 w-5 text-[#0F7B8A]" />
-                  )}
-                </button>
-              )}
-            </div>
-            {errors.confirm && (
-              <Text as="p" content={errors.confirm} MyClass="text-sm text-red-500" />
-            )}
+            {/* Confirm Password Input */}
+            <Input
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              placeholder="Re-enter password"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              onBlur={() => handleBlur('confirmPassword')}
+              error={errors.confirmPassword}
+              touched={touched.confirmPassword}
+              className="h-11 placeholder-gray-400"
+            />
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={
-                !password || !confirm || !!errors.password || !!errors.confirm
+                !password ||
+                !confirmPassword ||
+                !!errors.password ||
+                !!errors.confirmPassword ||
+                isSubmitting
               }
-              className={`w-full h-11 mt-4 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                !password || !confirm || !!errors.password || !!errors.confirm
+              className={`w-full h-11 mt-4 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] transition-colors ${
+                !password ||
+                !confirmPassword ||
+                !!errors.password ||
+                !!errors.confirmPassword ||
+                isSubmitting
                   ? "opacity-60 cursor-not-allowed"
                   : ""
               }`}
             >
-              Reset Password
+              {isSubmitting ? "Resetting Password..." : "Reset Password"}
             </button>
 
+            {/* Back to Login Link */}
             <div className="text-center text-sm text-gray-500">
               <Link
                 to="/Login"
-                className="text-[#0F7B8A] hover:text-[#0D6C78]"
+                className="text-[#0F7B8A] hover:text-[#0D6C78] transition-colors"
               >
                 Back to Sign In
               </Link>

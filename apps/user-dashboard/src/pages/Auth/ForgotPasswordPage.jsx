@@ -5,51 +5,42 @@ import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
 import { forgotPassword } from "../../services/API-Services/AuthService";
+import useValidate from "../../hooks/useValidate";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [touched, setTouched] = useState(false);
-  const [errors, setErrors] = useState("");
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Handle email input change
+  const { errors, touched, validateField, handleBlur, resetValidation } = useValidate();
 
+  // Handle email input change
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setTouched(true);
-
-    let error = '';
-    if (!value.trim()) {
-      error = 'Email is required';
-    } else if (/[ء-ي]/.test(value)) {
-      error = 'English characters only';
-    } else if (!emailRegex.test(value)) {
-      error = 'Please enter a valid email address';
-    }
-
-    setErrors(error);
+    validateField('email', value);
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || errors) return;
 
-    try {
-      await forgotPassword(email);
-      setSent(true);
-    } catch (err) {
-      console.error(err);
-      setErrors(err.response?.data?.message || "Something went wrong!");
+    // check if email is valid
+    const emailError = validateField('email', email);
+
+    if (!emailError && email) {
+      try {
+        await forgotPassword(email);
+        setSent(true);
+        resetValidation();
+      } catch (err) {
+        console.error(err);
+        const errorMsg = err.response?.data?.message || "Something went wrong!";
+        // تعيين خطأ مخصص
+        validateField('email', email, { customError: errorMsg });
+      }
     }
-  };
-
-  const getBorderColor = () => {
-    if (!touched) return "border-gray-300";
-    if (errors) return "border-red-500";
-    if (email.length > 0 && !errors) return "border-green-500";
-    return "border-gray-300";
   };
 
   return (
@@ -74,9 +65,10 @@ export default function ForgotPasswordPage() {
             MyClass="text-sm text-gray-500 mt-2"
           />
         </div>
-
+        {/* Main Card */}
         <Card className="p-6 shadow-sm border bg-white border-gray-200 space-y-4">
           {sent ? (
+            // Success State
             <div className="text-center space-y-3">
               <Text
                 as="h2"
@@ -92,32 +84,33 @@ export default function ForgotPasswordPage() {
               <div className="mt-4">
                 <button
                   onClick={() => navigate("/Login")}
-                  className="px-4 py-2 bg-[#0F7B8A] text-white rounded-md shadow-sm"
+                  className="px-4 py-2 bg-[#0F7B8A] text-white rounded-md shadow-sm hover:bg-[#0D6C78] transition-colors"
                 >
                   Back to Login
                 </button>
               </div>
             </div>
           ) : (
+            // Email Form
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 label="Email"
                 name="email"
+                type="email"
                 placeholder="Enter your Email"
                 value={email}
                 onChange={handleEmailChange}
-                myClass={`h-11 border-2 placeholder-gray-400 focus:outline-none focus:ring-0 ${getBorderColor()}`}
+                onBlur={() => handleBlur('email')}
+                error={errors.email}
+                touched={touched.email}
+                myClass="h-11 placeholder-gray-400"
               />
-
-              {errors && (
-                <Text as="p" content={errors} MyClass="text-sm text-red-500 mt-2" />
-              )}
 
               <button
                 type="submit"
-                disabled={!email || !!errors}
-                className={`w-full h-11 mt-2 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] ${
-                  !email || !!errors ? "opacity-60 cursor-not-allowed" : ""
+                disabled={!email || !!errors.email}
+                className={`w-full h-11 mt-2 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] transition-colors ${
+                  !email || !!errors.email ? "opacity-60 cursor-not-allowed" : ""
                 }`}
               >
                 Send Reset Link
@@ -127,7 +120,7 @@ export default function ForgotPasswordPage() {
                 <Text as="span" content="Remember your password? " />
                 <Link
                   to="/Login"
-                  className="text-[#0F7B8A] hover:text-[#0D6C78]"
+                  className="text-[#0F7B8A] hover:text-[#0D6C78] transition-colors"
                 >
                   Sign In
                 </Link>
