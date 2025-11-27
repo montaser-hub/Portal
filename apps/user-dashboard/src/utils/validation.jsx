@@ -7,7 +7,7 @@ export const validators = {
     if (/\s/.test(value)) {
       return "Spaces are not allowed in this field";
     }
-    if (/[ء-ي]/.test(value)) {
+    if (/[ء-ي]/.test(value)) { // No Arabic characters
       return 'English characters only';
     }
     return '';
@@ -32,20 +32,22 @@ export const validators = {
     return '';
   },
 
-  // Email validator
+  //Email validator
   email: (value) => {
-    if (!value || !value.trim()) {
-      return 'Email is required';
-    }
+    if (!value || !value.trim()) return 'Email is required';
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     if (/\s/.test(value)) {
-      return "Spaces are not allowed in this field";
+      return "Email Is Invalid";
     }
     if (/[ء-ي]/.test(value)) {
-      return 'English characters only';
+      return "Email Is Invalid";
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return 'Please enter a valid email address';
+    if (!emailRegex.test(value)) {
+      return "Email Is Invalid";
     }
+
     return '';
   },
 
@@ -60,7 +62,9 @@ export const validators = {
     if (/[ء-ي]/.test(value)) {
       return 'English characters only';
     }
+
     const cleanValue = value.replace(/\s/g, '');
+
     if (/[A-Za-z]/.test(cleanValue)) return 'Phone number must contain numbers only';
     if (!/^\d+$/.test(cleanValue)) return 'Phone number must contain numbers only';
     if (cleanValue.length !== 11) return 'Egyptian phone number must be 11 digits';
@@ -102,18 +106,8 @@ export const validators = {
 
   // Confirm password validator
   confirmPassword: (password, confirmPassword) => {
-    if (!confirmPassword) {
-      return 'Please confirm your password';
-    }
-    if (/\s/.test(confirmPassword)) {
-      return "Spaces are not allowed in this field";
-    }
-    if (/[ء-ي]/.test(confirmPassword)) {
-      return 'English characters only';
-    }
-    if (password !== confirmPassword) {
-      return 'Passwords do not match';
-    }
+    if (!confirmPassword) return 'Please confirm your password';
+    if (password !== confirmPassword) return 'Passwords do not match';
     return '';
   },
 
@@ -126,8 +120,8 @@ export const validators = {
   }
 };
 
-// Main validation function
-export const validateField = (name, value, additionalData = {}) => {
+  // Main validation function
+  export const validateField = (name, value, additionalData = {}) => {
   const fieldName = name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
 
   switch (name) {
@@ -136,10 +130,16 @@ export const validateField = (name, value, additionalData = {}) => {
       return validators.name(value, fieldName);
 
     case 'nickname':
-    case 'email':
-    case 'password':
-    case 'confirmPassword':
       return validators.noSpaces(value, fieldName);
+
+    case 'password':
+      return validators.password(value);
+
+    case 'confirmPassword':
+      return validators.confirmPassword(additionalData.password, value);
+
+    case 'email': // ← صحح هذا السطر
+      return validators.email(value);
 
     case 'contactNumber':
       return validators.contactNumber(value);
@@ -154,6 +154,6 @@ export const validateField = (name, value, additionalData = {}) => {
       if (additionalData.customError) {
         return additionalData.customError;
       }
-      return validators.text(value, fieldName);
+      return validators.required(value, fieldName);
   }
 };
