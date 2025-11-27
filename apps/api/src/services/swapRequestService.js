@@ -3,8 +3,10 @@ import AppError from '../utils/AppError.js'
 import { getAllDocuments } from './queryService.js'
 import { sendNotification } from '../controllers/notificationController.js'
 import { swapSchedule } from './scheduleService.js'
+import { validateSwapRequest } from './swapValidation.js'
 //  Add SwapRequest
-export const addSwapRequest = async (data) => {
+export const addSwapRequest = async ( data ) => {
+  await validateSwapRequest(data)
   const createdSwapRequest = await SwapRequestRepo.create( data )
     sendNotification(createdSwapRequest?.toUserId, {
     title: " Swap Request",
@@ -30,9 +32,10 @@ export const getAllSwapRequests = async (queryParams) => {
 
 // Update SwapRequest
 export const updateSwapRequest = async (id, data) => {
+  await validateSwapRequest(data)
   const updatedSwapRequest = await SwapRequestRepo.update(id, data)
   if (!updatedSwapRequest) throw new AppError("SwapRequest already existed.", 400)
-    sendNotification(createdSwapRequest?.toUserId, {
+    sendNotification(updatedSwapRequest?.toUserId, {
     title: " Swap Request",
     message: `Swap request was sent form ${updatedSwapRequest.fromUser.fullName} check your swap requet panel.`,
     type: "Swap Updated",
