@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wrench } from "lucide-react";
 import Text from "../../common/Text";
 import Card from "../../common/Card";
@@ -6,176 +6,192 @@ import Button from "../../common/Button";
 import Input from "../../common/Input";
 import Modal from "../../../modals/EditProfileModal";
 import PasswordChangeModal from "../../../modals/PasswordChangeModal";
+import AdminFields from "./AdminFields";
 import { toast } from "react-hot-toast";
-import { updateMe } from "../../../features/user/userThunks";
+import { updateMe, updateAdmin } from "../../../features/user/userThunks";
+import {
+  fetchDepartments,
+  fetchPositions,
+  fetchLevels
+} from "../../../features/inputAdmin/inputAdminThunks";
+import { setFilteredLevels } from "../../../features/inputAdmin/inputAdminSlice";
 import { useSelector, useDispatch } from "react-redux";
+import useValidate from "../../../hooks/useValidate";
 import HeartbeatSpinner from "../../common/Spinner2";
 
 export default function ProfileOverviewCard() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const mySppinerStatus = useSelector((state) => state.loader.isLoading);
+  const departments = useSelector((state) => state.inputAdmin.departments);
+  const positions = useSelector((state) => state.inputAdmin.positions);
+  const levels = useSelector((state) => state.inputAdmin.levels);
+  const filteredLevels = useSelector((state) => state.inputAdmin.filteredLevels);
+
   const [pendingData, setPendingData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [errors, setErrors] = useState({
-    nickname: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    contactNumber: "",
-  });
-  const [touched, setTouched] = useState({
-    nickname: false,
-    firstName: false,
-    lastName: false,
-    email: false,
-    contactNumber: false,
-  });
 
-  const hasErrors = Object.values(errors).some((e) => e);
+  // Centralized validation hook
+  const { errors, touched, validateField, handleBlur, resetValidation } = useValidate();
 
-  const validateField = (name, value) => {
-    if (!value || !value.trim()) {
-      const fieldNames = {
-        nickname: 'Nickname',
-        firstName: 'First Name',
-        lastName: 'Last Name',
-        email: 'Email',
-        contactNumber: 'Phone Number'
-      };
-      return `${fieldNames[name]} is required`;
+  const isAdmin = user?.role === "admin";
+  const hasErrors = Object.values(errors).some(e => e);
+
+  // Fetch data on component load
+  useEffect(() => {
+    if (isAdmin) {
+      dispatch(fetchDepartments());
+      dispatch(fetchPositions());
+      dispatch(fetchLevels());
     }
+  }, [isAdmin, dispatch]);
 
-    /* SPACE VALIDATION */
-    if (["firstName", "lastName"].includes(name)) {
-      if (/^\s/.test(value) || /\s$/.test(value)) {
-        return "Using space in middle only";
+  // Filter levels when position changes
+  useEffect(() => {
+    if (pendingData.position && isAdmin && levels.length > 0) {
+      const localFilteredLevels = levels.filter(level => level.positionId === pendingData.position);
+      dispatch(setFilteredLevels(localFilteredLevels));
+    } else if (!pendingData.position && isAdmin) {
+      dispatch(setFilteredLevels(levels));
+    }
+  }, [pendingData.position, isAdmin, dispatch, levels]);
+
+  // Auto-set position when level is selected
+  useEffect(() => {
+    if (pendingData.level && isAdmin && levels.length > 0) {
+      const selectedLevel = levels.find(level => level._id === pendingData.level);
+      if (selectedLevel && selectedLevel.positionId) {
+        setPendingData(prev => ({
+          ...prev,
+          position: selectedLevel.positionId
+        }));
+
+        const localFilteredLevels = levels.filter(level => level.positionId === selectedLevel.positionId);
+        dispatch(setFilteredLevels(localFilteredLevels));
       }
     }
-    if (!["firstName", "lastName"].includes(name)) {
-      if (/\s/.test(value)) {
-        return "Spaces are not allowed in this field";
-      }
-    }
+  }, [pendingData.level, isAdmin, dispatch, levels]);
 
-    /* Arabic characters */
-    if (/[ء-ي]/.test(value)) {
-      return 'English characters only';
-    }
-
-    /* Name Validation */
-    if (['firstName', 'lastName', 'nickname'].includes(name)) {
-      if (/\d/.test(value)) return 'Name cannot contain numbers';
-      if (value.trim().length < 2) return 'Name must be at least 2 characters';
-      if (!/^[A-Za-z.\s-]+$/.test(value))
-        return 'Name can only contain letters, spaces, dots and hyphens';
-    }
-
-    /* Email validation */
-    if (name === 'email') {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return 'Please enter a valid email address (example@domain.com)';
-      }
-    }
-
-    /* Contact Number validation */
-    if (name === 'contactNumber') {
-      const cleanValue = value.replace(/\s/g, '');
-      if (/[A-Za-z]/.test(cleanValue)) return 'Phone number must contain numbers only';
-      if (!/^\d+$/.test(cleanValue)) return 'Phone number must contain numbers only';
-      if (cleanValue.length !== 11) return 'Egyptian phone number must be 11 digits';
-      if (!cleanValue.startsWith('01')) return 'Egyptian phone number must start with 01';
-      if (!/^01[0125]/.test(cleanValue)) {
-        return 'Invalid Egyptian phone operator (must be 010, 011, 012, or 015)';
-      }
-    }
-
-    return '';
-  };
-
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPendingData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: validateField(name, value),
-    }));
-    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    if (value === '' && e.target.type !== 'custom-dropdown') {
+      return;
+    }
+
+    setPendingData(prev => ({ ...prev, [name]: value }));
+    validateField(name, value, pendingData);
+
+    // Clear level when position changes
+    if (name === 'position' && value !== pendingData.position) {
+      setPendingData(prev => ({ ...prev, level: '' }));
+    }
   };
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: validateField(name, value),
-    }));
-  };
-
-  const getBorderColor = (field) => {
-    if (errors[field]) return "border-red-500";
-    if (touched[field]) return "border-green-500";
-    return "border-gray-300";
-  };
-
+  // Calculate actual changes for save button
   const actualChanges = Object.keys(pendingData).filter(
-    (key) => pendingData[key] !== (user[key] ?? "")
+    (key) => {
+      const currentValue = key === 'department'
+        ? user?.department?._id
+        : key === 'position'
+        ? user?.position?._id
+        : key === 'level'
+        ? user?.level?._id
+        : user[key];
+
+      return pendingData[key] !== (currentValue ?? "");
+    }
   );
 
   const handleSaveAttempt = () => {
     setIsModalOpen(true);
   };
 
+  // Confirm and save changes
   const handleConfirmSave = async () => {
-    dispatch(updateMe(pendingData))
-      .unwrap()
-      .then(() => {
-        setPendingData({});
-        setErrors({
-          nickname: "",
-          firstName: "",
-          lastName: "",
-          email: "",
-          contactNumber: "",
+    const hasAdminFields = ['department', 'position', 'role', 'level'].some(
+      field => pendingData[field] !== undefined
+    );
+
+    // Permission check
+    if (hasAdminFields && !isAdmin) {
+      toast.error("You don't have permission to update admin fields");
+      setIsModalOpen(false);
+      return;
+    }
+
+    if (isAdmin && hasAdminFields) {
+      // Prepare admin data
+      const adminData = {
+        id: user._id || user.id
+      };
+
+      // Add admin fields with IDs
+      if (pendingData.department) adminData.departmentId = pendingData.department;
+      if (pendingData.position) adminData.positionId = pendingData.position;
+      if (pendingData.level) adminData.levelId = pendingData.level;
+      if (pendingData.role) adminData.role = pendingData.role;
+
+      // Add regular fields
+      if (pendingData.nickname) adminData.nickname = pendingData.nickname;
+      if (pendingData.firstName) adminData.firstName = pendingData.firstName;
+      if (pendingData.lastName) adminData.lastName = pendingData.lastName;
+      if (pendingData.email) adminData.email = pendingData.email;
+      if (pendingData.contactNumber) adminData.contactNumber = pendingData.contactNumber;
+
+      dispatch(updateAdmin(adminData))
+        .unwrap()
+        .then(() => {
+          resetForm();
+          toast.success("Admin data updated successfully!");
+        })
+        .catch((err) => {
+          console.error('Admin update error:', err);
+          const msg = err.response?.data?.message || "Admin update failed";
+          toast.error(msg);
         });
-        setTouched({
-          nickname: false,
-          firstName: false,
-          lastName: false,
-          email: false,
-          contactNumber: false,
-        });
-        setIsEditing(false);
+    } else {
+      // Use updateMe for regular fields
+      const userData = { ...pendingData };
+      delete userData.department;
+      delete userData.position;
+      delete userData.role;
+      delete userData.level;
+
+      if (Object.keys(userData).length > 0) {
+        dispatch(updateMe(userData))
+          .unwrap()
+          .then(() => {
+            resetForm();
+            toast.success("Profile updated successfully!");
+          })
+          .catch((err) => {
+            const msg = err.response?.data?.message || "Update failed";
+            toast.error(msg);
+          });
+      } else {
         setIsModalOpen(false);
-        toast.success("User update successfully!");
-      })
-      .catch((err) => {
-        const msg = err.response?.data?.message || "Update failed";
-        toast.error(msg);
-      });
+        toast.error("No valid fields to update");
+      }
+    }
+  };
+
+  // Reset form state
+  const resetForm = () => {
+    setPendingData({});
+    resetValidation();
+    setIsEditing(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setPendingData({});
-    setErrors({
-      nickname: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      contactNumber: "",
-    });
-    setTouched({
-      nickname: false,
-      firstName: false,
-      lastName: false,
-      email: false,
-      contactNumber: false,
-    });
-    setIsEditing(false);
+    resetForm();
   };
 
+  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -198,7 +214,6 @@ export default function ProfileOverviewCard() {
               content="Contact Information"
               MyClass="text-lg font-medium text-teal-700"
             />
-            {/* Password Change Button */}
             <Button
               onClick={() => setIsPasswordModalOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0F7B8A] to-[#0D6C78] text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
@@ -208,33 +223,30 @@ export default function ProfileOverviewCard() {
             </Button>
           </div>
 
-          {/* Editable Fields */}
+          {/* Regular user fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {["nickname", "firstName", "lastName", "email", "contactNumber"].map(
               (field) => (
-                <div key={field}>
-                  <Input
-                    label={
-                      field === "contactNumber"
-                        ? "Phone Number"
-                        : field.replace(/^\w/, (c) => c.toUpperCase())
-                    }
-                    name={field}
-                    value={pendingData[field] ?? user?.[field] ?? ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disabled={!isEditing}
-                    myClass={`border-2 ${getBorderColor(field)}`}
-                  />
-                  {errors[field] && touched[field] && (
-                    <Text as="p" content={errors[field]} MyClass="text-sm text-red-500" />
-                  )}
-                </div>
+                <Input
+                  key={field}
+                  label={
+                    field === "contactNumber"
+                      ? "Phone Number"
+                      : field.replace(/^\w/, (c) => c.toUpperCase())
+                  }
+                  name={field}
+                  value={pendingData[field] ?? user?.[field] ?? ""}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur(field)}
+                  error={errors[field]}
+                  touched={touched[field]}
+                  disabled={!isEditing}
+                />
               )
             )}
           </div>
 
-          {/* Buttons */}
+          {/* Action buttons */}
           <div className="flex justify-end gap-2">
             {isEditing ? (
               <>
@@ -261,31 +273,33 @@ export default function ProfileOverviewCard() {
             )}
           </div>
 
-          {/* Employment info */}
-          <Text
-            as="h4"
-            content="Employment Details"
-            MyClass="mt-4 text-md font-medium text-teal-700"
-          />
+          {/* Admin-only fields */}
+          <AdminFields
+  departments={departments}
+  positions={positions}
+  levels={filteredLevels.length > 0 ? filteredLevels : levels}
+  userData={user} // ✅ إضافة بيانات المستخدم
+  pendingData={pendingData}
+  errors={errors}
+  touched={touched}
+  isEditing={isEditing}
+  isAdmin={isAdmin}
+  onChange={handleChange}
+  onBlur={handleBlur}
+/>
+
+          {/* Additional employment info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Department"
-              value={user?.department?.name || "N/A"}
+              label="Start Date"
+              value={formatDate(user?.createdAt)}
               disabled
             />
-            <Input
-              label="Position"
-              value={user?.position?.name || "N/A"}
-              disabled
-            />
-            <Input label="Role" value={user?.role || "N/A"} disabled />
-            <Input label="Level" value={user?.level?.name || "N/A"} disabled />
-            <Input label="Start Date" value={formatDate(user?.createdAt)} disabled />
           </div>
         </Card>
       )}
 
-      {/* Confirm Save Modal */}
+      {/* Confirmation modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Text
           as="h2"
@@ -311,7 +325,6 @@ export default function ProfileOverviewCard() {
         </div>
       </Modal>
 
-      {/* Password Change Modal */}
       <PasswordChangeModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
