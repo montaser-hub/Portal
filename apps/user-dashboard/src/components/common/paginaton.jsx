@@ -10,6 +10,7 @@ export default function Pagination({
   totalItems = 0,
   filteredItems = 0,
   maxVisiblePages = 5,
+  itemName = "items",
 }) {
   const next = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -63,7 +64,7 @@ export default function Pagination({
       {/* Items info */}
       <div className="text-gray-600 text-sm">
         Showing <span className="font-medium">{filteredItems}</span> of{' '}
-        <span className="font-medium">{totalItems}</span> schedules
+        <span className="font-medium">{totalItems}</span> {itemName}
       </div>
 
       {/* Pagination controls */}

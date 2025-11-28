@@ -62,7 +62,7 @@ export default function CalendarPage() {
           <Text
             as="p"
             className="text-gray-600"
-            content="View and manage your schedules"
+            content="View your schedules and shifts details."
           />
         </div>
 
