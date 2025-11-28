@@ -323,6 +323,7 @@ export default function SwapRequestPage() {
                 ? receivedRequests.length
                 : swapRequests.length
             }
+            itemName="Requests"
           />
         </div>
       )}

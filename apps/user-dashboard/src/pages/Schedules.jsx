@@ -484,6 +484,7 @@ export default function Schedules() {
         }}
         totalItems={displayInfo.totalFiltered}
         filteredItems={displayInfo.currentItems}
+        itemName="Schedules"
       />
 
       {/* Modals */}
