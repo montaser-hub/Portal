@@ -103,12 +103,12 @@ export default function MonthView({
       {/* Color Legend */}
       <div className={`flex items-center gap-6 mt-6 pt-6 border-t border-[#E5E7EB]`}>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: `#0F7B8A1A`, borderColor: `#0F7B8A33`, borderWidth: "1px" }}></div>
-          <Text as="span" content="Assigned / Active" className="text-sm text-[#6B7280]" />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: `#0F7B8A33`, borderColor: `#0F7B8A33`, borderWidth: "1px" }}></div>
+          <Text as="span" content="Morning" className="text-sm text-[#6B7280]" />
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-gray-100 border border-gray-300"></div>
-          <Text as="span" content="Unassigned / Inactive" className="text-sm text-[#6B7280]" />
+          <Text as="span" content="Weekend / Inactive" className="text-sm text-[#6B7280]" />
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded" style={{ backgroundColor: `#FDE68A`, borderColor: `#FCD34D`, borderWidth: "1px", borderStyle: "solid" }}></div>
