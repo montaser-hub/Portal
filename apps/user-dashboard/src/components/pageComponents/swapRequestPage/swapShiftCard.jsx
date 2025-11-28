@@ -33,12 +33,12 @@ export default function ShiftCard( { title, schedule, userFullName } ) {
       <Detail
         icon={<Clock className='text-teal-500' size={14} />}
         label="Time"
-        value={`${schedule?.shiftId?.startTimeFormatted} → ${schedule?.shiftId?.endTimeFormatted}`}
+        value={`${schedule?.shift?.startTimeFormatted} → ${schedule?.shift?.endTimeFormatted}`}
       />
       <Detail
         icon={<Building className='text-teal-500' size={14} />}
         label="Sub-Department"
-        value={schedule?.subDepartmentId?.name}
+        value={schedule?.subDepartment?.name}
       />
       <Detail
         icon={<CalendarDays className='text-teal-500' size={14} />}
