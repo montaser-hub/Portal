@@ -4,7 +4,9 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 router.use(authController.isAuth);
-router.get('/sse', notificationController.getUserNotifications)
+router.get( '/', notificationController.getUserNotifications )
+
+router.get('/sse', notificationController.sseStream);
 
 router.get('/allAsRead', notificationController.markAllAsRead)
 
