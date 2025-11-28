@@ -22,7 +22,7 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200','https://tangerine-cuchufli-e07247.netlify.app'];
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, origin);
     } else {
       callback(new Error('Not allowed by CORS'));
     }

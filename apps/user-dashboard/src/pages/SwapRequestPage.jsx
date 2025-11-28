@@ -94,7 +94,7 @@ export default function SwapRequestPage() {
 
       dispatch(
         fetchSchedules({
-          'userId[ne]': user?._id,
+          excludeUserId: user?._id,
           departmentId: user?.departmentId,
           startDate: formatISO(startDate),
           endDate: formatISO(endDate),
