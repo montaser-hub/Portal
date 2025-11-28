@@ -25,6 +25,8 @@ export default function useNotificationSSE() {
     // Open SSE connection
     const url = `${baseURL}/notifications/sse?userId=${user._id}`;
     const evtSource = new EventSource(url, { withCredentials: true });
+    // Save globally so logout can close it
+    window.__SSE__ = evtSource;
     sseRef.current = evtSource;
 
     evtSource.addEventListener('open', () => {
@@ -32,7 +34,16 @@ export default function useNotificationSSE() {
     });
 
     evtSource.addEventListener('message', (event) => {
-      const newNotif = JSON.parse(event.data);
+      // Ignore keep-alive pings
+      if (event.data === 'ping') return;
+      let newNotif;
+      try {
+        newNotif = JSON.parse(event.data);
+      } catch (err) {
+        console.error('Invalid JSON from SSE:', event.data);
+        return;
+      }
+
       console.log('SSE RECEIVED:', newNotif);
 
       // Browser popup
@@ -55,7 +66,8 @@ export default function useNotificationSSE() {
     // Cleanup
     return () => {
       console.log('Closing SSE...');
-      evtSource.close();
+      if(evtSource) evtSource.close();
+      window.__SSE__ = null;
     };
   }, [user, userStatus, dispatch]);
 }

@@ -15,6 +15,11 @@ export const useAuth = () => {
       // Even if server fails, still logout locally
       console.warn('Logout API failed, clearing locally anyway');
     } finally {
+      if (window.__SSE__) {
+        console.log('Logout: closing SSE connection');
+        window.__SSE__.close();
+        window.__SSE__ = null;
+      }
       dispatch(logoutUser());
       toast.success('Logged out successfully');
       navigate('/Login', { replace: true });
