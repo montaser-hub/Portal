@@ -149,13 +149,29 @@ export const swapSchedule = async (id, userId) => {
 }
 
 
-export const createMultiUserSchedule = async ( data ) => {
+// export const createMultiUserSchedule = async ( data ) => {
+//   const { dates, userIds, ...commonFields } = data;
+
+//   // Convert ISO strings → real Date objects
+//   const dateObjects = dates.map(d => new Date(d));
+
+//   // Build array of documents (one per user × date)
+//   const documentsToInsert = dateObjects.flatMap(date =>
+//     userIds.map(userId => ({
+//       ...commonFields,
+//       userId,
+//       date,
+//     }))
+//   );
+//   return await scheduleRepo.createMultiUserSchedule(documentsToInsert);
+// }
+export const createMultiUserSchedule = async (data, user) => {
   const { dates, userIds, ...commonFields } = data;
 
-  // Convert ISO strings → real Date objects
+  // Convert ISO → Date
   const dateObjects = dates.map(d => new Date(d));
 
-  // Build array of documents (one per user × date)
+  // Build records (user × date)
   const documentsToInsert = dateObjects.flatMap(date =>
     userIds.map(userId => ({
       ...commonFields,
@@ -163,5 +179,36 @@ export const createMultiUserSchedule = async ( data ) => {
       date,
     }))
   );
+
+  // Run ALL validations concurrently
+  const validationResults = await Promise.all(
+    documentsToInsert.map(async (doc) => {
+      const validationError = await overlappingSchedulesValidation(doc);
+
+      if (validationError) {
+        return {
+          userId: doc.userId,
+          date: doc.date,
+          shiftId: doc.shiftId,
+          message: validationError
+        };
+      }
+
+      return null;
+    })
+  );
+
+  // Filter only errors
+  const errors = validationResults.filter(e => e !== null);
+
+  if (errors.length > 0) {
+    throw new AppError(
+      `Some schedules could not be created:\n${JSON.stringify(errors, null, 2)}`,
+      409
+    );
+  }
+
   return await scheduleRepo.createMultiUserSchedule(documentsToInsert);
-}
+};
+
+
