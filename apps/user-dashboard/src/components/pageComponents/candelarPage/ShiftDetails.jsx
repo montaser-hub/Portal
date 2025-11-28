@@ -48,8 +48,8 @@ export default function ShiftDetails({ selectedDate, selectedDateShifts }) {
                 </Badge>
                 {shift.shiftType && (
                   <Badge variant="outline" className={getShiftColor(sched)}>
-                    <Repeat2 className="h-4 w-4" />
-                    {shift.shiftType}
+                    <Repeat2 className="h-4 w-4 mr-1" />
+                    {shift.shiftName}
                   </Badge>
                 )}
               </div>
@@ -74,7 +74,7 @@ export default function ShiftDetails({ selectedDate, selectedDateShifts }) {
                   {/* Shift Name */}
                   <div className="flex items-center gap-2">
                     <CalendarCheck className="h-4 w-4 text-teal-500" />
-                    <Text as="span" content={shift.shiftName} className="text-sm text-gray-600" />
+                    <Text as="span" content={shift.shiftType} className="text-sm text-gray-600" />
                   </div>
 
                   {/* Duration */}

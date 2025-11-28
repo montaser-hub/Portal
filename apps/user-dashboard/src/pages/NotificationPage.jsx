@@ -1,46 +1,89 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Text from "../components/common/Text";
 import { getNotificationIcon, getPriorityColor, formatTimestamp } from "../utils/notificationUtil";
-import {
-  Bell,
-  CheckCircle,
-  Circle,
-} from 'lucide-react';
-import { useEffect } from "react";
+import { Bell, CheckCircle, Circle } from 'lucide-react';
+import { useEffect, useState, useMemo } from "react";
 import { loadNotifications, markAllRead } from '../features/notification/notificationSlice';
+import Pagination from '../components/common/paginaton';
+
 export default function NotificationsPage() {
-  const unreadCount = useSelector((state) => state.notifications.list.filter((n) => !n.read).length);
-  const notifications = useSelector((state) => state.notifications.list);
   const dispatch = useDispatch();
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  // Redux State
+  const allNotifications = useSelector((state) => state.notifications.list);
+  const unreadCount = allNotifications.filter((n) => !n.read).length;
+
+  // Pagination Calculations
+  const totalItems = allNotifications.length;
+  const totalPages = itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 1;
+
+  // Current Page Data
+  const notifications = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return allNotifications.slice(startIndex, endIndex);
+  }, [allNotifications, currentPage, itemsPerPage]);
+
+  // Display Information
+  const displayInfo = useMemo(() => {
+    const start = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+    const end = Math.min(start + notifications.length - 1, totalItems);
+
+    return {
+      start,
+      end,
+      totalFiltered: totalItems,
+      currentItems: notifications.length,
+    };
+  }, [totalItems, currentPage, itemsPerPage, notifications.length]);
+
+  // Initial Data Load
   useEffect(() => {
     dispatch(loadNotifications());
   }, [dispatch]);
+
+  // Mark All as Read Handler
   const handleMarkAll = () => {
     dispatch(markAllRead());
   };
 
+  // Reset to First Page on Data Change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [allNotifications.length]);
+
   return (
     <div className="p-8 space-y-6">
-      {/* -------- Header -------- */}
+      {/* Header Section */}
       <div className="flex items-center justify-between">
         <div>
           <Text
             as="h1"
             content="Notifications"
-            MyClass="text-2xl font-semibold text-teal-900"
+            MyClass="text-3xl font-semibold text-[#0F7B8A] mb-2"
           />
-          <Text as="p" content="You have" MyClass="text-gray-500" />
-          <Text
-            as="p"
-            MyClass="text-gray-500 mt-1"
-            content={
-              unreadCount > 0
-                ? `${unreadCount} unread notification${
-                    unreadCount > 1 ? 's' : ''
-                  }`
-                : 'All caught up!'
-            }
-          />
+          {unreadCount > 0 ? (
+            <Text
+              as="p"
+              MyClass="text-gray-500 mt-1"
+              content={
+                <>
+                  <Text as="span" content="You have" MyClass="text-gray-500" />{' '}
+                  <Text as='span' MyClass="text-[#0F7B8A] font-bold" content={unreadCount} />{' '}unread notification{unreadCount > 1 ? 's' : ''}
+                </>
+              }
+            />
+          ) : (
+            <Text
+              as="p"
+              MyClass="text-gray-500 mt-1"
+              content="All caught up!"
+            />
+          )}
         </div>
 
         <button
@@ -52,6 +95,8 @@ export default function NotificationsPage() {
           Mark All as Read
         </button>
       </div>
+
+      {/* Notification Permission */}
       {Notification.permission !== 'granted' && (
         <button
           onClick={() => Notification.requestPermission()}
@@ -60,84 +105,104 @@ export default function NotificationsPage() {
           Enable Device Notifications
         </button>
       )}
-      {/* -------- Notifications List -------- */}
-      <div className="space-y-4">
-        {notifications.map((notification) => (
-          <div
-            key={notification?._id}
-            className={`p-5 border rounded-2xl shadow-sm transition-all hover:shadow-md ${
-              !notification.read
-                ? 'bg-[#0F7B8A]/5 border-[#0F7B8A]/30'
-                : 'bg-white border-gray-200'
-            }`}
-          >
-            <div className="flex items-start gap-4">
-              <div
-                className={`p-3 rounded-lg flex items-center justify-center ${
-                  notification.priority === 'High'
-                    ? 'bg-red-100'
-                    : 'bg-[#0F7B8A]/10'
-                }`}
-              >
-                {getNotificationIcon(notification.type)}
-              </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2">
-                    <Text
-                      as="h4"
-                      content={notification.title}
-                      MyClass="font-medium text-gray-600 "
-                    />
-                    {!notification.read && (
-                      <Circle className="h-2 w-2 fill-[#0F7B8A] text-[#0F7B8A]" />
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Text
-                      as="span"
-                      content={notification.priority}
-                      MyClass={`text-xs font-medium px-2 py-0.5 rounded-full border ${getPriorityColor(
-                        notification.priority
-                      )}`}
-                    />
-                    <Text
-                      as="span"
-                      content={formatTimestamp(notification.createdAt)}
-                      MyClass="text-sm text-gray-500 whitespace-nowrap"
-                    />
-                  </div>
+      {/* Notifications List with Scroll */}
+      <div className="max-h-[600px] overflow-y-auto pr-2">
+        <div className="space-y-4">
+          {notifications.map((notification) => (
+            <div
+              key={notification?._id}
+              className={`p-5 border rounded-2xl shadow-sm transition-all hover:shadow-md ${
+                !notification.read
+                  ? 'bg-[#0F7B8A]/5 border-[#0F7B8A]/30'
+                  : 'bg-white border-gray-200'
+              }`}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className={`p-3 rounded-lg flex items-center justify-center ${
+                    notification.priority === 'High'
+                      ? 'bg-red-100'
+                      : 'bg-[#0F7B8A]/10'
+                  }`}
+                >
+                  {getNotificationIcon(notification.type)}
                 </div>
-                <Text
-                  as="p"
-                  content={notification.message}
-                  MyClass="text-gray-600 text-sm"
-                />
-                <div className="flex items-center gap-2 mt-3">
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2">
+                      <Text
+                        as="h4"
+                        content={notification.title}
+                        MyClass="font-medium text-gray-600"
+                      />
+                      {!notification.read && (
+                        <Circle className="h-2 w-2 fill-[#0F7B8A] text-[#0F7B8A]" />
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Text
+                        as="span"
+                        content={notification.priority}
+                        MyClass={`text-xs font-medium px-2 py-0.5 rounded-full border ${getPriorityColor(
+                          notification.priority
+                        )}`}
+                      />
+                      <Text
+                        as="span"
+                        content={formatTimestamp(notification.createdAt)}
+                        MyClass="text-sm text-gray-500 whitespace-nowrap"
+                      />
+                    </div>
+                  </div>
                   <Text
-                    as="span"
-                    content={notification.type}
-                    MyClass="text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200"
+                    as="p"
+                    content={notification.message}
+                    MyClass="text-gray-600 text-sm"
                   />
+                  <div className="flex items-center gap-2 mt-3">
+                    <Text
+                      as="span"
+                      content={notification.type}
+                      MyClass="text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {allNotifications.length === 0 && (
+          <div className="p-12 text-center border border-gray-200 rounded-2xl shadow-sm">
+            <Bell className="h-12 w-12 mx-auto mb-3 text-gray-400 opacity-50" />
+            <Text
+              as="p"
+              content="No notifications yet"
+              MyClass="text-gray-500 text-sm"
+            />
           </div>
-        ))}
+        )}
       </div>
 
-      {/* -------- Empty State -------- */}
-      {notifications.length === 0 && (
-        <div className="p-12 text-center border border-gray-200 rounded-2xl shadow-sm">
-          <Bell className="h-12 w-12 mx-auto mb-3 text-gray-400 opacity-50" />
-          <Text
-            as="p"
-            content="No notifications yet"
-            MyClass="text-gray-500 text-sm"
-          />
-        </div>
+      {/* Pagination Component */}
+      {allNotifications.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          limit={itemsPerPage}
+          onLimitChange={(newLimit) => {
+            setItemsPerPage(newLimit);
+            setCurrentPage(1);
+          }}
+          totalItems={displayInfo.totalFiltered}
+          filteredItems={displayInfo.currentItems}
+          itemName="Notifications"
+        />
       )}
     </div>
   );
