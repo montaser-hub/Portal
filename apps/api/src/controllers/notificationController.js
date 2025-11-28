@@ -15,20 +15,21 @@ export const markAllAsRead = async (req, res) => {
 };
 
 export const sendNotification = async (userId, data) => {
-  await Notification.create({ user: userId, ...data });
-};
+  const created =await Notification.create({ user: userId, ...data });
 
-// controllers/notificationController.js
+  pushNotification(userId, created);
+};
 
 // store active connections
 const clients = {};
 
 export const sseStream = (req, res) => {
-  const userId = req.query.userId;
-
+  const userId = req.user._id.toString();
+  
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+  res.setHeader( "Connection", "keep-alive" );
+  res.setHeader("X-Accel-Buffering", "no");
   res.flushHeaders();
 
   // save connection
@@ -36,17 +37,25 @@ export const sseStream = (req, res) => {
 
   console.log("SSE connected:", userId);
 
+  // keep-alive ping every 25s (IMPORTANT)
+  const keepAlive = setInterval(() => {
+    res.write("data: ping\n\n");
+  }, 25000 );
+
   // when client disconnects
-  req.on("close", () => {
+  req.on( "close", () => {
+    clearInterval(keepAlive);
     delete clients[userId];
     console.log("SSE disconnected:", userId);
   });
 };
 
-// Send events to user (called from any controller)
+// Send event to a specific user
 export const pushNotification = (userId, notification) => {
-  if (clients[userId]) {
-    clients[userId].write(`data: ${JSON.stringify(notification)}\n\n`);
-  }
+  const conn = clients[userId];
+  if (!conn) return;
+
+  conn.write(`event: message\n`);
+  conn.write(`data: ${JSON.stringify(notification)}\n\n`);
 };
 
