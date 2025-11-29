@@ -5,7 +5,10 @@ export default function Badge({ children, variant = "default", className = "" })
 
     if (variant === "primary") {
         variantClasses = `bg-[#0F7B8A] text-white`;
-    } else if (variant === "outline") {
+    } else if (variant === "opacityPrimary") {
+        variantClasses = `bg-[#E0F4F6] text-[#0F7B8A] border border-2 opacity-50]`;
+    }
+    else if (variant === "outline") {
         variantClasses = `bg-[#E0F4F6] text-[#0F7B8A] border border-2]`;
     } else if (variant === "destructive") {
         variantClasses = `bg-[#E74C3C] text-white`;

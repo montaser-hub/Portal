@@ -162,7 +162,7 @@ export default function DesktopNavbar({
                       content={`${currentUser.firstName} ${currentUser.lastName}`}
                       MyClass="font-medium text-sm text-gray-500 flex justify-center"
                     />
-                    <Badge variant={currentUser.role === 'admin' ? 'primary' : currentUser?.role === 'user' ? 'secondary' : 'success'}>{currentUser?.role}</Badge>
+                    <Badge variant={currentUser.role === 'admin' ? 'primary' : currentUser?.role === 'user' ? 'secondary' : 'opacityPrimary'}>{currentUser?.role}</Badge>
                     <Text
                       as="span"
                       content={currentUser.email}
