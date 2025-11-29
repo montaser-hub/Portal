@@ -1,11 +1,8 @@
 import { getScheduleDates } from '../components/common/dateHelpers';
-// import { swapRequests, notes } from "../components/common/mockData";
 import Badge from '../components/common/Badge';
 import Text from '../components/common/Text';
 import CalendarComponent from '../components/pageComponents/dashboardHome/CalendarComponent';
 import UpcomingscheduleCard from '../components/pageComponents/dashboardHome/UpcomingscheduleCard';
-// import NotesCard from '../components/pageComponents/dashboardHome/NotesCard';
-// import SwapRequestsList from '../components/pageComponents/dashboardHome/SwapRequestsList';
 import HeartbeatSpinner from "../components/common/Spinner2";
 import { useSelector, useDispatch } from 'react-redux';
 import ErrorMessage from '../components/common/ErrorMessage';
@@ -46,11 +43,9 @@ export default function Dashboard() {
           }
         />
         <div className="flex items-center gap-3 text-gray-600 text-sm">
-          <Badge variant="outline">{user?.role}</Badge>
+          <Badge variant={user.role === 'admin' ? 'primary' : user?.role === 'user' ? 'secondary' : 'success'}>{user?.role}</Badge>
           <Text as="span" content="•" />
-          <Text as="span" content={<>Unit: {user?.department?.name}</>} />
-          <Text as="span" content="•" />
-          <Badge variant="outline">{user?.level?.name}</Badge>
+          <Text as="span" content={<>Dep: <Badge variant="outline">{user?.department?.name}</Badge> </>} />
         </div>
       </div>
 
@@ -59,10 +54,6 @@ export default function Dashboard() {
         <CalendarComponent schedulesDates={userScheduleDates} />
       </div>
 
-      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <NotesCard notes={notes} maxItems={3} />
-        <SwapRequestsList requests={swapRequests} currentUserId={user.id} />
-      </div> */}
     </div>
   );
 }

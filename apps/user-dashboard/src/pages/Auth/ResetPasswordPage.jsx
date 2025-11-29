@@ -6,6 +6,7 @@ import Text from "../../components/common/Text";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
 import useValidate from "../../hooks/useValidate";
+import Button from "../../components/common/Button";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -22,10 +23,6 @@ export default function ResetPasswordPage() {
   // Handle password input
   const handlePasswordChange = (e) => {
     const value = e.target.value;
-
-    if (value === '' && e.target.type !== 'custom-dropdown') {
-      return;
-    }
 
     setPassword(value);
     validateField('password', value);
@@ -119,6 +116,28 @@ export default function ResetPasswordPage() {
             />
 
             {/* Submit Button */}
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={
+                !password ||
+                !confirmPassword ||
+                !!errors.password ||
+                !!errors.confirmPassword ||
+                isSubmitting
+              }
+              className={`w-full h-11 mt-4 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] transition-colors ${
+                !password ||
+                !confirmPassword ||
+                !!errors.password ||
+                !!errors.confirmPassword ||
+                isSubmitting
+                  ? "opacity-60 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              {isSubmitting ? "Resetting Password..." : "Reset Password"}
+            </Button>
             <button
               type="submit"
               disabled={
