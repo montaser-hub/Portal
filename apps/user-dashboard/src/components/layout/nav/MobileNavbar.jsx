@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '../../../hooks/useAuth';
 import Text from "../../common/Text";
 import Badge from "../../common/Badge";
+import Button from "../../common/Button";
 
 export default function MobileNavbar({
   navigation,
@@ -128,13 +129,12 @@ export default function MobileNavbar({
             >
               <User className="h-5 w-5" /> Profile
             </Link>
-
-            <button
+            <Button
               onClick={logout}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
             >
               <LogOut className="h-5 w-5" /> Sign Out
-            </button>
+            </Button>
           </div>
         </motion.div>
       )}
