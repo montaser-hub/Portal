@@ -6,6 +6,8 @@ import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
 import { forgotPassword } from "../../services/API-Services/AuthService";
 import useValidate from "../../hooks/useValidate";
+import toast from "react-hot-toast";
+import Button from "../../components/common/Button";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -35,10 +37,8 @@ export default function ForgotPasswordPage() {
         setSent(true);
         resetValidation();
       } catch (err) {
-        console.error(err);
         const errorMsg = err.response?.data?.message || "Something went wrong!";
-        // تعيين خطأ مخصص
-        validateField('email', email, { customError: errorMsg });
+        toast.error(errorMsg);
       }
     }
   };
@@ -82,12 +82,12 @@ export default function ForgotPasswordPage() {
               />
 
               <div className="mt-4">
-                <button
+                <Button
                   onClick={() => navigate("/Login")}
-                  className="px-4 py-2 bg-[#0F7B8A] text-white rounded-md shadow-sm hover:bg-[#0D6C78] transition-colors"
+                  variant="primary"
                 >
                   Back to Login
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -105,17 +105,16 @@ export default function ForgotPasswordPage() {
                 touched={touched.email}
                 myClass="h-11 placeholder-gray-400"
               />
-
-              <button
+              <Button
                 type="submit"
                 disabled={!email || !!errors.email}
+                variant="primary"
                 className={`w-full h-11 mt-2 flex items-center justify-center bg-[#0F7B8A] text-white rounded-lg shadow-md hover:bg-[#0D6C78] transition-colors ${
                   !email || !!errors.email ? "opacity-60 cursor-not-allowed" : ""
                 }`}
               >
                 Send Reset Link
-              </button>
-
+              </Button>
               <div className="text-center text-sm text-gray-500">
                 <Text as="span" content="Remember your password? " />
                 <Link
