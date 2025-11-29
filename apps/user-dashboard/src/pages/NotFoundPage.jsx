@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, Home, LogIn } from 'lucide-react';
+import { AlertCircle, Home } from 'lucide-react';
 import Card from '../components/common/Card';
 import Text from '../components/common/Text';
 import { useNavigate } from "react-router-dom";
@@ -7,13 +7,8 @@ import { useNavigate } from "react-router-dom";
 export default function NotFoundPage({ isAuthenticated }) {
 
   const navigate = useNavigate();
-  const myToken = sessionStorage.getItem("token");
   const handleGoBack = () => {
-    if (myToken) {
-      navigate("/Dashboard");
-    } else {
       navigate("/Login");
-    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
@@ -38,15 +33,7 @@ export default function NotFoundPage({ isAuthenticated }) {
             onClick={handleGoBack}
             className="flex items-center justify-center text-teal-600 hover:text-teal-500"
           >
-            {myToken ? (
-              <>
-                <Home className="mr-2 h-4 w-4" /> To Dashboard
-              </>
-            ) : (
-              <>
-                <LogIn className="mr-2 h-4 w-4" /> To Login
-              </>
-            )}
+                <Home className="mr-2 h-4 w-4" /> Back To Home
           </button>
         </div>
       </Card>
