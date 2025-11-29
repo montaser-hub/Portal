@@ -70,7 +70,7 @@ export const getShiftColor = (schedule) => {
 
 
   if (!isActive) return "bg-gray-100 text-gray-700 border-gray-300";
-  if (isOvernight || schedule?.shift?.shiftName === "Night Shift" ) return "bg-yellow-50 text-[#B45309] border-yellow-200";
+  if (isOvernight || schedule?.shift?.shiftName === "Night" ) return "bg-yellow-50 text-[#B45309] border-yellow-200";
 
   // Color mapping for active shift types
   const shiftColors = {
