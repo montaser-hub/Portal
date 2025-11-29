@@ -82,6 +82,6 @@ shiftSchema.virtual( 'subDepartment', {
   justOne: true
 });
 
-shiftSchema.index( { shiftType: 1, shiftName: 1 }, { unique: true } );
+shiftSchema.index( { shiftType: 1, shiftName: 1, departmentId: 1 }, { unique: true } );
 
 export default mongoose.model('Shift', shiftSchema);
