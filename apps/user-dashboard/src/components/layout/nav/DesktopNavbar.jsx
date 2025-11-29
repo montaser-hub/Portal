@@ -12,6 +12,7 @@ import Text from "../../common/Text";
 import Badge from "../../common/Badge";
 import { useAuth } from '../../../hooks/useAuth';
 import NotificationDropdown from '../../pageComponents/notificationsPage/NotificationsDropdown';
+import Button from "../../common/Button";
 
 export default function DesktopNavbar({
   navigation,
@@ -161,7 +162,7 @@ export default function DesktopNavbar({
                       content={`${currentUser.firstName} ${currentUser.lastName}`}
                       MyClass="font-medium text-sm text-gray-500 flex justify-center"
                     />
-                    <Badge variant="outline">{currentUser.role}</Badge>
+                    <Badge variant={currentUser.role === 'admin' ? 'primary' : currentUser?.role === 'user' ? 'secondary' : 'success'}>{currentUser?.role}</Badge>
                     <Text
                       as="span"
                       content={currentUser.email}
@@ -183,15 +184,15 @@ export default function DesktopNavbar({
                 >
                   <User className="h-4 w-4" /> Profile
                 </Link>
-                <button
+                <Button
                   onClick={() => {
-                    setUserMenuOpen(false);
-                    logout();
-                  }}
+                  setUserMenuOpen(false);
+                  logout();
+                }}
                   className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
                 >
-                  <LogOut className="h-4 w-4" /> Sign Out
-                </button>
+                <LogOut className="h-4 w-4" /> Sign Out
+                </Button>
               </motion.div>
             )}
           </AnimatePresence>
