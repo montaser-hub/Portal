@@ -43,7 +43,7 @@ export default function Dashboard() {
           }
         />
         <div className="flex items-center gap-3 text-gray-600 text-sm">
-          <Badge variant={user.role === 'admin' ? 'primary' : user?.role === 'user' ? 'secondary' : 'success'}>{user?.role}</Badge>
+          <Badge variant={user.role === 'admin' ? 'primary' : user?.role === 'user' ? 'secondary' : 'opacityPrimary'}>{user?.role}</Badge>
           <Text as="span" content="•" />
           <Text as="span" content={<>Dep: <Badge variant="outline">{user?.department?.name}</Badge> </>} />
         </div>
