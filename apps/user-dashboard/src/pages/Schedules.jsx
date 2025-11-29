@@ -118,6 +118,7 @@ export default function Schedules() {
         userId: user._id,
         page: currentPage,
         limit: itemsPerPage,
+        isActive: true
       };
 
       if (selectedShiftId) filters.shiftId = selectedShiftId;
@@ -293,7 +294,7 @@ export default function Schedules() {
           <Text as='h1' MyClass="text-3xl font-semibold text-[#0F7B8A] mb-2" content="My Schedules" />
           <Text as='p' MyClass="text-gray-600 mt-1" content="Manage your work schedules" />
         </div>
-        <button
+        {/* <button
           onClick={() => openModal()}
           className="flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-lg hover:bg-teal-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={
@@ -301,7 +302,7 @@ export default function Schedules() {
           }
         >
           <Plus size={20} /> Create Schedule
-        </button>
+        </button> */}
       </div>
 
       {/* Filters */}
@@ -371,12 +372,12 @@ export default function Schedules() {
                 <Calendar size={48} className="text-gray-400" />
               </div>
               <Text as='p' MyClass="text-gray-500 text-lg" content='No schedules found' />
-                <button
+                {/* <button
                   onClick={() => openModal()}
                   className="mt-2 text-teal-600 hover:text-teal-700 font-medium hover:underline"
                 >
                   Create your first schedule
-                </button>
+                </button> */}
             </div>
           </div>
         ) : (
