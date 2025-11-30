@@ -6,7 +6,7 @@ import { toZonedTime } from 'date-fns-tz';
  */
 export default function CanModify(schedule) {
   if (!schedule || !schedule?.shiftId) return false;
-
+  if(!schedule?.status?.includes(['approved', 'rejected'])) return false;
   // Convert shift startTime (minutes) to hours/minutes
   const hours = Math.floor(schedule?.shift?.startTime / 60);
   const minutes = schedule?.shift?.startTime % 60;
