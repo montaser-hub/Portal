@@ -7,7 +7,7 @@ import cors from 'cors';
 router.use(authController.isAuth);
 
 const sseCorsOptions = {
-  origin: ['http://localhost:3001', 'http://localhost:4200', 'https://smartshift-sy0v.onrender.com', 'https://portal-pvwr.onrender.com'],
+  origin: ['http://localhost:3001', 'http://localhost:4200', 'https://smartshift-6w6z.onrender.com', 'https://portal-pvwr.onrender.com'],
   credentials: true
 };
 
