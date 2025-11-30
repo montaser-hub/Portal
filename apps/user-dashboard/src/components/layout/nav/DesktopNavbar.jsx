@@ -47,44 +47,44 @@ export default function DesktopNavbar({
   return (
     <div className="hidden md:flex items-center flex-1">
       {/* Navigation Links */}
-    <nav className="flex items-center gap-3 ml-12">
-    {navigation.map((item) => {
-      const Icon = item.icon;
-      const isActive =
-        currentPage === item.id && item.id !== "notifications";
-      return (
-        <Link
-          key={item.id}
-          to={item.path}
-          onClick={() => {
-            setCurrentPage(item.id);
-            setUserMenuOpen(false);
-            setNotifMenuOpen(false);
-          }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
-            isActive
-              ? "bg-[#0F7B8A] text-white shadow-md"
-              : "text-gray-700 hover:bg-[#E0F4F6] hover:text-black"
-          }`}
-        >
-          <Icon className="h-4 w-4" />
-          <Text as="span" content={item.label} />
-        </Link>
-      );
-    })}
+      <nav className="flex items-center gap-3 ml-12">
+        {navigation.map((item) => {
+          const Icon = item.icon;
+          const isActive =
+            currentPage === item.id && item.id !== 'notifications';
+          return (
+            <Link
+              key={item.id}
+              to={item.path}
+              onClick={() => {
+                setCurrentPage(item.id);
+                setUserMenuOpen(false);
+                setNotifMenuOpen(false);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                isActive
+                  ? 'bg-[#0F7B8A] text-white shadow-md'
+                  : 'text-gray-700 hover:bg-[#E0F4F6] hover:text-black'
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              <Text as="span" content={item.label} />
+            </Link>
+          );
+        })}
 
-    {currentUser?.role === "admin" || currentUser?.role === "manager" ?(
-      <a
-        href="http://localhost:4200/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
-      >
-        <Cog className="h-6 w-6" />
-        <Text as="span" content="Setting" className="text-1xl" />
-      </a>
-    ): null}
-    </nav>
+        {currentUser?.role === 'admin' || currentUser?.role === 'manager' ? (
+          <a
+            href="https://smartshift-sy0v.onrender.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
+          >
+            <Cog className="h-6 w-6" />
+            <Text as="span" content="Setting" className="text-1xl" />
+          </a>
+        ) : null}
+      </nav>
       {/* Right Section */}
       <div className="flex items-center gap-6 ml-auto">
         {/* Notifications */}
@@ -162,7 +162,17 @@ export default function DesktopNavbar({
                       content={`${currentUser.firstName} ${currentUser.lastName}`}
                       MyClass="font-medium text-sm text-gray-500 flex justify-center"
                     />
-                    <Badge variant={currentUser.role === 'admin' ? 'primary' : currentUser?.role === 'user' ? 'secondary' : 'opacityPrimary'}>{currentUser?.role}</Badge>
+                    <Badge
+                      variant={
+                        currentUser.role === 'admin'
+                          ? 'primary'
+                          : currentUser?.role === 'user'
+                          ? 'secondary'
+                          : 'opacityPrimary'
+                      }
+                    >
+                      {currentUser?.role}
+                    </Badge>
                     <Text
                       as="span"
                       content={currentUser.email}
@@ -186,12 +196,12 @@ export default function DesktopNavbar({
                 </Link>
                 <Button
                   onClick={() => {
-                  setUserMenuOpen(false);
-                  logout();
-                }}
+                    setUserMenuOpen(false);
+                    logout();
+                  }}
                   className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-700 hover:bg-[#F6E0E0]"
                 >
-                <LogOut className="h-4 w-4" /> Sign Out
+                  <LogOut className="h-4 w-4" /> Sign Out
                 </Button>
               </motion.div>
             )}
