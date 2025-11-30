@@ -20,7 +20,7 @@ import cookieParser from 'cookie-parser';
 const app = express();
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200','https://portal-pvwr.onrender.com'];
+    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200','https://portal-pvwr.onrender.com', 'https://smartshift-sy0v.onrender.com'];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, origin);
     } else {

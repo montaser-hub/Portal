@@ -33,10 +33,10 @@ export default function MobileNavbar({
       {MobileMenuOpen && (
         <motion.div
           key="mobile-navbar"
-          initial={{ x: "100%", opacity: 0 }}
+          initial={{ x: '100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "100%", opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          exit={{ x: '100%', opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-40 flex flex-col"
         >
           {/* User Info */}
@@ -47,7 +47,8 @@ export default function MobileNavbar({
                   src={profileImage}
                   alt="Profile"
                   className="w-12 h-12 rounded-full object-cover transition-opacity duration-200"
-                />) : (
+                />
+              ) : (
                 <div className="flex items-center justify-center h-8 w-8 rounded-full text-white font-semibold bg-gray-100">
                   <User className="h-12 w-12 text-gray-300" />
                 </div>
@@ -58,11 +59,28 @@ export default function MobileNavbar({
                   content={`${currentUser.firstName} ${currentUser.lastName}`}
                   MyClass="font-medium text-sm text-gray-500 flex justify-center"
                 />
-                <Badge variant={currentUser.role === 'admin' ? 'primary' : currentUser?.role === 'user' ? 'secondary' : 'opacityPrimary'}>{currentUser?.role}</Badge>
-                <Text as="span" content={currentUser.email} MyClass="text-xs text-gray-500" />
+                <Badge
+                  variant={
+                    currentUser.role === 'admin'
+                      ? 'primary'
+                      : currentUser?.role === 'user'
+                      ? 'secondary'
+                      : 'opacityPrimary'
+                  }
+                >
+                  {currentUser?.role}
+                </Badge>
+                <Text
+                  as="span"
+                  content={currentUser.email}
+                  MyClass="text-xs text-gray-500"
+                />
               </div>
             </div>
-            <button className="absolute top-4 right-4" onClick={() => setMobileMenuOpen(false)}>
+            <button
+              className="absolute top-4 right-4"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <X className="h-5 w-5 text-gray-700" />
             </button>
           </div>
@@ -80,52 +98,62 @@ export default function MobileNavbar({
                     setCurrentPage(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${isActive ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
-                    }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                    isActive
+                      ? 'bg-[#0F7B8A] text-white'
+                      : 'text-gray-700 hover:bg-[#E0F4F6]'
+                  }`}
                 >
                   <Icon className="h-5 w-5" />
                   <Text as="span" content={item.label} />
                 </Link>
               );
             })}
-            {currentUser?.role === "admin" || currentUser?.role === "manager" ?(
-                  <a
-                    href="http://localhost:4200/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
-                  >
-                    <Cog className="h-6 w-6" />
-                    <Text as="span" content="Setting" className="text-1xl" />
-                  </a>
-                ): null}
+            {currentUser?.role === 'admin' ||
+            currentUser?.role === 'manager' ? (
+              <a
+                href="https://smartshift-sy0v.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
+              >
+                <Cog className="h-6 w-6" />
+                <Text as="span" content="Setting" className="text-1xl" />
+              </a>
+            ) : null}
 
             <Link
               to="/Notifications"
               onClick={() => {
-                setCurrentPage("notifications");
+                setCurrentPage('notifications');
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${currentPage === "notifications"
-                  ? "bg-[#0F7B8A] text-white"
-                  : "text-gray-700 hover:bg-[#E0F4F6]"
-                }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                currentPage === 'notifications'
+                  ? 'bg-[#0F7B8A] text-white'
+                  : 'text-gray-700 hover:bg-[#E0F4F6]'
+              }`}
             >
               <Bell className="h-5 w-5" />
               <Text
                 as="span"
-                content={`Notifications ${unreadCount > 0 ? `(${unreadCount})` : ""}`}
+                content={`Notifications ${
+                  unreadCount > 0 ? `(${unreadCount})` : ''
+                }`}
               />
             </Link>
 
             <Link
               to="/Profile"
               onClick={() => {
-                setCurrentPage("profile");
+                setCurrentPage('profile');
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${currentPage === "profile" ? "bg-[#0F7B8A] text-white" : "text-gray-700 hover:bg-[#E0F4F6]"
-                }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                currentPage === 'profile'
+                  ? 'bg-[#0F7B8A] text-white'
+                  : 'text-gray-700 hover:bg-[#E0F4F6]'
+              }`}
             >
               <User className="h-5 w-5" /> Profile
             </Link>
