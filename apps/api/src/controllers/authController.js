@@ -31,7 +31,7 @@ export const logout = (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: true,
-    // path: '/'
+    path: '/'
   });
   res.status(200).json({
     status: 'success',
