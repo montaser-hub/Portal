@@ -75,7 +75,7 @@ export default function DesktopNavbar({
 
         {currentUser?.role === 'admin' || currentUser?.role === 'manager' ? (
           <a
-            href="https://smartshift-sy0v.onrender.com/"
+            href="https://smartshift-6w6z.onrender.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#E0F4F6] hover:text-[#0F7B8A] transition duration-300"
