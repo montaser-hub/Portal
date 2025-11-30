@@ -189,7 +189,7 @@ export default function UpdateSwapRequestModal({
 
                 <CustomSelect
                   name="swapWith"
-                  value={form.swapWith}
+                  value={form?.swapWith}
                   onChange={handleChange}
                   options={swapWithOptions}
                   placeholder="Select target Schedule"
