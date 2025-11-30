@@ -32,9 +32,9 @@ api.interceptors.request.use(
 
     // Check if this is a public route (allowed even when logged out)
     const isPublicRoute = PUBLIC_ROUTES.some((route) => url?.includes(route));
-
+    const isLandingPage = window.location.pathname === "/";
     // Allow public routes OR if user is authenticated
-    if (isPublicRoute || currentStatus === 'succeeded') {
+    if (isPublicRoute || isLandingPage || currentStatus === 'succeeded') {
       store.dispatch(showLoader());
       return config;
     }
@@ -65,7 +65,6 @@ api.interceptors.response.use(
   (error) => {
     store.dispatch(hideLoader());
 
-    // Don't double-handle our own auth blocks
     if (error.isAuthError) {
       return Promise.reject(error);
     }
@@ -81,6 +80,14 @@ api.interceptors.response.use(
       status === 401 ||
       (status === 500 && /jwt|token|expired|invalid/i.test(data?.message))
     ) {
+
+      const isLandingPage = window.location.pathname === '/';
+
+      // Skip redirect when visitor is on LandingPage
+      if (isLandingPage) {
+        return Promise.reject(error);
+      }
+
       const state = store.getState();
       if (state.user.status !== 'loggedOut') {
         store.dispatch(logoutUser());

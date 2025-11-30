@@ -69,6 +69,7 @@ export function ScheduleOption({ sched }) {
   const user = sched.user || {};
   const subDep = sched.subDepartment || {};
   const date = new Date(sched.date).toLocaleDateString();
+  const userLevel = scheduler?.user?.level?.name || '';
 
   return (
     <div className="flex items-center gap-2 text-sm flex-wrap">
@@ -80,7 +81,7 @@ export function ScheduleOption({ sched }) {
       </span>
       <span className="flex items-center gap-1">
         <Clock className="w-3.5 h-3.5 text-[#0F7B8A]" />
-        <Text as="span" content={`${shift.startTimeFormatted || '-'} - ${shift.endTimeFormatted || '-'}`} MyClass="" />
+        <Text as="span" content={`${shift?.startTimeFormatted || '-'} - ${shift?.endTimeFormatted || '-'}`} MyClass="" />
       </span>
       <span className="flex items-center gap-1">
         <User className="w-3.5 h-3.5 text-[#0F7B8A]" />
