@@ -15,9 +15,10 @@ export const markAllAsRead = async (req, res) => {
 };
 
 export const sendNotification = async (userId, data) => {
-  const created =await Notification.create({ user: userId, ...data });
-
-  pushNotification(userId, created);
+  // Fire & forget – this never blocks your API
+  Notification.create({ user: userId, ...data })
+    .then((created) => pushNotification(userId, created))
+    .catch((err) => console.error("Notification error:", err));
 };
 
 // store active connections
@@ -25,11 +26,16 @@ const clients = {};
 
 export const sseStream = (req, res) => {
   const userId = req.user._id.toString();
-  
-  res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+
+  const allowedOrigins = ['http://localhost:3001'];
+const origin = req.headers.origin;
+if (allowedOrigins.includes(origin)) {
+  res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
+}
+
+  res.setHeader("Content-Type", "text/event-stream", "charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache", "no-transform");
   res.setHeader( "Connection", "keep-alive" );
   res.setHeader("X-Accel-Buffering", "no");
   res.flushHeaders();
@@ -57,7 +63,13 @@ export const pushNotification = (userId, notification) => {
   const conn = clients[userId];
   if (!conn) return;
 
-  conn.write(`event: message\n`);
-  conn.write(`data: ${JSON.stringify(notification)}\n\n`);
+  try {
+    conn.write(`event: message\n`);
+    conn.write(`data: ${JSON.stringify(notification)}\n\n`);
+  } catch (err) {
+    console.error("SSE connection lost:", userId);
+    delete clients[userId];
+  }
 };
+
 
