@@ -6,13 +6,23 @@ const handleRequest = async (request) => {
     const res = await request;
     return res.data;
   } catch (err) {
-    console.error( 'API Error:', err );
-    if ( !err.response ) {
+    console.error('API Error:', err);
+
+    // Skip toast for authentication errors
+    if (err.isAuthError || err.response?.status === 401) {
+      // Do NOT toast → user already redirected / logged out
+      throw err;
+    }
+    
+    if (!err.response) {
       toast.error('Network error. Please try again.');
       throw err;
     }
     const message =
-      err.response?.data?.message || err.message || err.response?.data?.error || 'Request failed';
+      err.response?.data?.message ||
+      err.message ||
+      err.response?.data?.error ||
+      'Request failed';
     toast.error(message);
 
     // Re-throw so .unwrap() rejects

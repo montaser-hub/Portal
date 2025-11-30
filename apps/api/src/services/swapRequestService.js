@@ -8,7 +8,7 @@ import { validateSwapRequest } from './swapValidation.js'
 export const addSwapRequest = async ( data ) => {
   await validateSwapRequest(data)
   const createdSwapRequest = await SwapRequestRepo.create(data)
-    sendNotification(createdSwapRequest?.toUserId, {
+  sendNotification(createdSwapRequest?.toUserId, {
     title: " Swap Request",
     message: `Swap request was sent form ${createdSwapRequest.fromUser.fullName} check your swap requet panel.`,
     type: `Swap Request`,
@@ -35,7 +35,7 @@ export const updateSwapRequest = async (id, data) => {
   await validateSwapRequest(data, { mode: "update", currentSwapId: id })
   const updatedSwapRequest = await SwapRequestRepo.update(id, data)
   if (!updatedSwapRequest) throw new AppError("SwapRequest already existed.", 400)
-    sendNotification(updatedSwapRequest?.toUserId, {
+  sendNotification(updatedSwapRequest?.toUserId, {
     title: " Swap Request",
     message: `Swap request was updated by ${updatedSwapRequest?.fromUser?.fullName}. Check your swap request panel.`,
     type: "Swap Updated",

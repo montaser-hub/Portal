@@ -400,7 +400,7 @@ export default function Schedules() {
                       <Calendar size={18} />
                       <Text as='span' MyClass="font-semibold text-sm" content={`${formatDate(schedule.date)}`} />
                     </div>
-                    {!shiftStarted && (
+                    {/* {!shiftStarted && (
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => openModal(schedule)}
@@ -417,7 +417,7 @@ export default function Schedules() {
                           <X size={18} className="text-red-400" />
                         </button>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   <div className="space-y-3">

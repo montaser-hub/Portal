@@ -6,6 +6,7 @@
   import { getAllDocuments } from './queryService.js';
   import { addMinutes, areIntervalsOverlapping, addSeconds } from 'date-fns';
   import { toZonedTime } from 'date-fns-tz';
+  import { sendNotification } from '../controllers/notificationController.js';
 
   /**
    * Validation function to check duplicate schedules and overlapping shifts
@@ -84,7 +85,14 @@
 
     await overlappingSchedulesValidation(data);
 
-    return await scheduleRepo.create(data);
+    const createdSchedule = await scheduleRepo.create(data);
+    sendNotification(data?.userId, {
+      title: 'New Schedule',
+      message: `You have a new schedule check your calendar ${createdSchedule?.date.toLocaleDateString()}`,
+      type: 'schedule',
+      priority: "Medium"
+    })
+    return createdSchedule;
   };
 
   /**
@@ -100,6 +108,12 @@
 
     const updatedSchedule = await scheduleRepo.update(id, data);
     if (!updatedSchedule) throw new AppError("Schedule Not Found", 404);
+    sendNotification(data?.userId, {
+      title: 'Update Schedule',
+      message: `You have a new update for your schedule check your calendar ${updatedSchedule?.date.toLocaleDateString()}`,
+      type: 'schedule',
+      priority: "Medium"
+    })
     return updatedSchedule;
   };
 
@@ -137,9 +151,9 @@
 
   function getScheduleDateTime(schedule, timezone = 'Africa/Cairo') {
     // Combine schedule.date + shift.startTime (seconds) → exact datetime in user TZ
-    const date = new Date(schedule.date); // stored as UTC
+    const date = new Date(schedule?.date); // stored as UTC
     const dateInTZ = toZonedTime(date, timezone);
-    return addSeconds(dateInTZ, schedule.shift.startTime || 0);
+    return addSeconds(dateInTZ, schedule?.shift?.startTime || 0);
   }
 
   export const swapSchedule = async (id, userId) => {
@@ -206,7 +220,23 @@ export const createMultiUserSchedule = async (data, user) => {
     );
   }
 
-  return await scheduleRepo.createMultiUserSchedule(documentsToInsert);
+  const createdSchedules = await scheduleRepo.createMultiUserSchedule(documentsToInsert);
+
+  // ---- FIRE NOTIFICATIONS *AFTER* creation ----
+  (async () => {
+    await Promise.allSettled(
+      createdSchedules.map(schedule =>
+        sendNotification(schedule.userId, {
+          title: "New Schedule Assigned",
+          message: `A new schedule was created for ${schedule.date.toLocaleDateString()}`,
+          type: "schedule",
+          priority: "Medium"
+        })
+      )
+    );
+  })();
+
+  return createdSchedules;
 };
 
 
