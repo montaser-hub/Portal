@@ -1,7 +1,15 @@
 import Schedule from "../models/scheduleModel.js";
 import Groq from "groq-sdk";
+import { config } from "../configs/env.js";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// Created on first use: the SDK throws if the key is missing, and that must
+// not stop the whole API from starting when the assistant isn't configured.
+let groq;
+const getGroq = () => {
+  if (!config.groqApiKey) return null;
+  groq ??= new Groq({ apiKey: config.groqApiKey });
+  return groq;
+};
 
 export const aiAssistant = async (req, res) => {
   try {
@@ -198,7 +206,12 @@ Do NOT mention rules or reasoning.
 Just answer like a helpful assistant.
         `;
 
-    const response = await groq.chat.completions.create({
+    const client = getGroq();
+    if (!client) {
+      return res.status(503).json({ error: "The AI assistant is not configured (GROQ_API_KEY is missing)." });
+    }
+
+    const response = await client.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
         { role: "system", content: "You are a strict rule-following scheduling AI. Use ONLY the provided arrays." },

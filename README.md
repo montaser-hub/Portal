@@ -11,6 +11,17 @@
 [Click here to finish setting up your workspace!](https://cloud.nx.app/connect/jdMnRE2zhv)
 
 
+## Configuration
+
+Secrets are never committed. Each app reads its settings from environment variables:
+
+```sh
+cp apps/api/.env.example apps/api/.env.development      # then fill in the values
+cp apps/user-dashboard/.env.example apps/user-dashboard/.env
+```
+
+`apps/api/.env.example` lists every variable the API reads (database, JWT, email, S3 uploads, AI assistant). In production, set the same names as config vars on the hosting platform instead of using a file.
+
 ## Run tasks
 
 To run the dev server for your app, use:

@@ -21,6 +21,7 @@ export const config = {
     60 *
     1000,
   apiKeyThirdParty: process.env.API_KEY_THIRD_PARTY,
+  groqApiKey: process.env.GROQ_API_KEY,
   email: {
     from: process.env.EMAIL_FROM,
     username: process.env.EMAIL_USERNAME,
