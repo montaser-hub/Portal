@@ -2,7 +2,11 @@
   "name": "@portal/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "api": "nx serve api",
+    "dashboard": "nx serve user-dashboard",
+    "seed": "node apps/api/scripts/seed.mjs"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^20.3.9",
