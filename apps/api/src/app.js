@@ -10,18 +10,18 @@ import departmentRouter from './routes/departmentRoutes'
 import subDepartmentRouter from './routes/subDepartmentRoutes'
 import swapRequestRouter from './routes/swapRequestRoutes'
 import assistantRouter from './routes/assistantRoutes'
-import notificationRouter from './routes/notificationRoutes'
+import notificationRouter from './routes/notificationRoutes.js'
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 import cors from 'cors';
+import { config } from './configs/env.js';
 import cookieParser from 'cookie-parser';
 
 
 const app = express();
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:3001', 'http://localhost:4200','https://portal-pvwr.onrender.com', 'https://smartshift-6w6z.onrender.com'];
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || config.allowedOrigins.includes(origin)) {
       callback(null, origin);
     } else {
       callback(new Error('Not allowed by CORS'));

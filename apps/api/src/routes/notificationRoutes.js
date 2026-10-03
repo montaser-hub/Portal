@@ -1,13 +1,15 @@
-const express = require('express');
-const notificationController = require('../controllers/notificationController');
-const authController = require('../controllers/authController');
-const router = express.Router();
+import express from 'express';
 import cors from 'cors';
+import * as notificationController from '../controllers/notificationController.js';
+import * as authController from '../controllers/authController.js';
+import { config } from '../configs/env.js';
+
+const router = express.Router();
 
 router.use(authController.isAuth);
 
 const sseCorsOptions = {
-  origin: ['http://localhost:3001', 'http://localhost:4200', 'https://smartshift-6w6z.onrender.com', 'https://portal-pvwr.onrender.com'],
+  origin: config.allowedOrigins,
   credentials: true
 };
 

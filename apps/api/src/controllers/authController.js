@@ -5,34 +5,32 @@ import catchAsync from '../utils/catchAsync.js';
 import { config } from '../configs/env.js';
 import AppError from '../utils/AppError.js';
 
+/**
+ * Options for the session cookie; the same ones must be used to clear it.
+ * Production front ends live on another site, which needs SameSite=None and
+ * Secure. Browsers reject SameSite=None without Secure, so plain-http
+ * development uses Lax (localhost ports count as the same site).
+ */
+const sessionCookieOptions = () =>
+  config.nodeEnv === 'production'
+    ? { httpOnly: true, secure: true, sameSite: 'none', partitioned: true, path: '/' }
+    : { httpOnly: true, sameSite: 'lax', path: '/' };
+
 export const login = catchAsync( async ( req, res, next ) => {
   const { email, nickname, password } = req.body;
 
   const { token, user } = await userService.login( email, nickname, password )
 
-  // Set cookie
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + config.cookieExpiresIn
-    ),
-    // secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // only set secure cookie if the request is HTTPS
-    httpOnly: true, // recive the cookie and store it, send it automatically in each request
-    sameSite: 'none',
-    partitioned: true,
-  };
-  if (config.nodeEnv === 'production') cookieOptions.secure = true;
-
-  res.cookie('jwt', token, cookieOptions);
+  res.cookie('jwt', token, {
+    ...sessionCookieOptions(),
+    expires: new Date(Date.now() + config.cookieExpiresIn),
+  });
 
   res.status(201).json({ message: 'Your login was successfully', token, data: user });
 });
 
 export const logout = (req, res) => {
-  res.clearCookie('jwt', {
-    httpOnly: true,
-    secure: true,
-    path: '/'
-  });
+  res.clearCookie('jwt', sessionCookieOptions());
   res.status(200).json({
     status: 'success',
     message: 'You have been logged out!'
@@ -53,7 +51,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    next( new AppError('You are not logged in', 401));
+    return next( new AppError('You are not logged in', 401));
   }
 
   //2) Verification token

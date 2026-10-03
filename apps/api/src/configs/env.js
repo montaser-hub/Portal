@@ -22,6 +22,11 @@ export const config = {
     1000,
   apiKeyThirdParty: process.env.API_KEY_THIRD_PARTY,
   groqApiKey: process.env.GROQ_API_KEY,
+  // Front-end origins allowed to call the API with cookies (comma-separated).
+  allowedOrigins: (process.env.ALLOWED_ORIGINS || 'http://localhost:3001,http://localhost:4200')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   email: {
     from: process.env.EMAIL_FROM,
     username: process.env.EMAIL_USERNAME,
