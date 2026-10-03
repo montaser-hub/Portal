@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadNotifications } from '../features/notification/notificationSlice';
+import { API_URL } from '../config';
 
-const baseURL = 'https://smartshift-c240077eea3a.herokuapp.com/api/v1';
 
 export default function useNotificationSSE() {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export default function useNotificationSSE() {
     dispatch(loadNotifications());
 
     // Open SSE connection
-    const url = `${baseURL}/notifications/sse?userId=${user._id}`;
+    const url = `${API_URL}/notifications/sse?userId=${user._id}`;
     const evtSource = new EventSource(url, { withCredentials: true });
     // Save globally so logout can close it
     window.__SSE__ = evtSource;
