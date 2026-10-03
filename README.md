@@ -1,95 +1,84 @@
-# Portal
+# SmartShift — Healthcare Shift Scheduling
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A scheduling platform for organizations that run on shifts, built for hospitals: staff see their schedule,
+swap shifts with a colleague through a two-step approval, and get notified in real time; managers and admins
+maintain the org structure and shift rules.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+This repository is an [Nx](https://nx.dev) monorepo with the **REST API** and the **React staff dashboard**.
+The Angular admin portal lives in [hageramadan/SmartShift](https://github.com/hageramadan/SmartShift).
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+![Schedule calendar](docs/screenshots/calendar.webp)
 
-## Finish your CI setup
+| Dashboard | Swap requests | Notifications |
+|---|---|---|
+| ![Dashboard](docs/screenshots/dashboard.webp) | ![Swap requests](docs/screenshots/swaps.webp) | ![Notifications](docs/screenshots/notifications.webp) |
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/jdMnRE2zhv)
+## Features
 
+**API** (`apps/api`: Node.js, Express, MongoDB)
 
-## Configuration
+- Org structure: locations, departments and sub-departments with managers, positions and levels.
+- Shifts with overnight handling, per-shift position and level rules, and schedules with overlap validation.
+- Shift-swap requests: the colleague accepts first, then a manager approves; history is recorded.
+- JWT sessions in httpOnly cookies, roles (`user`, `manager`, `admin`), Joi validation, password reset by email.
+- Notifications stored and pushed live over Server-Sent Events.
+- An AI assistant endpoint (Groq) that answers questions about schedules; optional.
+- Filtering, sorting and pagination shared by all list endpoints.
 
-Secrets are never committed. Each app reads its settings from environment variables:
+**Staff dashboard** (`apps/user-dashboard`: React 19, Redux Toolkit, Tailwind)
 
-```sh
-cp apps/api/.env.example apps/api/.env.development      # then fill in the values
-cp apps/user-dashboard/.env.example apps/user-dashboard/.env
+- Next shift with a countdown, monthly calendar (personal and department views), schedule list with filters.
+- Create, accept and track swap requests; notifications; profile and password change.
+
+## Running locally
+
+Needs Node.js 20+, [pnpm](https://pnpm.io) and MongoDB (`docker run -d -p 27017:27017 mongo:7`).
+
+```bash
+pnpm install
+cp apps/api/.env.example apps/api/.env.development   # then set JWT_SECRET
+pnpm seed          # demo hospital: staff, shifts, four weeks of schedules, swap requests
+pnpm api           # http://localhost:3000
+pnpm dashboard     # http://localhost:3001
 ```
 
-`apps/api/.env.example` lists every variable the API reads (database, JWT, email, S3 uploads, AI assistant). In production, set the same names as config vars on the hosting platform instead of using a file.
+The seed prints the demo accounts. All use the password `Demo1234!`:
 
-## Run tasks
+| Role | Email |
+|---|---|
+| Admin | `admin@smartshift.test` |
+| Manager | `manager@smartshift.test` |
+| Staff | `sara@smartshift.test` |
 
-To run the dev server for your app, use:
+Email, S3 uploads and the AI assistant are optional; leave their variables empty to run without them.
+The dashboard reads `VITE_POTRAL_API_URL` and `VITE_ADMIN_PORTAL_URL` (see `apps/user-dashboard/.env.example`);
+the API allows the origins in `ALLOWED_ORIGINS`.
 
-```sh
-npx nx serve Admin-Portal
+## Project structure
+
+```
+apps/api/src/
+  controllers/  services/  dataAccess/   Request handling, business rules, queries
+  models/       validators/              Mongoose schemas and Joi schemas
+  routes/       middlewares/  utils/     Routing, auth and error handling, helpers
+apps/api/scripts/seed.mjs                Demo data
+apps/user-dashboard/src/
+  pages/  components/  features/         Screens, UI, Redux slices
+  services/api.jsx   config.js           Axios client and deployment settings
 ```
 
-To create a production bundle:
+## Team
 
-```sh
-npx nx build Admin-Portal
-```
+| Member | Main areas |
+|---|---|
+| [Montaser Ismail](https://github.com/montaser-hub) | Most of the API: auth and users, swap requests, AI assistant, shift time handling, query layer and error handling; parts of the dashboard |
+| [Tarek Hamdy](https://github.com/tarekhamdy99) | Most of the React dashboard; API contributions |
+| [Eslam Abbass](https://github.com/Eslam-Abbass50) | Schedules: the API service and the My Schedules page |
+| [Hager Ramadan](https://github.com/hageramadan) | Angular admin portal (separate repository) |
 
-To see all available targets to run for a project, run:
+`apps/Admin-Portal` here is only the initial Nx scaffold.
 
-```sh
-npx nx show project Admin-Portal
-```
+## Notes
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/angular:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-# Test Auto-Deploy Tue 11 Nov 2025 04:18:41 AM EET
-# Test Auto-Deploy Tue 11 Nov 2025 04:41:23 AM EET
+- Configuration comes from the environment; no credentials are committed.
+- The original Heroku and Render deployments are offline. The apps run locally as described above.
